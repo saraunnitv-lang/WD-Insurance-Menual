@@ -360,8 +360,6 @@ footer{text-align:center;font-size:11px;color:var(--muted);padding:14px 16px 40p
 .login-fld input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;font-family:var(--sans);}
 .login-fld input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(74,63,122,.1);}
 .login-btn{width:100%;background:linear-gradient(135deg,var(--purple),var(--navy));color:#fff;border:none;border-radius:11px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--sans);margin-top:8px;}
-.login-save-id{display:flex;align-items:center;gap:7px;margin:2px 0 12px;font-size:12.5px;color:var(--muted);font-weight:600;cursor:pointer;user-select:none;}
-.login-save-id input{width:15px;height:15px;accent-color:var(--purple);cursor:pointer;}
 .login-hint{font-size:11px;color:var(--muted);text-align:center;margin-top:16px;line-height:1.7;}
 /* ── v0.7 상담 시작 — 보험 기초 카드 ── */
 .basic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-bottom:14px;}
@@ -729,61 +727,52 @@ svg.tck{width:16px;height:16px;}
 /* 테스트 배포 안내 띠 */
 .test-banner{background:#FFF3CD;color:#7a5a1e;border-bottom:1px solid #F2E3C4;text-align:center;font-size:12.5px;font-weight:700;padding:8px 14px;line-height:1.5;}
 .test-banner b{color:#8a4b00;}
+/* ══════ v22 WD 자료실 색감 완화 ══════ */
+#view-hub .card{background:#f9f9fb;}
+#view-hub .std-sub-h{color:#1e1b3a;}
+#view-hub .btn.btn-g{background:#f5f5f8;color:#2d2b3e;border:1.5px solid #dddbe8;}
+#view-hub .btn.btn-g:hover{background:#ececf4;color:#1e1b3a;}
+#view-hub .basic-nb{background:#f5f5f8;border:1px solid #dddbe8;color:#5a5870;}
+#view-hub .snip{background:#fff;border:1.5px solid #dddbe8;}
+#view-hub .sec-sub{color:#6b6880;}
+/* ══════ v24 WD 자료실 가독성 3차 — 좌측 포인트선 강조형 ══════ */
+#view-hub .std-sub-h{font-size:19px;font-weight:900;letter-spacing:-.03em;color:#12103a;}
+@media(max-width:600px){#view-hub .std-sub-h{font-size:17px;}}
+#view-hub .std-sub-h .ei{width:22px;height:22px;stroke:#2448FF;stroke-width:1.8;}
+.hub-section{background:#fff;border:1.5px solid #e6e4f0;border-left:4px solid #2448FF;border-radius:0 16px 16px 0;padding:22px 22px 20px;box-shadow:0 3px 14px rgba(30,27,58,.07);}
+.hub-section+.hub-section{margin-top:20px;}
+.hub-section .std-sub-h{margin-top:0;margin-bottom:16px;display:flex;align-items:center;gap:9px;}
+/* ══════ v25 섹션별 색상 + 구분선 ══════ */
+.hub-section.hs-mega{border-left-color:#2448FF;background:#f7f9ff;}
+.hub-section.hs-mega .std-sub-h{color:#12267a;}
+.hub-section.hs-mega .std-sub-h .ei{stroke:#2448FF;}
+.hub-section.hs-link{border-left-color:#7c3aed;background:#faf7ff;}
+.hub-section.hs-link .std-sub-h{color:#4b1ea8;}
+.hub-section.hs-link .std-sub-h .ei{stroke:#7c3aed;}
+.hub-section.hs-ai{border-left-color:#0891b2;background:#f0fbff;}
+.hub-section.hs-ai .std-sub-h{color:#0e5d74;}
+.hub-section.hs-ai .std-sub-h .ei{stroke:#0891b2;}
+.hub-divider{display:flex;align-items:center;gap:12px;margin:22px 0;}
+.hub-divider::before,.hub-divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,#d4d0e8,transparent);}
+.hub-divider span{font-size:10.5px;font-weight:700;color:#b0aac8;letter-spacing:.12em;white-space:nowrap;}
 </style>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1A37D8">
 <link rel="apple-touch-icon" href="icons/wd-app-icon-180.png">
 <link rel="icon" type="image/png" href="icons/wd-app-icon-192.png">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Supabase 제거됨 — 정적 워크키트 v18 -->
+<!-- 캐시 강제 리로드 제거됨 —  v18 단순 문지기 구조 -->
 <script>
-/* 항상 최신 버전 유지 - 캐시 무효화 */
-(function(){
-  if(!sessionStorage.getItem('wd_fresh')){
-    sessionStorage.setItem('wd_fresh','1');
-    location.reload(true);
-  } else {
-    sessionStorage.removeItem('wd_fresh');
-  }
-})();
-</script>
-<script>
-/* ── WD kit_ 저장형 1단계: Supabase 연결 (publishable/anon key · RLS 보호) ──
-   ⚠ 아래 2줄만 사라님이 검수 시 실제 값과 대조하세요. service_role 키는 절대 금지. */
-const WD_AGENTS = {
-  hyungmin: { name:"형민", url:"https://zkgvcxyrrtdnsxukihdv.supabase.co", key:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprZ3ZjeHlycnRkbnN4dWtpaGR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4MDYwNjksImV4cCI6MjA5NzM4MjA2OX0.k7PiwHPX0gy62WnhfA5Q6JsD06duYdSQOsODWxLA02w" },
-  jiyoung:  { name:"지영", url:"https://kqnsrkebmalstepbghjf.supabase.co", key:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtxbnNya2VibWFsc3RlcGJnaGpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4MDYxMjksImV4cCI6MjA5NzM4MjEyOX0.Pm05SkjvQiOM6nlKF3pyHtbwqSwo1roWqAQfXCEf5Kc" },
-  sara:     { name:"윤경", url:"https://tiwgzmmizmkbvbyfgmyw.supabase.co", key:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpd2d6bW1pem1rYnZieWZnbXl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4MjE5ODIsImV4cCI6MjA5NzM5Nzk4Mn0.4c5iuLkZ37a46dB6vA6jN8vTwOV_kS1-4IHPcrB2aTM" }
-};
-var sb = null;
-function getAgentByEmail(e){ e=(e||'').toLowerCase(); if(e.indexOf('hyungmin')>-1||e.indexOf('hyung')>-1) return 'hyungmin'; if(e.indexOf('jiyoung')>-1) return 'jiyoung'; return 'sara'; }
-function initSupabase(k){ var c=WD_AGENTS[k]||WD_AGENTS.sara; sb=window.supabase.createClient(c.url,c.key); window._agentKey=k; }
-async function fetchAgentCustomers(k){ var c=WD_AGENTS[k]; if(!c) return []; var t=window.supabase.createClient(c.url,c.key); var r=await t.from('kit_customers').select('*').order('created_at',{ascending:false}); if(r.error) return []; return (r.data||[]).map(function(x){return Object.assign({},x,{_agentName:c.name});}); }
-/* 자체 아이디/비번 로그인 구조 */
-window._currentUser=''; window._currentRole=''; window._currentUid=''; window._currentAgentKey='';
-async function wdLogin(uid,pw){
-  for(var k of Object.keys(WD_AGENTS)){
-    var c=WD_AGENTS[k]; var tmp=window.supabase.createClient(c.url,c.key);
-    var res=await tmp.from('kit_profiles').select('*').eq('uid',uid).maybeSingle();
-    if(!res.error&&res.data){
-      if(res.data.pw!==pw) return {error:'비밀번호가 맞지 않습니다'};
-      initSupabase(k);
-      window._currentUid=uid; window._currentRole=res.data.role;
-      window._currentUser=res.data.name; window._currentAgentKey=k; _currentUser=res.data.name;
-      return {data:res.data};
-    }
-  }
-  return {error:'아이디를 찾을 수 없습니다'};
-}
-async function wdChangePw(uid,oldPw,newPw){
-  var k=window._currentAgentKey; if(!k) return {error:'로그인 필요'};
-  var c=WD_AGENTS[k]; var tmp=window.supabase.createClient(c.url,c.key);
-  var chk=await tmp.from('kit_profiles').select('pw').eq('uid',uid).single();
-  if(chk.error||!chk.data) return {error:'계정을 찾을 수 없습니다'};
-  if(chk.data.pw!==oldPw) return {error:'현재 비밀번호가 맞지 않습니다'};
-  var upd=await tmp.from('kit_profiles').update({pw:newPw}).eq('uid',uid);
-  if(upd.error) return {error:upd.error.message};
-  return {data:'ok'};
-}
+/* ── WD WAVE 설계사 워크키트 v18 — 공통 비밀번호 문지기 구조 ──
+   Supabase/DB 연결 없음. 고객정보 저장 없음. 정적 내부 자료 공유용. */
+
+// ▶▶▶ 공통 비밀번호 — 사라님이 직접 이 값을 수정하세요 ◀◀◀
+var WD_KIT_PW = '0191'; // ← 이 줄의 작은따옴표 안 값만 변경
+
+var sb = null; // Supabase 비활성화 (기존 함수들의 sb 체크를 통해 자동 무력화)
+window._currentUser = 'WD 설계사';
+window._currentRole = '';
+window._currentUid  = '';
 </script>
 </head>
 <body>
@@ -842,13 +831,15 @@ async function wdChangePw(uid,oldPw,newPw){
   <div class="login-card">
     <div class="login-brand">
       <div class="lm">WD WAVE</div>
-      <div class="ls">우리동네 보험관리 키트</div>
+      <div class="ls">설계사 워크키트</div>
     </div>
-    <div class="login-fld"><label>아이디</label><input id="login-id" type="text" placeholder="예: 2026yk01" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('login-pw').focus();"></div>
-    <div class="login-fld"><label>비밀번호</label><input type="password" id="login-pw" placeholder="비밀번호" autocomplete="current-password" onkeydown="if(event.key==='Enter')appLogin()"></div>
-    <label class="login-save-id"><input type="checkbox" id="login-save-id"><span>아이디 저장</span></label>
-    <button class="login-btn" onclick="appLogin()">로그인</button>
-    <div class="login-hint">WD WAVE 소속 설계사 전용입니다.</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.75);line-height:1.7;margin-bottom:20px;text-align:center;padding:0 4px;">
+      WD WAVE 설계사 워크키트 내부 공유용 자료입니다.<br>
+      비밀번호는 무단 접근을 줄이기 위한 간단한 확인 절차입니다.<br>
+      이 키트에는 고객정보나 민감정보를 입력하지 않습니다.
+    </div>
+    <div class="login-fld"><label>비밀번호</label><input type="password" id="login-pw" placeholder="비밀번호 입력" autocomplete="current-password" onkeydown="if(event.key==='Enter')appLogin()"></div>
+    <button class="login-btn" onclick="appLogin()">입장</button>
   </div>
 </div>
 
@@ -862,11 +853,14 @@ async function wdChangePw(uid,oldPw,newPw){
   <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
   <nav class="tabs" id="tabBar">
     <button class="tab on" data-t="home" onclick="showTab('home')"><svg viewBox="0 0 24 24" class="ti"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/></svg>홈</button>
+    <button class="tab" data-t="wdcriteria" onclick="showTab('wdcriteria')">WD 기준</button>
     <button class="tab" data-t="consult" onclick="showTab('consult')">보험업무가이드</button>
-    <button class="tab" data-t="guide" onclick="showTab('guide')">보상사례자료</button>
-    <button class="tab" data-t="salesbook" onclick="showTab('salesbook')">메가세일즈북</button>
-    <button class="tab" data-t="sicheck" onclick="showTab('sicheck')">시책정보</button>
-    <button class="tab" data-t="hub" onclick="showTab('hub')">업무링크허브</button>
+    <button class="tab" data-t="salesbook" onclick="showTab('salesbook')">월간영업자료</button>
+    <button class="tab" data-t="wdbook" onclick="showTab('wdbook')">WD 상담북</button>
+    <button class="tab" data-t="promptbook" onclick="showTab('promptbook')">WD 프롬프트북</button>
+    <button class="tab" data-t="guide" onclick="showTab('guide')">WD 보상사례집</button>
+    <button class="tab" data-t="hub" onclick="showTab('hub')">WD 자료실</button>
+    <button class="tab" data-t="sicheck" onclick="showTab('sicheck')" style="display:none;">시책정보</button>
     <!-- 비노출 유지 뷰 (기존 코드 보존) -->
     <button class="tab" data-t="worklog" onclick="showTab('worklog')" style="display:none;">빠른 메모</button>
     <button class="tab" data-t="lib" onclick="showTab('lib')" style="display:none;">고객전달자료</button>
@@ -881,16 +875,13 @@ async function wdChangePw(uid,oldPw,newPw){
     <div class="profile-wrap" id="profileWrap">
       <button class="profile" onclick="toggleProfileMenu()">
         <span class="pav"><svg viewBox="0 0 24 24" class="ti"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a7 7 0 0 1 14 0v1"/></svg></span>
-        <span class="pnm" id="profile-name"></span>
-        <span id="profile-role-label"> 설계사</span>
+        <span class="pnm">WD 설계사</span>
         <svg viewBox="0 0 24 24" class="tic"><path d="m6 9 6 6 6-6"/></svg>
       </button>
       <div class="profile-menu" id="profileMenu">
-        <div class="pm-header"><span id="pm-name-label">이름</span><b id="pm-role-label">설계사</b></div>
-        <div id="pm-agent-list"></div>
+        <div class="pm-header"><span>WD WAVE 설계사 워크키트</span></div>
         <div class="pm-divider"></div>
-        <button class="pm-item" onclick="openChangePw(); closeProfileMenu();">🔑 비밀번호 변경</button>
-        <button class="pm-item danger" onclick="closeProfileMenu(); appLogout();">🚪 로그아웃</button>
+        <button class="pm-item danger" onclick="closeProfileMenu(); appLogout();">🚪 나가기</button>
       </div>
     </div>
   </div>
@@ -906,59 +897,65 @@ async function wdChangePw(uid,oldPw,newPw){
   <div class="dash-head">
     <div>
       <h1 id="hero-title">WD WAVE 설계사 워크키트</h1>
-      <p id="hero-sub">상담 기준, 고객 전달 문장, 업무요청서, 보상사례, 빠른 메모, 업무 연결을 한 곳에서 정리하는 실전 키트입니다. 고객관리와 계약관리는 본진·메가넷에서 진행합니다.</p>
+      <p id="hero-sub">보험업무가이드 · WD 상담북 · WD 프롬프트북 · WD 보상사례집 · WD 자료실을 한 곳에서 확인합니다. 고객관리와 계약관리는 본진·메가넷에서 진행합니다.</p>
     </div>
   </div>
 
-  <div class="philosophy-card soft" style="padding:24px 26px;margin-bottom:20px;">
-    <div class="ph-title" style="font-size:20px;font-weight:900;margin-bottom:10px;">이 키트가 만들어진 이유</div>
-    <div class="ph-body" style="font-size:15px;line-height:1.8;">이 워크키트는 WD WAVE 최윤경 지점장의 20여 년 현장 경험과 AI 정리를 바탕으로 만든 설계사 업무 자산입니다.<br>보험을 더 많이 판매하기 위한 도구가 아니라, 고객 앞에서 흔들리지 않고 확인할 것을 확인하며 책임 있게 상담하기 위해 만든 기준판입니다.<br><b>함께 배우고 함께 성장하기 위해 나누는 자료이니 외부 유출이나 무단 공유는 하지 말아주세요.</b></div>
-  </div>
-
-  <div class="philosophy-card" style="padding:24px 26px;margin-bottom:20px;">
-    <div class="ph-title" style="font-size:20px;font-weight:900;margin-bottom:10px;">만든 사람의 마음</div>
-    <div class="ph-body" style="font-size:15px;line-height:1.8;">WD WAVE는 보험을 판매보다 관리로 봅니다.<br>돈을 버는 일은 부끄러운 일이 아니지만, 고객을 책임지는 방식이어야 오래 갑니다.<br>이 키트는 정직하게 배우고, 기준을 지키며, 성장하려는 설계사를 돕기 위해 만들었습니다.</div>
-  </div>
-
   <div class="bcard-grid">
+    <button class="bcard" onclick="showTab('wdcriteria')">
+      <span class="bcard-ic"><svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.5 7.5 8 9 4.5-1.5 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></span>
+      <div class="bcard-body">
+        <div class="bcard-top"><span class="bcard-nm">WD 기준</span><svg viewBox="0 0 24 24" class="tic"><path d="m9 6 6 6-6 6"/></svg></div>
+        <div class="bcard-ds">이 키트의 목적, 사용 원칙, WD 상담 기준을 확인합니다.</div>
+        <div class="bcard-tags"><span>목적</span><span>사용원칙</span><span>상담기준</span></div>
+      </div>
+    </button>
     <button class="bcard" onclick="showTab('consult')">
       <span class="bcard-ic"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.35 8.5 8.5 0 0 1-3.8-.9L3 20l1.05-4.2A8.5 8.5 0 1 1 21 11.5"/></svg></span>
       <div class="bcard-body">
         <div class="bcard-top"><span class="bcard-nm">보험업무가이드</span><svg viewBox="0 0 24 24" class="tic"><path d="m9 6 6 6-6 6"/></svg></div>
-        <div class="bcard-ds">상담 흐름, 질문지, 체크리스트, 금지표현, 고객 반응별 응대법을 확인합니다.</div>
-        <div class="bcard-tags"><span>상담흐름</span><span>체크리스트</span><span>금지표현</span></div>
+        <div class="bcard-ds">상담 흐름, 체크리스트, 설계의뢰·업무요청·계약 진행 기준을 확인합니다.</div>
+        <div class="bcard-tags"><span>상담흐름</span><span>체크리스트</span><span>업무기준</span></div>
+      </div>
+    </button>
+    <button class="bcard" onclick="showTab('wdbook')">
+      <span class="bcard-ic"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 1 2-2h12"/></svg></span>
+      <div class="bcard-body">
+        <div class="bcard-top"><span class="bcard-nm">WD 상담북</span><svg viewBox="0 0 24 24" class="tic"><path d="m9 6 6 6-6 6"/></svg></div>
+        <div class="bcard-ds">고객 앞에서 바로 설명할 수 있는 보험 개념·담보·주의사항 문장 카드입니다.</div>
+        <div class="bcard-tags"><span>상품별설명</span><span>핵심개념</span><span>마무리문장</span></div>
+      </div>
+    </button>
+    <button class="bcard" onclick="showTab('salesbook')">
+      <span class="bcard-ic"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>
+      <div class="bcard-body">
+        <div class="bcard-top"><span class="bcard-nm">월간영업자료</span><svg viewBox="0 0 24 24" class="tic"><path d="m9 6 6 6-6 6"/></svg></div>
+        <div class="bcard-ds">월간 세일즈북·시책·상품전략 자료를 확인합니다.</div>
+        <div class="bcard-tags"><span>2026-06</span></div>
+      </div>
+    </button>
+    <button class="bcard" onclick="showTab('promptbook')">
+      <span class="bcard-ic"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span>
+      <div class="bcard-body">
+        <div class="bcard-top"><span class="bcard-nm">WD 프롬프트북</span><svg viewBox="0 0 24 24" class="tic"><path d="m9 6 6 6-6 6"/></svg></div>
+        <div class="bcard-ds">AI에 넣어서 문장·제안서·안내문을 만들기 위한 프롬프트 모음입니다.</div>
+        <div class="bcard-tags"><span>제안서</span><span>안내문</span><span>위험표현검사</span></div>
       </div>
     </button>
     <button class="bcard" onclick="showTab('guide')">
       <span class="bcard-ic"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M19 18v3H6.5A2.5 2.5 0 0 1 4 18.5"/></svg></span>
       <div class="bcard-body">
-        <div class="bcard-top"><span class="bcard-nm">보상사례자료</span><svg viewBox="0 0 24 24" class="tic"><path d="m9 6 6 6-6 6"/></svg></div>
-        <div class="bcard-ds">대표 고유자산 보상사례를 확인하고, 비슷한 상담에서 활용할 문장을 찾습니다.</div>
-        <div class="bcard-tags"><span>보상사례</span><span>쟁점</span><span>약관연결</span></div>
-      </div>
-    </button>
-    <button class="bcard" onclick="showTab('salesbook')">
-      <span class="bcard-ic"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
-      <div class="bcard-body">
-        <div class="bcard-top"><span class="bcard-nm">메가세일즈북</span><svg viewBox="0 0 24 24" class="tic"><path d="m9 6 6 6-6 6"/></svg></div>
-        <div class="bcard-ds">영업자료와 세일즈 콘텐츠를 준비 중입니다.</div>
-        <div class="bcard-tags"><span>준비중</span></div>
-      </div>
-    </button>
-    <button class="bcard" onclick="showTab('sicheck')">
-      <span class="bcard-ic"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></span>
-      <div class="bcard-body">
-        <div class="bcard-top"><span class="bcard-nm">시책정보</span><svg viewBox="0 0 24 24" class="tic"><path d="m9 6 6 6-6 6"/></svg></div>
-        <div class="bcard-ds">보험사 시책과 주요 안내를 준비 중입니다.</div>
-        <div class="bcard-tags"><span>준비중</span></div>
+        <div class="bcard-top"><span class="bcard-nm">WD 보상사례집</span><svg viewBox="0 0 24 24" class="tic"><path d="m9 6 6 6-6 6"/></svg></div>
+        <div class="bcard-ds">교육용 보상사례를 확인합니다. 실제 고객 데이터가 아니며 저장형 DB로 운영하지 않습니다.</div>
+        <div class="bcard-tags"><span>질병</span><span>상해</span><span>배상책임</span></div>
       </div>
     </button>
     <button class="bcard" onclick="showTab('hub')">
       <span class="bcard-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18"/></svg></span>
       <div class="bcard-body">
-        <div class="bcard-top"><span class="bcard-nm">업무링크허브</span><svg viewBox="0 0 24 24" class="tic"><path d="m9 6 6 6-6 6"/></svg></div>
-        <div class="bcard-ds">메가넷, 구글 업무도구, 보험사 전산, 약관자료실로 바로 이동합니다.</div>
-        <div class="bcard-tags"><span>메가넷</span><span>구글도구</span><span>약관자료</span></div>
+        <div class="bcard-top"><span class="bcard-nm">WD 자료실</span><svg viewBox="0 0 24 24" class="tic"><path d="m9 6 6 6-6 6"/></svg></div>
+        <div class="bcard-ds">NotebookLM, 구글드라이브, 약관자료실, WD 매뉴얼 등 외부 자료로 연결합니다.</div>
+        <div class="bcard-tags"><span>NotebookLM</span><span>약관자료실</span><span>WD매뉴얼</span></div>
       </div>
     </button>
     <!-- 빠른 메모 — 비노출 (코드 보존) -->
@@ -1003,7 +1000,7 @@ async function wdChangePw(uid,oldPw,newPw){
 
   <div class="notice-bar">
     <span class="ni"><svg viewBox="0 0 24 24"><path d="m3 11 17-6v14L3 13zM8 13v5a2 2 0 0 0 2 2"/></svg></span>
-    <div class="nt"><b>WD WAVE 설계사 워크키트</b> · 상담 기준 · 고객 문장 · 업무요청 · 보상사례 · 빠른 메모 · 업무 연결</div>
+    <div class="nt"><b>WD WAVE 설계사 워크키트</b> · 보험업무가이드 · WD 상담북 · WD 프롬프트북 · WD 보상사례집 · WD 자료실</div>
   </div>
 
   </div><!-- /home-main -->
@@ -1021,12 +1018,49 @@ async function wdChangePw(uid,oldPw,newPw){
         <button class="tool" style="padding:9px 12px;" onclick="window.open('https://www.megafs.net','_blank')"><span class="tool-tx"><span class="tool-nm" style="font-size:12.5px;">메가넷</span><span class="tool-ds">계약·업무지원</span></span><svg viewBox="0 0 24 24" class="tic"><path d="m9 6 6 6-6 6"/></svg></button>
         <button class="tool" style="padding:9px 12px;" onclick="window.open('https://keep.google.com','_blank')"><span class="tool-tx"><span class="tool-nm" style="font-size:12.5px;">구글킵</span><span class="tool-ds">메모 보관</span></span><svg viewBox="0 0 24 24" class="tic"><path d="m9 6 6 6-6 6"/></svg></button>
         <button class="tool" style="padding:9px 12px;" onclick="window.open('https://calendar.google.com','_blank')"><span class="tool-tx"><span class="tool-nm" style="font-size:12.5px;">구글캘린더</span><span class="tool-ds">일정 관리</span></span><svg viewBox="0 0 24 24" class="tic"><path d="m9 6 6 6-6 6"/></svg></button>
-        <button class="tool" style="padding:9px 12px;" onclick="showTab('hub')"><span class="tool-tx"><span class="tool-nm" style="font-size:12.5px;">업무링크허브</span><span class="tool-ds">전체 링크 보기</span></span><svg viewBox="0 0 24 24" class="tic"><path d="m9 6 6 6-6 6"/></svg></button>
+        <button class="tool" style="padding:9px 12px;" onclick="showTab('hub')"><span class="tool-tx"><span class="tool-nm" style="font-size:12.5px;">WD 자료실</span><span class="tool-ds">외부 자료 연결</span></span><svg viewBox="0 0 24 24" class="tic"><path d="m9 6 6 6-6 6"/></svg></button>
       </div>
     </div>
   </aside>
 
   </div><!-- /home-wrap -->
+</div>
+
+<!-- ════════ 신규. WD 기준 ════════ -->
+<div class="view" id="view-wdcriteria">
+  <div class="card">
+    <div class="sec-tag">WD STANDARD</div>
+    <div class="sec-title">WD 기준</div>
+    <div class="sec-sub">이 워크키트를 사용하는 기준입니다. 보험설계사로서 고객 앞에서 지켜야 할 원칙을 확인합니다.</div>
+
+    <div class="philosophy-card" style="margin-top:18px;">
+      <div class="ph-title">이 키트의 목적</div>
+      <div class="ph-body">보험을 더 많이 판매하기 위한 도구가 아닙니다.<br>고객 앞에서 확인할 것을 확인하고, 책임 있게 상담하기 위한 내부 업무자료입니다.<br><b>외부 유출이나 무단 공유는 하지 않습니다.</b></div>
+    </div>
+
+    <div class="philosophy-card" style="margin-top:14px;">
+      <div class="ph-title">사용 원칙</div>
+      <div class="ph-body">
+        <ul style="margin:0;padding-left:18px;line-height:2;">
+          <li>고객정보와 민감정보는 이 키트에 입력하지 않습니다.</li>
+          <li>고객관리와 계약관리는 본진·메가넷에서 진행합니다.</li>
+          <li>이 키트는 상담 기준, 설명 문장, 프롬프트, 사례, 자료 연결을 확인하는 내부 공유용 자료입니다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="philosophy-card" style="margin-top:14px;">
+      <div class="ph-title">WD 상담 기준</div>
+      <div class="ph-body">
+        <ul style="margin:0;padding-left:18px;line-height:2;">
+          <li>많이 파는 것보다 정확히 확인합니다.</li>
+          <li>고객을 불안하게 만들지 않습니다.</li>
+          <li>약관과 고지, 청구 기준을 확인합니다.</li>
+          <li>모르면 추측하지 않고 확인합니다.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ════════ 2. 오늘 업무 시작 ════════ -->
@@ -1059,15 +1093,15 @@ async function wdChangePw(uid,oldPw,newPw){
   <div class="card">
     <div class="sec-tag">CONSULT GUIDE</div>
     <div class="sec-title">보험업무가이드</div>
-    <div class="sec-sub">상담 흐름, 질문지, 체크리스트, 금지표현, 고객 반응별 응대법을 단계별로 확인합니다.</div>
+    <div class="sec-sub">설계사가 일하는 순서와 기준을 확인합니다. 상담 흐름, 체크리스트, 설계의뢰·업무요청·계약 진행 방법을 단계별로 안내합니다.</div>
+    <div class="basic-nb" style="margin-top:10px;"><svg class="ei" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg> 고객에게 설명할 문장은 <button class="btn btn-g" style="padding:4px 10px;font-size:12px;display:inline-flex;" onclick="showTab('wdbook')">WD 상담북</button>에서 확인하세요.</div>
     <div class="steps" id="steps-c">
       <button class="step-btn on" onclick="goStep('c',1)"><span class="n">1</span>보험설계사마인드</button>
-      <button class="step-btn" onclick="goStep('c',2)"><span class="n">2</span>보험기초지식</button>
-      <button class="step-btn" onclick="goStep('c',3)"><span class="n">3</span>상담가이드</button>
-      <button class="step-btn" onclick="goStep('c',4)"><span class="n">4</span>설계의뢰</button>
-      <button class="step-btn" onclick="goStep('c',5)"><span class="n">5</span>업무요청방법</button>
-      <button class="step-btn" onclick="goStep('c',6)"><span class="n">6</span>설계취합·제안서</button>
-      <button class="step-btn" onclick="goStep('c',7)"><span class="n">7</span>계약진행방법</button>
+      <button class="step-btn" onclick="goStep('c',2)"><span class="n">2</span>상담가이드</button>
+      <button class="step-btn" onclick="goStep('c',3)"><span class="n">3</span>설계의뢰</button>
+      <button class="step-btn" onclick="goStep('c',4)"><span class="n">4</span>업무요청방법</button>
+      <button class="step-btn" onclick="goStep('c',5)"><span class="n">5</span>설계취합·제안서</button>
+      <button class="step-btn" onclick="goStep('c',6)"><span class="n">6</span>계약진행방법</button>
     </div>
 
     <!-- c1: 보험설계사마인드 -->
@@ -1109,17 +1143,8 @@ async function wdChangePw(uid,oldPw,newPw){
       </div>
     </div>
 
-    <!-- c2: 보험기초지식 -->
+    <!-- c2: 상담가이드 -->
     <div class="step-pane" id="c-2">
-      <div class="std-sub-h"><svg class="ei" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 1 2-2h12"/></svg> 보험 기초 상담 <span style="font-weight:600;color:var(--muted);font-size:11px;">· 카드를 누르면 팝업으로 설명이 열립니다</span></div>
-      <div class="basic-alert-yellow"><svg class="ei" viewBox="0 0 24 24" style="width:17px;height:17px;color:#B8860B;"><path d="M10.3 3.8 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0"/><path d="M12 9v4M12 17h.01"/></svg><span>이 설명은 상담을 돕기 위한 기본 안내입니다.<br>실제 보장 여부, 지급 여부, 면책·감액기간, 해지환급금은 반드시 해당 상품의 <b>약관과 보험사 기준</b>을 확인해야 합니다.</span></div>
-      <div class="basic-alert-yellow"><svg class="ei" viewBox="0 0 24 24" style="width:17px;height:17px;color:#B8860B;"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M9 3v16"/></svg><span>약관 PDF는 <b>NotebookLM</b>에 넣어두고 활용하세요.<br>특정 담보의 보장 조건, 면책기간, 감액기간, 해지환급금을 확인할 때 도움이 됩니다.<br>단, 최종 판단은 원문 약관과 보험사 확인을 기준으로 합니다.</span></div>
-      <div id="basic_groups"></div>
-      <div class="basic-box" id="cs_box" style="margin-top:14px;text-align:center;color:var(--muted);font-size:13px;padding:14px;">카드를 누르면 설명이 팝업으로 열립니다.</div>
-    </div>
-
-    <!-- c3: 상담가이드 -->
-    <div class="step-pane" id="c-3">
 
       <!-- ① 상담흐름 -->
       <div class="cg-sec-h"><svg class="ei" viewBox="0 0 24 24" style="width:16px;height:16px;"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9.5h.01M15 9.5h.01"/></svg> 상담흐름</div>
@@ -1205,8 +1230,8 @@ async function wdChangePw(uid,oldPw,newPw){
       <input type="hidden" id="cs_name"><input type="hidden" id="cs_tel"><input type="hidden" id="cs_purpose"><input type="hidden" id="cs_memo">
     </div>
 
-    <!-- c4: 설계의뢰 -->
-    <div class="step-pane" id="c-4">
+    <!-- c3: 설계의뢰 -->
+    <div class="step-pane" id="c-3">
 
       <!-- 상단 안내문 -->
       <div class="std" style="margin-bottom:16px;">
@@ -1280,8 +1305,8 @@ async function wdChangePw(uid,oldPw,newPw){
       </div>
     </div>
 
-    <!-- c5: 업무요청방법 -->
-    <div class="step-pane" id="c-5">
+    <!-- c4: 업무요청방법 -->
+    <div class="step-pane" id="c-4">
 
       <!-- ① 기본원칙 강조 박스 -->
       <div style="background:#FFFBEB;border:2px solid #F59E0B;border-radius:14px;padding:16px 18px;margin-bottom:20px;">
@@ -1329,8 +1354,8 @@ async function wdChangePw(uid,oldPw,newPw){
 
     </div>
 
-    <!-- c6: 설계취합 및 설계제안서 -->
-    <div class="step-pane" id="c-6">
+    <!-- c5: 설계취합 및 설계제안서 -->
+    <div class="step-pane" id="c-5">
 
       <!-- 안내문 -->
       <div style="background:#F0F9FF;border:1.5px solid #BAE6FD;border-radius:12px;padding:13px 16px;margin-bottom:20px;display:flex;align-items:center;gap:10px;">
@@ -1367,8 +1392,8 @@ async function wdChangePw(uid,oldPw,newPw){
 
     </div>
 
-    <!-- c7: 계약진행방법 -->
-    <div class="step-pane" id="c-7">
+    <!-- c6: 계약진행방법 -->
+    <div class="step-pane" id="c-6">
       <div class="di-grid">
 
         <!-- 모바일계약 진행방법 -->
@@ -1434,8 +1459,8 @@ async function wdChangePw(uid,oldPw,newPw){
       </div>
     </div>
 
-    <!-- c8: 계약후체크리스트 — 삭제됨(비노출) -->
-    <div class="step-pane" id="c-8" style="display:none!important;"></div>
+    <!-- c7: 계약후체크리스트 — 삭제됨(비노출) -->
+    <div class="step-pane" id="c-7" style="display:none!important;"></div>
 
     <div class="nav-row">
       <button class="btn btn-g" onclick="stepMove('c',-1)">← 이전</button>
@@ -1731,22 +1756,23 @@ async function wdChangePw(uid,oldPw,newPw){
   </div>
 </div>
 
-<!-- ════════ 7. 업무링크허브 ════════ -->
+<!-- ════════ 7. WD 자료실 ════════ -->
 <div class="view" id="view-hub">
   <div class="card">
-    <div class="sec-tag">LINK HUB</div>
-    <div class="sec-title">업무링크허브</div>
-    <div class="sec-sub">메가넷, 구글 업무도구, 개인 추가 링크, 보험사 전산·연락처를 한 곳에서 확인합니다.</div>
+    <div class="sec-tag">WD ARCHIVE</div>
+    <div class="sec-title">WD 자료실</div>
+    <div class="sec-sub">메가종합금융 업무 바로가기, WD 자료 연결(구글드라이브), AI 공부자료를 모아둔 곳입니다.</div>
 
     <!-- 메가종합금융 업무 바로가기 -->
-    <div class="std-sub-h" style="margin-top:24px;"><svg class="ei" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="10" r="2.4"/><path d="M8.5 16a3.5 3.5 0 0 1 7 0"/></svg> 메가종합금융 업무 바로가기</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
-      <button class="btn btn-p" style="min-height:42px;font-size:13.5px;" onclick="window.open('https://mega.megafn.com/mega/Install/newLauncher.html','_blank')">메가넷 로그인/실행</button>
-      <button class="btn btn-g" style="min-height:42px;font-size:13.5px;" onclick="window.open('http://www.gasupport.co.kr/Gasys/mega/inc/pop_insuCon.asp','_blank')">메가 업무지원·보험사 연결</button>
-      <button class="btn btn-g" style="min-height:42px;font-size:13.5px;" onclick="window.open('https://mega.ohmymanager.com/index_real.html','_blank')">오마이매니저</button>
-      <button class="btn btn-g" style="min-height:42px;font-size:13.5px;" onclick="window.open('https://megasign.co.kr/','_blank')">메가싸인 (전자서명)</button>
+    <div class="hub-section hs-mega" style="margin-top:24px;">
+      <div class="std-sub-h"><svg class="ei" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="10" r="2.4"/><path d="M8.5 16a3.5 3.5 0 0 1 7 0"/></svg> 메가종합금융 업무 바로가기</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-p" style="min-height:42px;font-size:13.5px;" onclick="window.open('https://mega.megafn.com/mega/Install/newLauncher.html','_blank')">메가넷 로그인/실행</button>
+        <button class="btn btn-g" style="min-height:42px;font-size:13.5px;" onclick="window.open('http://www.gasupport.co.kr/Gasys/mega/inc/pop_insuCon.asp','_blank')">메가 업무지원·보험사 연결</button>
+        <button class="btn btn-g" style="min-height:42px;font-size:13.5px;" onclick="window.open('https://mega.ohmymanager.com/index_real.html','_blank')">오마이매니저</button>
+        <button class="btn btn-g" style="min-height:42px;font-size:13.5px;" onclick="window.open('https://megasign.co.kr/','_blank')">메가싸인 (전자서명)</button>
+      </div>
     </div>
-    <div class="basic-nb" style="margin-top:10px;"><svg class="ei" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg> 계약관리·가입설계·업무알림방·업무채널은 메가넷 로그인 후 이용하세요. 이 키트에서 계정·비밀번호를 저장하지 않습니다.</div>
 
     <!-- 업무채널 / 총무 요청 — 비노출 -->
     <div style="display:none;">
@@ -1758,201 +1784,225 @@ async function wdChangePw(uid,oldPw,newPw){
       <div class="philosophy-card" style="margin-top:12px;"><div class="ph-title">업무채널 이용 안내</div><div class="ph-body">업무 요청은 워크키트에서 직접 처리하지 않습니다.<br>업무요청서에서 요청문을 만든 뒤 복사하고, 메가넷 로그인 후 업무채널 또는 업무알림방에서 메가종합금융 총무·원수사 총무에게 전달하세요.</div></div>
     </div>
 
-    <!-- 약관·자료·WD 매뉴얼 — 비노출 -->
-    <div style="display:none;">
-      <div class="std-sub-h" style="margin-top:18px;"><svg class="ei" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M19 18v3H6.5A2.5 2.5 0 0 1 4 18.5"/></svg> 약관·자료·WD 매뉴얼</div>
-      <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:10px;">
-        <button class="btn btn-g" onclick="window.open('https://notebooklm.google.com','_blank')">NotebookLM (약관분석)</button>
-        <button class="btn btn-g" onclick="window.open('https://drive.google.com','_blank')">보상사례 자료실</button>
-        <button class="btn btn-g" onclick="showToast('WD 매뉴얼 링크 준비 중입니다. 보상사례 자료 탭에서 확인하세요.')">WD 매뉴얼 자료실 (준비 중)</button>
+    <div class="hub-divider"><span>WD 자료</span></div>
+
+    <!-- WD 자료 연결 -->
+    <div class="hub-section hs-link">
+      <div class="std-sub-h"><svg class="ei" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M19 18v3H6.5A2.5 2.5 0 0 1 4 18.5"/></svg> WD 자료 연결</div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap;">
+        <button class="btn btn-g" style="min-height:42px;font-size:13.5px;" onclick="showToast('구글드라이브 보상사례 자료실 — kfcyk20 드라이브 링크 교체 예정입니다.')"><svg class="ei" viewBox="0 0 24 24"><path d="M12 18H3l4.5-8 3 4 4.5-8L21 18z"/></svg> 구글드라이브 보상사례 자료실</button>
+        <button class="btn btn-g" style="min-height:42px;font-size:13.5px;" onclick="showToast('보험세일즈북 원본 — kfcyk20 드라이브 링크 교체 예정입니다.')"><svg class="ei" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> 보험세일즈북 원본 참고자료</button>
       </div>
     </div>
 
-    <!-- 구글 업무도구 -->
-    <div class="std-sub-h" style="margin-top:28px;"><svg class="ei" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18"/></svg> 구글 업무도구</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
-      <button class="btn btn-g" style="min-height:42px;font-size:13.5px;" onclick="window.open('https://keep.google.com','_blank')">구글킵 (메모)</button>
-      <button class="btn btn-g" style="min-height:42px;font-size:13.5px;" onclick="window.open('https://calendar.google.com','_blank')">구글캘린더 (일정)</button>
-      <button class="btn btn-g" style="min-height:42px;font-size:13.5px;" onclick="window.open('https://mail.google.com','_blank')">구글메일</button>
-      <button class="btn btn-g" style="min-height:42px;font-size:13.5px;" onclick="window.open('https://drive.google.com','_blank')">구글드라이브 (자료)</button>
+    <div class="hub-divider"><span>AI 학습</span></div>
+
+    <!-- AI 운영 공부자료 -->
+    <div class="hub-section hs-ai">
+      <div class="std-sub-h"><svg class="ei" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg> AI 공부자료</div>
+      <div class="snip">
+        <div class="sh">
+          <div class="snm">AI 운영 공부자료</div>
+          <span style="font-size:11px;color:var(--purple);padding:3px 8px;background:#f3f0ff;border-radius:6px;">오디오</span>
+        </div>
+        <div class="sbody" style="margin-top:6px;">WD WAVE 업무기록, 구글드라이브, 공유업무기록 운영 기준을 설명하는 오디오 자료입니다.</div>
+        <div style="margin-top:10px;">
+          <!-- ▼▼▼ 링크 교체 — 구글드라이브 공유 링크를 아래 # 자리에 넣으세요 ▼▼▼ -->
+          <button class="btn btn-p" onclick="window.open('https://drive.google.com/file/d/1Cb_jTOgRryR-YG_wenCczw0FeHej9Fgw/view?usp=sharing','_blank')"><svg class="ei" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg> 오디오 듣기</button>
+          <!-- ▲▲▲ WD WAVE / 09_외부공유_링크용 / 교육공유용오디오 폴더 공유 링크 ▲▲▲ -->
+        </div>
+      </div>
     </div>
 
-    <!-- 개인 추가 링크 (준비 중) -->
-    <div class="std-sub-h" style="margin-top:28px;"><svg class="ei" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> 개인 추가 링크 <span style="font-size:11px;font-weight:500;color:var(--muted);">· Supabase 저장 구조 검수 후 제공 예정</span></div>
-    <div class="basic-nb" style="margin-top:10px;"><svg class="ei" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg> 개인 링크 추가·수정·삭제 기능은 Supabase 저장 구조 검수 후 적용합니다. 현재는 메가종합금융·구글 업무도구 링크를 이용하세요.</div>
-
-    <!-- 보험사 전산·연락처 (기존 HUB_DATA 렌더링 유지) -->
-    <div class="std-sub-h" style="margin-top:28px;"><svg class="ei" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="10" r="2.4"/><path d="M8.5 16a3.5 3.5 0 0 1 7 0"/></svg> 보험사 전산·연락처</div>
-    <input class="hub-srch" id="hub-srch" style="margin-top:12px;" placeholder="보험사명, 총무명, 업무명 검색" oninput="hubRender(this.value)">
-    <div class="hub-filters">
-      <button class="hub-fbtn on" onclick="hubFilter('all',this)">전체</button>
-      <button class="hub-fbtn" onclick="hubFilter('life',this)">생명보험사</button>
-      <button class="hub-fbtn" onclick="hubFilter('loss',this)">손해보험사</button>
-      <button class="hub-fbtn" onclick="hubFilter('mega',this)">메가업무지원</button>
-      <button class="hub-fbtn" onclick="hubFilter('chief',this)">지점/총무</button>
-    </div>
-    <div class="hub-grid" id="hub-grid"></div>
   </div>
 </div>
 
-<!-- ════════ 8. 가망고객 대기판: v3재구성에서 비노출 ════════ -->
-<div class="view" id="view-prospect" style="display:none!important;">
-  <div class="cm-wrap">
-    <div class="cm-head">
-      <div class="cm-head-l">
-        <div class="cm-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19v-.8a5.5 5.5 0 0 1 11 0v.8"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.2a4.6 4.6 0 0 1 5 4.3v.5"/></svg> 고객 관리</div>
-        <div class="cm-sub">고객 정보를 등록하고 체계적으로 관리하세요.</div>
-      </div>
-      <div class="cm-badges">
-        <span class="cm-badge ok"><span class="d"></span>자동 저장 중</span>
-        <span class="cm-badge gh"><span class="d"></span>고객 기록 안전 보관</span>
-        <span class="cm-badge nf"><span class="d"></span>담당자별 관리 적용</span>
-      </div>
-    </div>
+<!-- 고객관리 뷰 제거됨 — v18 -->
+<!-- ════════ 신규. WD 상담북 ════════ -->
+<div class="view" id="view-wdbook">
+  <div class="card">
+    <div class="sec-tag">WD CONSULT BOOK</div>
+    <div class="sec-title">WD 상담북</div>
+    <div class="sec-sub">고객 앞에서 바로 설명할 수 있는 보험 개념·담보·주의사항 문장 카드입니다. 카드를 누르면 설명 문장과 확인 질문이 팝업으로 열립니다.</div>
+    <div class="basic-alert-yellow" style="margin-top:12px;"><svg class="ei" viewBox="0 0 24 24" style="width:17px;height:17px;color:#B8860B;"><path d="M10.3 3.8 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0"/><path d="M12 9v4M12 17h.01"/></svg><span>이 설명 문장은 상담을 돕기 위한 기본 안내입니다. 실제 보장 여부, 지급 여부, 면책·감액기간, 해지환급금은 반드시 해당 상품의 <b>약관과 보험사 기준</b>을 확인해야 합니다.</span></div>
+    <div id="wdbook_groups" style="margin-top:14px;"></div>
+  </div>
+</div>
 
-    <div class="cm-grid">
-      <div class="cm-main">
-
-        <div id="ps_admin_note" class="cm-admin" style="display:none;">
-          <div class="cm-admin-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 7.5 8 9 4.5-1.5 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg> 관리자 모드</div>
-          <p>관리자 계정은 전체 고객을 조회하고, <b>담당자를 지정해 고객을 등록</b>할 수 있습니다. (수정·삭제는 담당 설계사 계정에서)</p>
-        </div>
-
-        <div class="cm-card">
-          <div class="cm-card-h">고객 등록 <span class="cm-mini">민감정보(주민번호 전체·계좌번호·상세 병력·증권번호·OTP·로그인 정보)는 입력하지 마세요.</span></div>
-          <div id="ps_form_wrap">
-            <div class="cm-form">
-              <div class="cm-f full" id="ps_owner_wrap" style="display:none;"><label>담당자 선택 <span class="req">*</span> <span class="cm-mini">선택한 담당자 명의로 저장됩니다</span></label><select id="ps_owner"><option value="">담당자 선택</option></select></div>
-              <div class="cm-f"><label>고객명 <span class="req">*</span></label><input id="ps_name" placeholder="예: 김○○"></div>
-              <div class="cm-f"><label>전화번호</label><input id="ps_tel" placeholder="예: 010-0000-0000"></div>
-              <div class="cm-f"><label>생년 / 출생연도</label><input id="ps_birth" placeholder="예: 1985"></div>
-              <div class="cm-f"><label>성별</label><select id="ps_gender"><option value="">선택</option><option>여</option><option>남</option></select></div>
-              <div class="cm-f"><label>관계</label><select id="ps_rel"><option value="">선택</option><option>본인</option><option>지인</option><option>소개</option><option>기존고객</option><option>신규문의</option><option>가족/친척</option><option>기타</option></select></div>
-              <div class="cm-f"><label>상담 경로</label><input id="ps_route" placeholder="예: 지인 소개 / 온라인"></div>
-              <div class="cm-f"><label>주소 요약</label><input id="ps_addr" placeholder="예: 서울 강남구 역삼동"></div>
-              <div class="cm-f"><label>고객 상태</label><select id="ps_status"><option value="">선택</option><option>신규</option><option>상담중</option><option>계약</option><option>관리중</option><option>보류</option><option>종결</option></select></div>
-              <div class="cm-f"><label>관심 상황</label><select id="ps_interest"><option value="">선택</option><option>신규가입</option><option>기존보험 점검</option><option>리모델링</option><option>보험료 부담</option><option>가족 보장</option><option>실손/청구 문의</option><option>숨은보험금/미청구보험</option><option>기타</option></select></div>
-              <div class="cm-f"><label>다음 행동</label><select id="ps_next"><option value="">선택</option><option>첫 연락하기</option><option>보장점검 제안</option><option>상담 약속 잡기</option><option>자료 확인 후 연락</option><option>내부 확인 후 연락</option><option>나중에 다시 연락</option></select></div>
-              <div class="cm-f"><label>다음 연락일</label><input type="date" id="ps_nextdate"></div>
-              <div class="cm-f full"><label>메모</label><textarea id="ps_memo" placeholder="기억할 점을 입력하세요 (선택)"></textarea></div>
-              <div class="cm-f chk"><label><input type="checkbox" id="ps_verify"> 고객 인증 필요</label></div>
-              <div class="cm-f chk"><label><input type="checkbox" id="ps_insurer"> 원수사 전산 확인 필요</label></div>
-            </div>
-            <div class="cm-actions">
-              <button class="cm-btn primary" onclick="psAdd()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> 고객 등록</button>
-              <button class="cm-btn ghost" onclick="psReset()">입력 초기화</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="cm-card">
-          <div class="cm-list-bar">
-            <div class="cm-list-title">등록된 고객 <span class="cm-count" id="ps_count">전체 0명</span></div>
-            <div class="cm-list-tools">
-              <input id="ps_search" placeholder="검색 (이름/전화/메모)" oninput="psRender()">
-              <select id="ps_filter" onchange="psRender()" style="display:none;"><option value="">전체 고객</option></select>
-            </div>
-          </div>
-          <span id="ps_filter_wrap" style="display:none;"></span>
-          <div class="cm-cards" id="ps_list"><div class="cm-empty">불러오는 중...</div></div>
-        </div>
-
-      </div>
-
-      <aside class="cm-side">
-        <div class="cm-quick">
-          <div class="cm-quick-h"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M13 2 4.5 13H11l-1 9 8.5-11H12z"/></svg> 빠른 고객등록</div>
-          <div class="cm-quick-sub">현장에서 빠르게 등록하면 고객관리 목록에 바로 보입니다.</div>
-          <div class="cm-form one">
-            <div class="cm-f" id="qc_owner_wrap" style="display:none;"><label>담당자 선택 <span class="req">*</span></label><select id="qc_owner"><option value="">담당자 선택</option></select></div>
-            <div class="cm-f"><label>고객명 <span class="req">*</span></label><input id="qc_name" placeholder="예: 김○○"></div>
-            <div class="cm-f"><label>전화번호</label><input id="qc_tel" placeholder="예: 010-0000-0000"></div>
-            <div class="cm-f"><label>관심 상황</label><select id="qc_interest"><option value="">선택</option><option>신규가입</option><option>기존보험 점검</option><option>리모델링</option><option>보험료 부담</option><option>가족 보장</option><option>실손/청구 문의</option><option>숨은보험금/미청구보험</option><option>기타</option></select></div>
-            <div class="cm-f"><label>다음 행동</label><select id="qc_next"><option value="">선택</option><option>첫 연락하기</option><option>보장점검 제안</option><option>상담 약속 잡기</option><option>자료 확인 후 연락</option><option>내부 확인 후 연락</option><option>나중에 다시 연락</option></select></div>
-            <div class="cm-f"><label>메모</label><textarea id="qc_memo" placeholder="간단 메모"></textarea></div>
-            <div class="cm-f chk"><label><input type="checkbox" id="qc_verify"> 고객 인증 필요</label></div>
-            <div class="cm-f chk"><label><input type="checkbox" id="qc_insurer"> 원수사 전산 확인 필요</label></div>
-          </div>
-          <div class="cm-actions">
-            <button class="cm-btn primary" onclick="qcAdd()">빠른 등록</button>
-            <button class="cm-btn ghost" onclick="qcReset()">초기화</button>
-          </div>
-        </div>
-        <div class="cm-tip">정확한 정보는 고객 신뢰의 시작입니다. 입력 전 고객에게 동의를 구하고, <b>민감정보는 절대 입력하지 마세요.</b></div>
-      </aside>
+<!-- ════════ 신규. WD 프롬프트북 ════════ -->
+<div class="view" id="view-promptbook">
+  <div class="card">
+    <div class="sec-tag">WD PROMPT BOOK</div>
+    <div class="sec-title">WD 프롬프트북</div>
+    <div class="sec-sub">AI에 넣어서 문장·제안서·안내문을 만들기 위한 프롬프트 모음입니다. 카드를 누르면 해당 프롬프트 드라이브 문서로 연결됩니다.</div>
+    <div class="basic-nb" style="margin-top:12px;"><svg class="ei" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg> 프롬프트 원문은 구글드라이브 문서에서 관리합니다. 현재 링크 연결 준비 중입니다. 지점장께 문의하세요.</div>
+    <div class="gd-grid" style="margin-top:16px;">
+      <button class="gd-card" onclick="showToast('제안서 프롬프트 — 드라이브 링크 준비 중입니다.')">
+        <span class="gi"><svg class="ei" viewBox="0 0 24 24"><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/><path d="M14 6l3 3"/></svg></span>
+        <span class="gn">제안서 프롬프트</span>
+      </button>
+      <button class="gd-card" onclick="showToast('계약 후 안내 프롬프트 — 드라이브 링크 준비 중입니다.')">
+        <span class="gi"><svg class="ei" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg></span>
+        <span class="gn">계약 후 안내 프롬프트</span>
+      </button>
+      <button class="gd-card" onclick="showToast('보험금청구 안내문 프롬프트 — 드라이브 링크 준비 중입니다.')">
+        <span class="gi"><svg class="ei" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></span>
+        <span class="gn">보험금청구 안내문 프롬프트</span>
+      </button>
+      <button class="gd-card" onclick="showToast('실손24 안내문 프롬프트 — 드라이브 링크 준비 중입니다.')">
+        <span class="gi"><svg class="ei" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></span>
+        <span class="gn">실손24 안내문 프롬프트</span>
+      </button>
+      <button class="gd-card" onclick="showToast('숨은보험금 안내문 프롬프트 — 드라이브 링크 준비 중입니다.')">
+        <span class="gi"><svg class="ei" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="m5 5 4 4M15 15l4 4M19 5l-4 4M9 15l-4 4"/></svg></span>
+        <span class="gn">숨은보험금 안내문 프롬프트</span>
+      </button>
+      <button class="gd-card" onclick="showToast('고지사항 재확인 문장 프롬프트 — 드라이브 링크 준비 중입니다.')">
+        <span class="gi"><svg class="ei" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></span>
+        <span class="gn">고지사항 재확인 문장 프롬프트</span>
+      </button>
+      <button class="gd-card" onclick="showToast('상담 후 고객기록 프롬프트 — 드라이브 링크 준비 중입니다.')">
+        <span class="gi"><svg class="ei" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 20l1-4.2A8.5 8.5 0 1 1 21 11.5"/></svg></span>
+        <span class="gn">상담 후 고객기록 프롬프트</span>
+      </button>
+      <button class="gd-card" onclick="showToast('위험표현 검사 프롬프트 — 드라이브 링크 준비 중입니다.')">
+        <span class="gi"><svg class="ei" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+        <span class="gn">위험표현 검사 프롬프트</span>
+      </button>
+      <button class="gd-card" onclick="showToast('약관 확인용 프롬프트 — 드라이브 링크 준비 중입니다.')">
+        <span class="gi"><svg class="ei" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M19 18v3H6.5A2.5 2.5 0 0 1 4 18.5"/></svg></span>
+        <span class="gn">약관 확인용 프롬프트</span>
+      </button>
+      <button class="gd-card" onclick="showToast('내부 보고 정리 프롬프트 — 드라이브 링크 준비 중입니다.')">
+        <span class="gi"><svg class="ei" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg></span>
+        <span class="gn">내부 보고 정리 프롬프트</span>
+      </button>
     </div>
   </div>
 </div>
 
-
-<!-- ════════ 9. 상황별 업무 가이드 ════════ -->
+<!-- ════════ 9. WD 보상사례집 ════════ -->
 <div class="view" id="view-guide">
   <div class="card">
     <div class="sec-tag">COMPENSATION CASES</div>
-    <div class="sec-title">보상사례 자료</div>
-    <div class="sec-sub">대표 고유자산 보상사례를 확인하고, 비슷한 상담에서 활용할 문장을 찾습니다. 고객명·주민번호·증권번호 등 개인정보는 입력하지 않습니다.</div>
-    <div class="basic-guide" style="margin-top:12px;"><svg class="ei" viewBox="0 0 24 24"><path d="M10.3 3.8 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0"/><path d="M12 9v4M12 17h.01"/></svg> 이 자료는 <b>교육용 사례 구조</b>입니다. 실제 고객 데이터가 아니며 저장형 DB로 운영하지 않습니다. 추가 자료는 구글드라이브·NotebookLM으로 연결합니다.</div>
+    <div class="sec-title">WD 보상사례집</div>
+    <div class="sec-sub">교육용 보상사례를 확인합니다. 고객명·주민번호·증권번호 등 실제 고객 개인정보는 절대 입력하지 않습니다.</div>
+    <div class="basic-guide" style="margin-top:12px;"><svg class="ei" viewBox="0 0 24 24"><path d="M10.3 3.8 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0"/><path d="M12 9v4M12 17h.01"/></svg> 이 자료는 <b>교육용 사례 구조</b>입니다. 실제 고객 데이터가 아니며 <b>저장형 DB로 운영하지 않습니다.</b></div>
 
+    <!-- 사례 카테고리 필터 -->
     <div class="cat-tabs" style="margin-top:16px;">
-      <button class="cat-btn on" onclick="gcSwitch('cases',this)">사례 목록</button>
-      <button class="cat-btn" onclick="gcSwitch('guide',this)">업무 가이드</button>
-      <button class="cat-btn" onclick="gcSwitch('links',this)">자료 연결</button>
-      <button class="cat-btn" onclick="gcSwitch('manual',this)">WD 매뉴얼</button>
+      <button class="cat-btn on" onclick="gcCase('all',this)">전체</button>
+      <button class="cat-btn" onclick="gcCase('disease',this)">질병</button>
+      <button class="cat-btn" onclick="gcCase('injury',this)">상해</button>
+      <button class="cat-btn" onclick="gcCase('liability',this)">배상책임</button>
+      <button class="cat-btn" onclick="gcCase('auto',this)">자동차</button>
+      <button class="cat-btn" onclick="gcCase('fire',this)">화재</button>
+      <button class="cat-btn" onclick="gcCase('etc',this)">기타</button>
     </div>
 
     <!-- 보상사례 목록 -->
     <div id="gc-cases" class="lib-pane">
       <div class="philosophy-card" style="margin-top:14px;"><div class="ph-title">보상사례 활용 원칙</div><div class="ph-body">사례는 설계사가 배움을 위해 참고합니다.<br>고객에게 "이런 경우 다 나옵니다"처럼 단정하지 않습니다.<br>비슷한 상황이라도 약관·심사 결과에 따라 달라질 수 있음을 전제합니다.</div></div>
-      <div class="basic-nb" style="margin-top:14px;"><svg class="ei" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg> 보상사례는 사라님(대표)이 직접 등록합니다. 현재 등록된 사례가 없으면 아래 자료 연결 탭에서 구글드라이브·NotebookLM을 확인하세요.</div>
+      <div class="basic-nb" style="margin-top:14px;"><svg class="ei" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg> 보상사례는 WD에서 직접 등록합니다. 추가 자료는 <button class="btn btn-g" style="padding:4px 10px;font-size:12px;display:inline-flex;" onclick="showTab('hub')">WD 자료실</button>에서 확인하세요.</div>
       <div id="gc-case-list" style="margin-top:14px;">
-        <div class="gd-box empty">등록된 보상사례가 없습니다. 대표님께 사례 자료를 요청하거나 [자료 연결] 탭에서 확인하세요.</div>
+        <div class="gd-box empty">등록된 보상사례가 없습니다. 대표님께 사례 자료를 요청하거나 WD 자료실에서 확인하세요.</div>
       </div>
-    </div>
-
-    <!-- 업무가이드 (기존 GUIDE_DATA 재활용) -->
-    <div id="gc-guide" class="lib-pane" style="display:none;">
-      <div class="sec-sub" style="margin-top:14px;">상황별로 자료를 만드는 방법을 안내합니다. 카드를 누르면 단계와 체크포인트가 나옵니다.</div>
-      <div class="gd-grid" id="gd_grid" style="margin-top:16px;"></div>
-      <div class="gd-box empty" id="gd_box">위에서 상황을 선택하면 만드는 방법이 여기에 표시됩니다.</div>
-    </div>
-
-    <!-- 자료 연결 -->
-    <div id="gc-links" class="lib-pane" style="display:none;">
-      <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px;">
-        <button class="btn btn-p" onclick="window.open('https://notebooklm.google.com','_blank')"><svg class="ei" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M19 18v3H6.5A2.5 2.5 0 0 1 4 18.5"/></svg> NotebookLM 열기 (약관·사례 자료함)</button>
-        <button class="btn btn-g" onclick="window.open('https://drive.google.com','_blank')"><svg class="ei" viewBox="0 0 24 24"><path d="M12 18H3l4.5-8 3 4 4.5-8L21 18z"/></svg> 구글드라이브 열기 (보상사례 자료실)</button>
-        <div class="basic-nb"><svg class="ei" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg> 약관 PDF를 NotebookLM에 넣고 담보별 보장 조건, 면책·감액기간, 지급 제한사항을 확인할 때 활용하세요.</div>
-      </div>
-    </div>
-
-    <!-- WD 매뉴얼 탭 -->
-    <div id="gc-manual" class="lib-pane" style="display:none;">
-      <div class="philosophy-card" style="margin-top:14px;"><div class="ph-title">WD 매뉴얼 공간</div><div class="ph-body">WD WAVE 최윤경 지점장이 만든 업무 매뉴얼을 이곳에서 확인합니다.<br>매뉴얼은 순차적으로 추가됩니다. 현재 준비 중인 항목은 아래에서 확인하세요.</div></div>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px;">
-        <div class="snip"><div class="sh"><div class="snm">설계사 업무 매뉴얼</div><span style="font-size:11px;color:var(--muted);padding:3px 8px;background:#f3f0ff;border-radius:6px;">준비 중</span></div><div class="sbody" style="color:var(--muted);">구글드라이브 링크 연결 예정</div></div>
-        <div class="snip"><div class="sh"><div class="snm">상담 매뉴얼</div><span style="font-size:11px;color:var(--muted);padding:3px 8px;background:#f3f0ff;border-radius:6px;">준비 중</span></div><div class="sbody" style="color:var(--muted);">구글드라이브 링크 연결 예정</div></div>
-        <div class="snip"><div class="sh"><div class="snm">고객 응대 매뉴얼</div><span style="font-size:11px;color:var(--muted);padding:3px 8px;background:#f3f0ff;border-radius:6px;">준비 중</span></div><div class="sbody" style="color:var(--muted);">구글드라이브 링크 연결 예정</div></div>
-        <div class="snip"><div class="sh"><div class="snm">업무요청서 작성 매뉴얼</div><span style="font-size:11px;color:var(--muted);padding:3px 8px;background:#f3f0ff;border-radius:6px;">준비 중</span></div><div class="sbody" style="color:var(--muted);">구글드라이브 링크 연결 예정</div></div>
-        <div class="snip"><div class="sh"><div class="snm">메가종합금융 총무 업무채널 이용 매뉴얼</div><span style="font-size:11px;color:var(--muted);padding:3px 8px;background:#f3f0ff;border-radius:6px;">준비 중</span></div><div class="sbody" style="color:var(--muted);">구글드라이브 링크 연결 예정</div></div>
-        <div class="snip"><div class="sh"><div class="snm">원수사 총무 요청 매뉴얼</div><span style="font-size:11px;color:var(--muted);padding:3px 8px;background:#f3f0ff;border-radius:6px;">준비 중</span></div><div class="sbody" style="color:var(--muted);">구글드라이브 링크 연결 예정</div></div>
-        <div class="snip"><div class="sh"><div class="snm">보상사례 활용 매뉴얼</div><span style="font-size:11px;color:var(--muted);padding:3px 8px;background:#f3f0ff;border-radius:6px;">준비 중</span></div><div class="sbody" style="color:var(--muted);">구글드라이브 링크 연결 예정</div></div>
-        <div class="snip"><div class="sh"><div class="snm">개인정보 입력 금지 기준</div><span style="font-size:11px;color:var(--muted);padding:3px 8px;background:#f3f0ff;border-radius:6px;">준비 중</span></div><div class="sbody" style="color:var(--muted);">구글드라이브 링크 연결 예정</div></div>
-        <div class="snip"><div class="sh"><div class="snm">WD WAVE 철학·운영 기준</div><span style="font-size:11px;color:var(--muted);padding:3px 8px;background:#f3f0ff;border-radius:6px;">준비 중</span></div><div class="sbody" style="color:var(--muted);">구글드라이브 링크 연결 예정</div></div>
-      </div>
-      <button class="btn btn-g" style="margin-top:14px;width:100%;" onclick="showToast('WD 매뉴얼 링크는 준비 중입니다. 사라님(지점장)께 문의하세요.')"><svg class="ei" viewBox="0 0 24 24"><path d="M12 18H3l4.5-8 3 4 4.5-8L21 18z"/></svg> 구글드라이브 매뉴얼 자료실 연결 예정</button>
     </div>
   </div>
 </div>
 
 <!-- ════════ 신규. 메가세일즈북 (준비중) ════════ -->
 <div class="view" id="view-salesbook">
-  <div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px;text-align:center;gap:18px;">
-    <svg style="width:48px;height:48px;fill:none;stroke:#C4B5FD;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-    <div>
-      <div style="font-size:22px;font-weight:900;color:var(--ink);margin-bottom:10px;">메가세일즈북</div>
-      <div style="font-size:16px;font-weight:700;color:var(--purple);margin-bottom:8px;">준비중입니다.</div>
-      <div style="font-size:14px;color:var(--muted);line-height:1.7;">영업자료와 세일즈 콘텐츠를 정리한 뒤 제공할 예정입니다.</div>
+  <div class="card">
+    <div class="sec-tag">MONTHLY SALES</div>
+    <div class="sec-title">월간영업자료</div>
+    <div class="sec-sub">월간 세일즈북·시책·상품전략 자료를 확인합니다. 매월 업데이트됩니다.</div>
+
+    <!-- 폴더 바로가기 -->
+    <a href="https://drive.google.com/drive/u/1/folders/16dqQ_TymDaoI_eV_FgTRY_G1HzBVMgbG" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--purple);background:var(--tint);border:1px solid var(--tint-line);border-radius:10px;padding:9px 16px;margin:14px 0 16px;text-decoration:none;">
+      <svg style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      구글드라이브 폴더 바로가기 — 07_월간영업자료
+    </a>
+
+    <!-- 경고 문구 -->
+    <div class="basic-alert-yellow" style="margin-bottom:18px;">
+      <svg class="ei" viewBox="0 0 24 24" style="width:16px;height:16px;color:#B8860B;"><path d="M10.3 3.8 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0"/><path d="M12 9v4M12 17h.01"/></svg>
+      <span>본 자료는 사내 참고용입니다. 고객에게 배포하거나 보험안내자료로 사용하지 않습니다. 실제 안내 전 가입설계서·상품설명서·약관을 반드시 확인하세요.</span>
     </div>
+
+    <!-- 자료 카드 5개 — 날짜 표기 없음 -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:24px;">
+
+      <div style="background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:14px 15px;">
+        <div style="font-size:10px;font-weight:800;color:#3C3489;background:#EEEDFE;border-radius:6px;padding:2px 8px;display:inline-block;margin-bottom:8px;">월간 SalesBook</div>
+        <div style="font-size:13.5px;font-weight:800;color:var(--ink);margin-bottom:6px;">월간SalesBook</div>
+        <div style="font-size:11.5px;color:var(--muted);background:var(--bg);border-radius:8px;padding:6px 9px;line-height:1.55;margin-bottom:10px;">이달 주력 상품 흐름 및 영업 포인트 확인</div>
+        <a href="https://drive.google.com/drive/u/1/folders/16dqQ_TymDaoI_eV_FgTRY_G1HzBVMgbG" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;color:var(--purple);background:var(--tint);border:1px solid var(--tint-line);border-radius:8px;padding:6px 11px;text-decoration:none;">
+          <svg style="width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>원본 열기
+        </a>
+      </div>
+
+      <div style="background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:14px 15px;">
+        <div style="font-size:10px;font-weight:800;color:#085041;background:#E1F5EE;border-radius:6px;padding:2px 8px;display:inline-block;margin-bottom:8px;">상품전략</div>
+        <div style="font-size:13.5px;font-weight:800;color:var(--ink);margin-bottom:6px;">상품전략</div>
+        <div style="font-size:11.5px;color:var(--muted);background:var(--bg);border-radius:8px;padding:6px 9px;line-height:1.55;margin-bottom:10px;">이달 추천 상품 구성 및 설계 방향 참고</div>
+        <a href="https://drive.google.com/drive/u/1/folders/16dqQ_TymDaoI_eV_FgTRY_G1HzBVMgbG" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;color:var(--purple);background:var(--tint);border:1px solid var(--tint-line);border-radius:8px;padding:6px 11px;text-decoration:none;">
+          <svg style="width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>원본 열기
+        </a>
+      </div>
+
+      <div style="background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:14px 15px;">
+        <div style="font-size:10px;font-weight:800;color:#633806;background:#FAEEDA;border-radius:6px;padding:2px 8px;display:inline-block;margin-bottom:8px;">손보 시책</div>
+        <div style="font-size:13.5px;font-weight:800;color:var(--ink);margin-bottom:6px;">손보시책</div>
+        <div style="font-size:11.5px;color:var(--muted);background:var(--bg);border-radius:8px;padding:6px 9px;line-height:1.55;margin-bottom:10px;">손보사 시책 조건·기간·대상 확인 필수</div>
+        <a href="https://drive.google.com/drive/u/1/folders/16dqQ_TymDaoI_eV_FgTRY_G1HzBVMgbG" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;color:var(--purple);background:var(--tint);border:1px solid var(--tint-line);border-radius:8px;padding:6px 11px;text-decoration:none;">
+          <svg style="width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>원본 열기
+        </a>
+      </div>
+
+      <div style="background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:14px 15px;">
+        <div style="font-size:10px;font-weight:800;color:#0C447C;background:#E6F1FB;border-radius:6px;padding:2px 8px;display:inline-block;margin-bottom:8px;">생보 시책</div>
+        <div style="font-size:13.5px;font-weight:800;color:var(--ink);margin-bottom:6px;">생보시책</div>
+        <div style="font-size:11.5px;color:var(--muted);background:var(--bg);border-radius:8px;padding:6px 9px;line-height:1.55;margin-bottom:10px;">생보사 시책 조건·기간·대상 확인 필수</div>
+        <a href="https://drive.google.com/drive/u/1/folders/16dqQ_TymDaoI_eV_FgTRY_G1HzBVMgbG" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;color:var(--purple);background:var(--tint);border:1px solid var(--tint-line);border-radius:8px;padding:6px 11px;text-decoration:none;">
+          <svg style="width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>원본 열기
+        </a>
+      </div>
+
+      <div style="background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:14px 15px;">
+        <div style="font-size:10px;font-weight:800;color:#444441;background:#F1EFE8;border-radius:6px;padding:2px 8px;display:inline-block;margin-bottom:8px;">기타공지</div>
+        <div style="font-size:13.5px;font-weight:800;color:var(--ink);margin-bottom:6px;">기타공지</div>
+        <div style="font-size:11.5px;color:var(--muted);background:var(--bg);border-radius:8px;padding:6px 9px;line-height:1.55;margin-bottom:10px;">업무 공지 및 변경 사항 확인</div>
+        <a href="https://drive.google.com/drive/u/1/folders/16dqQ_TymDaoI_eV_FgTRY_G1HzBVMgbG" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;color:var(--purple);background:var(--tint);border:1px solid var(--tint-line);border-radius:8px;padding:6px 11px;text-decoration:none;">
+          <svg style="width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>원본 열기
+        </a>
+      </div>
+
+    </div>
+
+    <!-- 구분선 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;"><div style="flex:1;height:1px;background:var(--line);"></div><span style="font-size:11px;font-weight:800;color:var(--muted);white-space:nowrap;letter-spacing:.12em;">보험세일즈북 참고자료 — 월간영업자료와 별도 분리</span><div style="flex:1;height:1px;background:var(--line);"></div></div>
+
+    <!-- 보험세일즈북 분리 박스 -->
+    <div style="background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--muted);border-radius:0 13px 13px 0;padding:15px 17px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <span style="font-size:14px;font-weight:800;color:var(--ink);">보험세일즈북 참고자료</span>
+        <span style="font-size:10px;font-weight:800;color:#5F5E5A;background:#F1EFE8;border-radius:6px;padding:2px 8px;">2024년 기준</span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-start;background:#FFF8E6;border:1px solid #EF9F27;border-radius:9px;padding:10px 13px;margin-bottom:8px;font-size:12px;color:#633806;line-height:1.65;">
+        <svg style="width:15px;height:15px;fill:none;stroke:#BA7517;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;margin-top:1px;" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>본 자료는 WD가 구입한 세일즈북으로, 저작권이 원 제작사에 있습니다. 사내 참고 목적으로만 사용하며 외부 배포·공유·복제는 금지합니다.</span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-start;background:#FCEBEB;border:1px solid #f0c4be;border-radius:9px;padding:10px 13px;margin-bottom:12px;font-size:12px;color:#7A2A1A;line-height:1.65;">
+        <svg style="width:15px;height:15px;fill:none;stroke:#B3422F;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;margin-top:1px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+        <span>2024년 기준 자료입니다. 상품 구조·보험료·약관 기준이 변경되었을 수 있습니다. 반드시 최신 약관과 보험사 안내를 함께 확인하세요.</span>
+      </div>
+      <a href="https://drive.google.com/file/d/1P2DTfzCa6zUx-s_7YJVT9D3PbzgdZRkV/view?usp=sharing" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:8px 14px;text-decoration:none;">
+        <svg style="width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        보험세일즈북 원본 열기 (구글드라이브)
+      </a>
+    </div>
+
   </div>
 </div>
 
@@ -2037,154 +2087,15 @@ async function wdChangePw(uid,oldPw,newPw){
     </div>
   </div>
 </div>
-<!-- 계약관리: v3재구성에서 비노출 -->
-<div class="view" id="view-policy" style="display:none!important;">
-    <div class="basic-guide" style="margin-top:12px;"><svg class="ei" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.5 7.5 8 9 4.5-1.5 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg> <b>계약은 체결한 담당 설계사가 직접 등록합니다.</b> 대표 관리자는 전체 계약을 확인하고 누락 여부를 점검할 수 있습니다. <span style="color:var(--muted);font-size:11px;">(계약 저장은 2단계 예정)</span></div>
-    <div class="std-sub-h" style="margin-top:18px;"><svg class="ei" viewBox="0 0 24 24"><path d="M4 7a2 2 0 0 1 2-2h3l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg> 계약고객 관리</div>
-    <div class="sec-sub" style="margin-bottom:4px;">내가 체결했거나 관리하는 고객의 기본정보와 가입계약을 간단히 기록합니다.</div>
-    <div class="basic-guide" style="margin-top:12px;"><svg class="ei" viewBox="0 0 24 24"><path d="M10.3 3.8 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0"/><path d="M12 9v4M12 17h.01"/></svg> 이 화면은 보장분석이 아니라, 내가 체결했거나 관리하는 계약을 책임 있게 기억하기 위한 <b>최소 관리 기록</b>입니다. 실제 보장내용·만기·갱신 여부·해지환급금·지급 조건은 반드시 <b>해당 보험사 전산, 고객 인증 자료, 약관</b>을 기준으로 확인해야 합니다.</div>
-    <div class="philosophy-card"><div class="ph-title">관리는 성과의 시작입니다</div><div class="ph-body">고객을 위해 고민한 것은 기록으로 남겨야 합니다.<br>기록이 쌓이면 관리가 되고, 관리가 쌓이면 신뢰가 됩니다.<br>WD WAVE는 그 신뢰가 정직한 성과로 이어지는 구조를 만듭니다.</div></div>
-    <div class="basic-nb"><svg class="ei" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg> 이 화면의 메모만으로 보장 여부나 보험금 지급 여부를 판단하지 않습니다.</div>
-    <div class="warn"><div class="t"><svg class="ei" viewBox="0 0 24 24"><path d="M10.3 3.8 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0"/><path d="M12 9v4M12 17h.01"/></svg> 비저장 · 개인정보 주의</div><ul><li>현재 버전은 저장되지 않는 비저장 복사형입니다. 필요한 내용은 복사해서 별도로 보관하세요.</li><li>주민번호·병력 상세·증권번호·계좌 등 민감정보는 입력하지 마세요.</li></ul></div>
-
-    <div class="frm" style="margin-top:6px;">
-      <div class="fld"><label>고객명</label><input id="pm_name" placeholder="예: 김○○"></div>
-      <div class="fld"><label>관계</label><select id="pm_rel"><option value="">선택</option><option>본인</option><option>배우자</option><option>부모</option><option>자녀</option><option>지인</option><option>고객</option><option>기타</option></select></div>
-      <div class="fld"><label>연락처</label><input id="pm_contact" placeholder="화면에서만 사용 · 저장 안 됨"></div>
-      <div class="fld"><label>생년 / 연령대</label><input id="pm_age" placeholder="예: 1975 / 40대"></div>
-      <div class="fld"><label>상담 경로</label><input id="pm_route" placeholder="예: 지인 소개 / 기존고객 / 온라인"></div>
-      <div class="fld"><label>계약자 / 피보험자 구분</label><select id="pm_role"><option value="">선택</option><option>계약자=피보험자</option><option>계약자≠피보험자</option><option>모름</option></select></div>
-      <div class="fld"><label>보험사</label><input id="pm_insurer" placeholder="예: 메리츠 / KB"></div>
-      <div class="fld"><label>상품명</label><input id="pm_product" placeholder="예: ○○종합보험"></div>
-      <div class="fld"><label>가입일</label><input type="date" id="pm_join"></div>
-      <div class="fld"><label>만기일 / 보장기간</label><input id="pm_maturity" placeholder="예: 2045-01 또는 100세"></div>
-      <div class="fld"><label>월 보험료</label><input id="pm_premium" placeholder="예: 8만원"></div>
-      <div class="fld"><label>납입기간</label><input id="pm_payperiod" placeholder="예: 20년납"></div>
-      <div class="fld"><label>갱신 여부</label><select id="pm_renew"><option value="">선택</option><option>갱신형</option><option>비갱신형</option><option>혼합</option><option>모름</option></select></div>
-      <div class="fld"><label>납입 상태</label><select id="pm_status"><option value="">선택</option><option>납입 중</option><option>완납</option><option>실효 의심</option><option>해지</option><option>모름</option></select></div>
-      <div class="fld"><label>다음 점검일</label><input type="date" id="pm_next"></div>
-      <div class="fld"><label>확인 필요</label><select id="pm_check"><option value="">선택</option><option>약관 확인</option><option>원수사 전산 확인</option><option>고객 인증 필요</option><option>내부 확인 필요</option></select></div>
-      <div class="fld full"><label>주요 보장 메모</label><textarea id="pm_coverage" placeholder="예: 암 진단비 / 실손 / 입원·수술"></textarea></div>
-      <div class="fld full"><label>가입 이유</label><textarea id="pm_join_reason" placeholder="왜 가입했는지"></textarea></div>
-      <div class="fld full"><label>선택 이유</label><textarea id="pm_choice_reason" placeholder="왜 이 상품·보험사를 골랐는지"></textarea></div>
-    </div>
-    <div class="btn-row" style="margin-top:4px;">
-      <button class="btn btn-p" onclick="pmAdd()">+ 메모 추가</button>
-      <button class="btn btn-g" onclick="pmReset()">입력 초기화</button>
-    </div>
-
-    <div class="std-sub-h" style="margin-top:22px;display:flex;justify-content:space-between;align-items:center;">
-      <span><svg class="ei" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg> 계약고객 목록</span>
-      <button class="btn btn-g" style="padding:8px 13px;font-size:12px;" onclick="pmCopyAll()"><svg class="ei" viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="4" rx="1"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/></svg> 전체 복사</button>
-    </div>
-    <div class="pm-list" id="pm_list"></div>
-  </div>
-</div>
-
-</div><!-- /wrap -->
-<!-- 플로팅 업무일지 (로그인 후 app-screen 안에서만 노출) -->
-<!-- FAB 빠른기록센터: v3재구성에서 비노출 -->
-<button id="wl-fab" class="wl-fab" onclick="rcOpen()" title="빠른 기록센터" aria-label="빠른 기록센터" style="display:none!important;"><svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.5.5 1 1.2 1 2h6c0-.8.5-1.5 1-2A6 6 0 0 0 12 3"/></svg></button>
-<div id="wl-panel" class="wl-panel">
-  <div class="wl-head">
-    <span class="wl-title"><svg class="ei" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.5.5 1 1.2 1 2h6c0-.8.5-1.5 1-2A6 6 0 0 0 12 3"/></svg> 빠른 기록센터<span class="rc-sub">오늘 할 일, 보험일기, 퀵메모를 빠르게 남깁니다.</span></span>
-    <button class="wl-x" onclick="rcClose()" aria-label="닫기"><svg class="ei" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
-  </div>
-  <div class="rc-tabs">
-    <button class="rc-tab on" data-rc="task" onclick="rcSwitch('task')">오늘의 할 일</button>
-    <button class="rc-tab" data-rc="diary" onclick="rcSwitch('diary')">보험일기</button>
-    <button class="rc-tab" data-rc="memo" onclick="rcSwitch('memo')">퀵메모</button>
-  </div>
-  <div class="wl-body">
-
-    <!-- 탭1: 오늘의 할 일 -->
-    <div class="rc-pane on" id="rc-task">
-      <div class="rc-hint">오늘 해야 할 상담, 고객관리, 계약 확인 일을 짧게 남겨두세요.</div>
-      <div class="rc-fld"><label>제목</label><input id="tk_title" placeholder="할 일 제목"></div>
-      <div class="rc-row">
-        <div class="rc-fld"><label>시간</label><input id="tk_time" placeholder="예: 14:00"></div>
-        <div class="rc-fld"><label>대상자</label><input id="tk_target" placeholder="예: 김○○"></div>
-      </div>
-      <div class="rc-row">
-        <div class="rc-fld"><label>업무 유형</label><select id="tk_type"><option>상담</option><option>고객관리</option><option>계약관리</option><option>청구</option><option>보험일기</option><option>기타</option></select></div>
-        <div class="rc-fld"><label>상태</label><select id="tk_status"><option>예정</option><option>진행중</option><option>완료</option></select></div>
-      </div>
-      <div class="rc-fld"><label>메모</label><textarea id="tk_memo" placeholder="간단 메모"></textarea></div>
-      <div class="rc-note">임시 기록형 도구입니다. 중요한 내용은 복사해두면 안전하게 보관할 수 있어요. 새로고침하면 화면 입력 내용은 사라집니다.</div>
-      <div class="rc-btns">
-        <button class="btn btn-p" onclick="taskAdd()">+ 할 일 추가</button>
-        <button class="btn btn-g" onclick="taskReset()">입력 비우기</button>
-        <button class="btn btn-g" onclick="taskCopyAll()">할 일 전체 복사</button>
-      </div>
-    </div>
-
-    <!-- 탭2: 보험일기 (기존 wl 유지) -->
-    <div class="rc-pane" id="rc-diary">
-      <div class="rc-hint">보험 이야기, 상담 기회, 가족·지인 보험 점검처럼 나중에 정리할 내용을 남기는 공간입니다.</div>
-      <div class="wl-q">오늘 일상 속에서 어떤 보험 이야기가 있었나요?</div>
-      <div class="wl-q-sub">가볍게 적어두면 나중에 상담 기회, 고객 안내문, 내부 확인, 콘텐츠 소재로 정리할 수 있습니다.</div>
-      <div class="wl-type">
-        <button onclick="wlPickType('오늘의 보험 이야기',this)"><svg class="ei" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 20l1-4.2A8.5 8.5 0 1 1 21 11.5"/></svg> 오늘의 보험 이야기</button>
-        <button onclick="wlPickType('내·가족 보험 점검',this)"><svg class="ei" viewBox="0 0 24 24"><circle cx="8" cy="9" r="2.5"/><circle cx="16" cy="9" r="2.5"/><path d="M3 19v-.5a4 4 0 0 1 8 0V19M13 19v-.5a4 4 0 0 1 8 0V19"/></svg> 내·가족 보험 점검</button>
-        <button onclick="wlPickType('지인 상담 기회',this)"><svg class="ei" viewBox="0 0 24 24"><path d="M9 17H7A5 5 0 0 1 7 7h1"/><path d="M15 7h2a5 5 0 0 1 0 10h-1"/><path d="M8 12h8"/></svg> 지인 보험 상담 기회</button>
-      </div>
-      <div class="wl-fld"><label>작성자</label><input id="wl_author" placeholder="작성자"></div>
-      <div class="wl-row">
-        <div class="wl-fld"><label>카테고리</label><select id="wl_cat">
-          <option>상담</option><option>계약</option><option>청구</option><option>전산</option><option>가망고객</option><option>아이디어</option><option>시스템</option><option>기타</option>
-        </select></div>
-        <div class="wl-fld"><label>생성 날짜</label><input type="date" id="wl_date"></div>
-      </div>
-      <div class="wl-fld"><label>제목</label><input id="wl_title" placeholder="한 줄 제목"></div>
-      <div class="wl-fld"><label>내용</label><textarea id="wl_content" placeholder="들은 이야기·느낀 점·점검할 보험·상담 기회"></textarea></div>
-      <div class="wl-fld"><label>다음 행동</label><select id="wl_next">
-        <option>기록만 하기</option><option>상담 후보로 보기</option><option>나중에 연락하기</option><option>보장점검 제안하기</option><option>내부 확인 필요</option><option>콘텐츠 소재로 보관</option>
-      </select></div>
-      <label class="wl-chk"><input type="checkbox" id="wl_flag"> 내부 확인 필요</label>
-      <div class="wl-note">임시 기록형 도구입니다. 중요한 내용은 복사해두면 안전하게 보관할 수 있어요. 새로고침하면 화면 입력 내용은 사라집니다.</div>
-      <div class="wl-btns">
-        <button class="btn btn-p" onclick="wlAdd()">+ 메모 추가</button>
-        <button class="btn btn-g" onclick="wlCopy()">복사</button>
-        <button class="btn btn-g" onclick="wlClear()">비우기</button>
-      </div>
-    </div>
-
-    <!-- 탭3: 퀵메모 -->
-    <div class="rc-pane" id="rc-memo">
-      <div class="rc-hint">짧게 떠오른 생각이나 고객에게 들은 말을 빠르게 남기는 공간입니다. 길게 정리할 보험 이야기는 보험일기에 남기세요.</div>
-      <div class="rc-fld"><label>메모 제목</label><input id="mm_title" placeholder="메모 제목"></div>
-      <div class="rc-fld"><label>메모 내용</label><textarea id="mm_content" placeholder="떠오른 생각·들은 말·확인할 것"></textarea></div>
-      <div class="rc-row">
-        <div class="rc-fld"><label>메모 유형</label><select id="mm_type"><option>고객에게 들은 말</option><option>상담 아이디어</option><option>확인 필요</option><option>콘텐츠 소재</option><option>내부 확인</option><option>기타</option></select></div>
-        <div class="rc-fld"><label>연결 업무</label><select id="mm_link"><option>상담</option><option>고객관리</option><option>계약관리</option><option>보험일기</option><option>청구</option><option>기타</option></select></div>
-      </div>
-      <div class="rc-note">임시 기록형 도구입니다. 중요한 내용은 복사해두면 안전하게 보관할 수 있어요. 새로고침하면 화면 입력 내용은 사라집니다.</div>
-      <div class="rc-btns">
-        <button class="btn btn-p" onclick="memoAdd()">+ 퀵메모 추가</button>
-        <button class="btn btn-g" onclick="memoReset()">입력 비우기</button>
-        <button class="btn btn-g" onclick="memoCopy()">퀵메모 복사</button>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-</div><!-- /app-screen -->
-
-<div id="toast" role="status" aria-live="polite"></div>
-<footer>WD 우리동네 보험관리 키트 v1.14 · 로그인·고객관리·기록센터 Supabase 저장 완료</footer>
-
+<!-- 계약관리 뷰 제거됨 — v18 -->
 <script>
 /* ── v0.7 보험 기초 상담 데이터 (특정 상품 추천 아님 · 지급/보장 단정 금지) ── */
 var INSUR_GROUPS=[
  {g:'보험 구조', open:true, items:[
   {k:'life_loss', t:'생명보험 vs 손해보험', d:'생명보험은 주로 사람의 생명·건강(사망·진단 등)에 대비하고, 손해보험은 실제로 발생한 손해(의료비·재물·배상 등)를 보상하는 구조입니다.\n같은 듯 보장 방식과 약관이 다르므로, 무엇에 대비하려는지에 따라 맞는 쪽이 달라집니다.', q:'지금 가장 걱정되는 부분이 생명·건강 쪽인가요, 실제 비용·손해 쪽인가요?'},
   {k:'protect_save', t:'보장성 vs 저축성', d:'보장성보험은 사고·질병 같은 위험에 대비하는 데 초점이 있고, 저축성보험은 만기 환급·자금 마련 성격이 강합니다.\n목적이 다르므로, 보장이 필요한지 저축이 필요한지 먼저 정리하는 것이 좋습니다.', q:'지금 필요하신 게 위험 대비(보장)인가요, 자금 마련(저축)인가요?'},
-  {k:'renew_vs', t:'갱신형 vs 비갱신형', d:'갱신형은 처음 보험료가 낮을 수 있지만 일정 기간마다 다시 계산되어 오를 수 있습니다.\n비갱신형은 처음 보험료가 높을 수 있지만 납입기간 동안 크게 변하지 않아 예측이 쉽습니다.\n지금 보험료만 보지 말고 앞으로의 변화까지 함께 보는 것이 중요합니다.', q:'보험료가 오를 수 있어도 시작 부담이 낮은 쪽이 좋으신가요, 일정하게 유지되는 쪽이 좋으신가요?'},
   {k:'surr_vs', t:'무해지 vs 표준형', d:'무해지형은 납입 중 해지하면 환급금이 없거나 적은 대신 보험료를 낮춘 구조입니다.\n표준형은 보험료가 높을 수 있지만 중간 해지 시 환급 구조가 상대적으로 안정적입니다.\n중간에 해지할 가능성이 낮은 분께 무해지형이 맞는지 확인이 필요합니다.', q:'중간에 해지할 가능성이 있으신가요, 끝까지 유지할 계획이신가요?'},
   {k:'exam_vs', t:'일반심사 vs 간편심사', d:'일반심사는 건강 고지 항목이 많지만 조건이 좋을 수 있고, 간편심사는 병력·약 복용 이력이 있어도 간단한 질문으로 가입할 수 있는 대신 보험료가 높을 수 있습니다.\n어느 쪽이 유리한지는 건강 상태에 따라 다르므로 비교가 필요합니다.', q:'최근 병원 진료나 약 복용 이력이 있으신가요?'},
-  {k:'notice', t:'고지의무', d:'고지의무는 청약 전 병원 진료·검사·약 복용·치료 이력 등을 사실대로 알리는 것입니다.\n정확한 고지는 나중에 보험금을 안전하게 받기 위한 과정이며, 누락 시 불이익이 생길 수 있습니다.', q:'최근 5년 이내 진료·검사·약 복용·입원·수술 이력이 있으신가요?'},
-  {k:'exempt', t:'면책기간·감액기간', d:'면책기간은 가입 후 일정 기간 보장이 되지 않는 기간이고, 감액기간은 일정 기간 안에 보험금이 줄어 지급되는 기간입니다.\n담보·상품마다 기간과 조건이 다르므로 약관에서 반드시 확인해야 합니다.', q:'(약관 확인 필요) 이 담보의 면책·감액기간을 함께 확인해볼까요?'}
  ]},
  {g:'납입·환급 구조', open:true, items:[
   {k:'premium', t:'보험료', d:'보험료는 지금 낼 수 있는 금액도 중요하지만, 앞으로 계속 유지할 수 있는지도 함께 봐야 합니다.\n보험은 오래 유지해야 의미가 있어, 생활비와 예산 안에서 무리 없는 선을 찾는 것이 중요합니다.', q:'매월 부담 없이 오래 유지할 수 있는 보험료는 어느 정도인가요?'},
@@ -2201,17 +2112,34 @@ var INSUR_GROUPS=[
  {g:'담보별 설명', open:true, items:[
   {k:'death', t:'사망', d:'사망보장은 피보험자가 사망했을 때 약관에서 정한 금액을 지급하는 보장입니다.\n일반사망·질병사망·재해사망 등 원인에 따라 보장이 나뉘므로 약관 기준 확인이 필요합니다.', q:'남은 가족의 생활 보장이 필요한 상황인가요?'},
   {k:'disability', t:'후유장해', d:'후유장해는 질병·상해로 약관상 장해 상태가 남았을 때 지급률에 따라 보험금을 받는 보장입니다.\n장해 분류와 지급률 기준이 약관마다 다릅니다.', q:'(약관 확인 필요) 장해 지급률 기준을 함께 확인해볼까요?'},
-  {k:'cancer', t:'암', d:'암 진단비는 약관에서 정한 암으로 진단 확정 시 정해진 금액을 받는 보장입니다.\n일반암·소액암·유사암 분류, 면책·감액기간이 상품마다 달라 확인이 필요합니다.', q:'가족력이나 특별히 걱정되는 부분이 있으신가요?'},
-  {k:'brain', t:'뇌혈관질환', d:'뇌졸중·뇌출혈·뇌혈관질환 등 보장 범위가 상품마다 다릅니다.\n어디까지 보장되는지(범위)와 진단 기준을 약관에서 확인해야 합니다.', q:'(약관 확인 필요) 보장 범위가 어디까지인지 함께 볼까요?'},
-  {k:'heart', t:'심장질환', d:'급성심근경색·허혈성심장질환 등 보장 범위가 상품마다 다릅니다.\n범위가 넓을수록 보험료가 오를 수 있어 비교가 필요합니다.', q:'(약관 확인 필요) 심장 담보의 보장 범위를 확인해볼까요?'},
   {k:'dementia', t:'치매', d:'치매보장은 약관에서 정한 치매 진단(중증도 척도 등) 기준 충족 시 지급되는 보장입니다.\n경증·중증 구분과 진단 기준이 상품마다 다릅니다.', q:'부모님 등 가족 중 치매를 걱정하시는 분이 있으신가요?'},
-  {k:'silson', t:'실손의료비', d:'실손의료비는 실제로 부담한 의료비 일부를 보장하는 보험입니다.\n모든 병원비가 전부 보장되는 것은 아니며, 자기부담금·보장 제외 항목을 약관에서 확인해야 합니다.', q:'실손보험은 현재 유지 중이신가요?'},
   {k:'surgery', t:'수술비', d:'수술비는 약관에서 정한 수술을 받았을 때 지급 여부가 결정되는 보장입니다.\n수술명·수술분류표·약관 기준에 따라 달라집니다.', q:'과거 수술 이력이 있으신가요?'},
   {k:'hospital', t:'입원비', d:'입원비는 입원 일수나 약관 기준에 따라 지급 여부가 결정됩니다.\n입원 사유·기간·면책기간을 함께 확인해야 합니다.', q:'최근 입원하신 적이 있으신가요?'},
   {k:'treat', t:'치료비', d:'치료비는 통원·처치 등 약관에서 정한 치료에 대해 지급되는 보장입니다.\n보장 항목과 한도가 상품마다 다르므로 확인이 필요합니다.', q:'자주 가는 진료나 통원이 있으신가요?'},
-  {k:'driver', t:'운전자', d:'운전자보험은 교통사고 시 형사·행정·민사 관련 비용(벌금·변호사선임·교통사고처리지원금 등)을 보장합니다.\n자동차보험과 보장 영역이 다르므로 중복·공백을 확인합니다.', q:'운전을 자주 하시나요? 현재 운전자보험이 있으신가요?'},
-  {k:'legal', t:'법률·배상책임', d:'일상생활배상책임 등은 일상에서 타인에게 입힌 손해를 약관 기준으로 보상합니다.\n자기부담금·보장 대상이 정해져 있어 확인이 필요합니다.', q:'아이·반려동물 등 일상 배상 위험이 있으신가요?'},
   {k:'dental', t:'치아·화상·골절', d:'치아(보철·충전 등)·화상·골절 등은 약관에서 정한 진단·처치 기준에 따라 지급되는 보장입니다.\n면책기간·보장 범위가 상품마다 다릅니다.', q:'(약관 확인 필요) 해당 담보의 면책·보장 범위를 확인해볼까요?'}
+ ]},
+ /* ── WD 상담북 ── */
+ {g:'WD 상담북 — 상품별 핵심 설명', open:true, items:[
+  {k:'wd_car', t:'자동차보험', d:'자동차보험은 운전 중 발생하는 사고에 대비하는 보험입니다.\n크게 두 가지를 기억하세요.\n① 대인·대물 배상 — 내가 사고를 냈을 때 상대방(사람·차·재물)의 피해를 보상합니다.\n② 내 차·내 몸 보장 — 내 차 수리비(자기차량손해)와 내가 다쳤을 때 치료비(자기신체사고)입니다.\n의무 가입 항목과 선택 항목이 나뉘며, 보장 한도와 자기부담금은 보험사마다 다릅니다.\n\n⚠ 확인 필요: 보장 한도와 자기부담금은 반드시 증권과 약관 기준으로 확인합니다.', q:'현재 자동차보험의 대물·대인 한도가 어떻게 되세요? 마지막으로 확인하신 게 언제인가요?'},
+  {k:'wd_driver', t:'운전자보험', d:'운전자보험은 자동차보험이 해결하지 못하는 부분을 채워주는 보험입니다.\n교통사고가 나면 자동차보험이 상대방 피해를 보상하지만, 내가 형사처벌을 받거나 합의금이 필요한 상황은 자동차보험 대상이 아닙니다.\n운전자보험이 바로 이 부분을 보완합니다.\n주요 보장: 교통사고처리지원금(합의금 지원), 변호사선임비용, 벌금, 면허정지·취소 위로금.\n\n⚠ 확인 필요: 보장 항목과 한도는 상품마다 다릅니다. 자동차보험과 중복·공백이 없는지 함께 점검합니다.', q:'운전자보험이 현재 있으신가요? 언제 가입하셨는지 아세요?'},
+  {k:'wd_fire', t:'화재보험', d:'화재보험은 화재, 폭발, 붕괴 등으로 건물이나 가재도구에 생긴 손해를 보상하는 보험입니다.\n주택의 경우 건물 자체와 내부 가재도구(가전·가구 등)를 각각 가입하는 구조입니다.\n임차인(세입자)의 경우 건물은 집주인 몫이지만, 본인 과실로 화재가 났을 때 배상책임을 커버하는 특약이 필요합니다.\n\n⚠ 확인 필요: 보장 범위, 자기부담금, 가입 금액 한도는 약관과 보험사 기준으로 확인합니다.', q:'지금 거주하시는 곳이 자가인가요, 전세·월세인가요? 현재 화재보험이 있으신가요?'},
+  {k:'wd_liability', t:'배상책임', d:'배상책임보험은 내 과실로 타인에게 피해를 줬을 때 그 손해를 보상하는 보험입니다.\n일상생활에서 발생할 수 있는 상황 예시: 아이가 친구에게 상해를 입힌 경우, 반려동물이 타인을 다치게 한 경우, 임차인이 실수로 화재를 낸 경우.\n많은 경우 실손보험이나 화재보험 특약으로 포함되어 있어 중복 확인이 필요합니다.\n\n⚠ 확인 필요: 보장 대상, 자기부담금, 한도는 약관 기준으로 확인합니다.', q:'아이나 반려동물이 있으신가요? 현재 일상배상책임 특약이 어디에 붙어 있는지 아세요?'},
+  {k:'wd_disease', t:'질병/상해보험', d:'질병보험은 병(질병)으로 인한 입원·수술·진단 등을 보장하고, 상해보험은 사고(상해)로 인한 입원·수술·후유장해 등을 보장합니다.\n두 가지를 함께 보장하는 상품도 있으며, 어떤 원인으로 생겼는지에 따라 지급 여부가 달라질 수 있습니다.\n보장 범위와 지급 기준이 상품마다 다르므로 약관 확인이 필요합니다.\n\n⚠ 확인 필요: 질병과 상해의 보장 범위, 지급 기준, 면책기간은 약관으로 확인합니다.', q:'지금 가장 걱정되는 부분이 병 때문인가요, 사고 때문인가요? 아니면 둘 다인가요?'},
+  {k:'wd_cancer', t:'암보험', d:'암보험은 암으로 진단 확정 시 정해진 금액을 받는 보험입니다.\n암의 종류에 따라 보장 금액이 달라집니다.\n일반암: 대부분의 암 (보장 금액이 가장 큼)\n소액암: 갑상선암, 기타피부암 등 (보장 금액이 작음)\n유사암: 경계성 종양, 제자리암 등\n가입 후 90일(상품마다 다름)은 면책기간으로 보장되지 않습니다.\n\n⚠ 확인 필요: 암 분류 기준, 면책·감액기간은 반드시 해당 약관으로 확인합니다.', q:'가족력 중에 암이 있으신 분이 있으신가요? 현재 암보험이 있으신가요?'},
+  {k:'wd_brain_heart', t:'뇌/심장 보장', d:'뇌·심장 관련 보장은 보장 범위에 따라 크게 차이가 납니다.\n\n뇌 관련 보장 범위 (좁은 순)\n뇌출혈 < 뇌졸중 < 뇌혈관질환\n\n심장 관련 보장 범위 (좁은 순)\n급성심근경색 < 허혈성심장질환\n\n범위가 넓을수록 더 많은 상황에서 보장받을 수 있지만 보험료가 높습니다.\n어떤 담보를 얼마나 가지고 있는지 확인하는 것이 중요합니다.\n\n⚠ 확인 필요: 보장 범위와 진단 기준은 약관으로 확인합니다.', q:'(약관 확인 필요) 지금 가입된 뇌·심장 담보가 어떤 범위인지 함께 확인해볼까요?'},
+  {k:'wd_silson', t:'실손보험', d:'실손보험은 실제로 병원에서 쓴 비용 일부를 돌려받는 보험입니다.\n세대별로 구조가 다릅니다.\n\n1~4세대 실손\n실제 의료비에서 자기부담금을 제외하고 보상. 세대마다 보장 항목·자기부담율 다름.\n\n5세대 실손 (2025년 출시)\n비급여 항목을 급여·비급여로 분리 보장.\n비급여 사용량에 따라 보험료가 오르거나 내리는 할인·할증 구조 적용.\n기존 실손과 구조가 달라 단순 비교 어려움 — 현재 실손과 함께 비교 필요.\n\n⚠ 확인 필요: 세대별 전환 조건, 보험료 변동 구조는 보험사 기준으로 반드시 확인합니다. WD 업데이트 예정.', q:'지금 실손보험이 있으신가요? 언제 가입하셨는지 아세요? (가입 시기로 세대를 대략 확인할 수 있습니다)'},
+  {k:'wd_life', t:'생명보험', d:'생명보험은 사람의 생명을 대상으로 하는 보험으로, 사망·생존·질병 등을 보장합니다.\n크게 사망보험(종신·정기), 생존보험(연금), 생사혼합보험(양로)으로 나뉩니다.\n남은 가족의 생활을 지키거나, 본인의 노후를 준비하는 용도로 활용됩니다.\n손해보험과 보장 방식이 달라, 목적에 따라 맞는 쪽을 선택하는 것이 중요합니다.\n\n⚠ 확인 필요: 보장 내용과 만기 조건은 약관 기준으로 확인합니다.', q:'지금 가장 걱정되는 부분이 내가 없어졌을 때 가족 생활인가요, 내 노후 준비인가요?'},
+  {k:'wd_whole', t:'종신보험', d:'종신보험은 피보험자가 언제 사망하더라도 보험금이 지급되는 보험입니다.\n주로 남은 가족의 생활 보장이나 상속 목적으로 활용됩니다.\n보험료가 높은 편이며, 오래 유지할수록 의미가 있습니다.\n납입기간이 끝난 뒤에도 보장은 평생 유지됩니다.\n최근에는 CI(치명적질병) 특약을 붙이는 경우도 많습니다.\n\n⚠ 확인 필요: CI 특약 범위, 해지환급금 구조는 약관 기준으로 확인합니다.', q:'현재 종신보험이 있으신가요? 납입 기간이 얼마나 남으셨는지 아세요?'},
+  {k:'wd_annuity', t:'연금/저축성', d:'연금보험은 일정 기간 보험료를 납입한 뒤 약정한 나이부터 매달 연금을 받는 보험입니다.\n노후 생활비 마련이 주요 목적입니다.\n저축성보험은 만기 시 납입 보험료의 일부 또는 전부를 돌려받는 구조입니다.\n보장보다 자금 마련에 초점이 맞춰져 있어, 목적이 다름을 먼저 확인해야 합니다.\n이율, 납입기간, 연금 개시 나이, 연금 수령 방식을 꼭 비교합니다.\n\n⚠ 확인 필요: 공시이율·최저보증이율, 연금 수령 조건은 약관 기준으로 확인합니다.', q:'노후 준비가 목적이신가요, 목돈 마련이 목적이신가요? 언제부터 받고 싶으세요?'}
+ ]},
+ {g:'WD 상담북 — 상담 핵심 개념', open:true, items:[
+  {k:'wd_notice2', t:'고지의무', d:'보험 가입 전 건강 상태를 사실대로 알려야 하는 의무입니다.\n주로 확인하는 항목: 최근 5년 이내 진료·검사·입원·수술·약 복용 이력.\n고지를 빠뜨리거나 사실과 다르게 알리면 나중에 보험금이 거절되거나 계약이 해지될 수 있습니다.\n고지는 불이익을 막기 위한 과정입니다. 애매한 이력은 빠뜨리지 말고 함께 확인하는 것이 안전합니다.\n\n⚠ 확인 필요: 고지 기간과 항목은 보험사·상품마다 다릅니다. 반드시 청약서 고지 항목을 기준으로 확인합니다.', q:'최근 5년 이내에 병원 진료, 검사, 약 복용, 입원, 수술을 하신 적 있으신가요?'},
+  {k:'wd_exempt2', t:'면책기간/감액기간', d:'보험에 가입했다고 해서 바로 모든 보장이 시작되는 건 아닙니다.\n면책기간: 가입 후 일정 기간 동안 해당 보장이 적용되지 않는 기간입니다.\n예) 암 진단비 — 가입 후 90일은 보장이 되지 않는 경우가 많습니다.\n감액기간: 보장은 되지만 보험금이 줄어서 지급되는 기간입니다.\n예) 가입 후 1년 이내는 보험금의 50%만 지급되는 경우.\n담보마다, 상품마다 기간과 조건이 다릅니다.\n\n⚠ 확인 필요: 정확한 면책·감액 기간은 해당 상품 약관에서 반드시 확인합니다.', q:'(약관 확인 필요) 지금 가입하시려는 담보의 면책·감액 조건을 함께 확인해볼까요?'},
+  {k:'wd_renew2', t:'갱신형/비갱신형', d:'갱신형: 일정 기간(예: 1년·3년·5년)마다 보험료가 다시 계산되는 구조입니다.\n처음 보험료가 낮지만 나이가 들수록 오를 수 있습니다.\n비갱신형: 정해진 납입기간 동안 보험료가 크게 변하지 않는 구조입니다.\n처음 보험료가 높을 수 있지만 앞으로의 금액을 예측하기 쉽습니다.\n어느 쪽이 좋은가는 지금 상황과 앞으로의 유지 계획에 따라 달라집니다.\n지금 보험료만 보지 말고, 10년 뒤 보험료까지 함께 비교하는 것이 중요합니다.\n\n⚠ 확인 필요: 갱신 조건·주기·최대 갱신 연령은 약관 기준으로 확인합니다.', q:'지금 보험료가 낮은 게 중요하신가요, 앞으로 일정하게 유지되는 게 더 중요하신가요?'},
+  {k:'wd_claim', t:'보험금 청구서류', d:'보험금 청구 시 기본적으로 준비하는 서류입니다.\n\n[공통 서류]\n• 보험금 청구서 (보험사 양식)\n• 신분증 사본\n• 통장 사본\n\n[진단·입원·수술 청구 시 추가]\n• 진단서 또는 소견서\n• 입·퇴원 확인서\n• 수술 확인서 (수술인 경우)\n• 진료비 영수증 + 세부 내역서\n\n[사망 청구 시 추가]\n• 사망진단서\n• 가족관계증명서\n• 보험사 요청 추가 서류\n\n⚠ 확인 필요: 보험사마다 요청 서류가 다를 수 있습니다. 청구 전 반드시 해당 보험사에 먼저 확인합니다.', q:'지금 청구 준비 중이신가요? 어떤 사유로 청구하실 예정인지 알려주시면 필요한 서류를 함께 정리해드릴게요.'}
+ ]},
+ {g:'WD 상담북 — 상담 마무리', open:true, items:[
+  {k:'wd_close', t:'상담 마무리 문장', d:'[설계사 참고용 — WD 업데이트 예정]\n\n오늘 상담을 마무리하면서 꼭 드리고 싶은 말씀이 있습니다.\n보험은 지금 당장 필요해서 가입하는 것보다, 필요할 때 제대로 받을 수 있도록 미리 준비하는 것입니다.\n오늘 확인한 내용 중 아직 애매한 부분이 있으시면 언제든지 여쭤봐 주세요.\n제가 직접 약관을 확인하고 정확하게 안내해드리겠습니다.\n서두르지 않고, 고객님 상황에 맞는 방향으로 함께 결정해 나가겠습니다.\n\n[다음 단계 안내 예시]\n오늘 상담 내용 정리해서 보내드릴게요. 확인하신 뒤 궁금하신 점 있으면 편하게 연락 주세요.', q:'오늘 상담에서 가장 마음에 걸리는 부분이 있으셨나요?'}
  ]}
 ];
 var INSUR_BASIC={};
@@ -2258,65 +2186,28 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){ closeBasic
 function csCopyDesc(){ if(!_csCur){showToast('카드를 먼저 선택하세요');return;} copyText(INSUR_BASIC[_csCur].d,'고객 설명문을 복사했습니다'); }
 function csCopyQ(){ if(!_csCur){showToast('카드를 먼저 선택하세요');return;} copyText(INSUR_BASIC[_csCur].q,'추가 질문을 복사했습니다'); }
 
-/* ── v0.6 설계사 전체 로그인 (메모리만, localStorage·sessionStorage 미사용) ──
-   계정은 정적 배열. 비밀번호 변경 기능은 이번 버전 제외. */
-var _currentUser = '';
-async function appLogin(){
-  var uid=(document.getElementById('login-id').value||'').trim();
+/* ── WD WAVE 워크키트 v18 — 단순 비밀번호 문지기 ── */
+var _currentUser = 'WD 설계사';
+function appLogin(){
   var pw=(document.getElementById('login-pw').value||'').trim();
-  if(!uid||!pw){ showToast('아이디와 비밀번호를 입력해 주세요'); return; }
-  showToast('로그인 중...');
-  var res=await wdLogin(uid,pw);
-  if(res.error){ showToast(res.error); return; }
-  var pr=res.data;
+  if(!pw){ showToast('비밀번호를 입력해 주세요'); return; }
+  if(pw !== WD_KIT_PW){ showToast('비밀번호가 맞지 않습니다'); document.getElementById('login-pw').value=''; return; }
   document.getElementById('login-screen').style.display='none';
-  buildProfileMenu();
   document.getElementById('app-screen').style.display='block';
-  setTimeout(async function(){
-    var todos=await sbLoad('kit_todos');
-    if(todos.length){TODAY_TASKS=todos.map(function(r,i){return{id:i+1,title:r.content||'',time:'',target:'',type:'',status:'',memo:'',_sid:r.id};});_tkSeq=TODAY_TASKS.length+1;taskRenderHome();taskRenderCenter();}
-    var memos=await sbLoad('kit_memos');
-    if(memos.length){QUICK_MEMOS=memos.map(function(r,i){return{id:i+1,title:'',content:r.content||'',type:'',link:'',_sid:r.id};});_mmSeq=QUICK_MEMOS.length+1;memoRenderHome();memoRenderCenter();}
-    var diaries=await sbLoad('kit_diary');
-    if(diaries.length){WORK_LOGS=diaries.map(function(r,i){return{id:i+1,title:'',content:r.content||'',date:r.diary_date||'',author:window._currentUser||'',cat:'',type:'',next:'',flag:false,_sid:r.id};});_wlSeq=WORK_LOGS.length+1;if(typeof wlRender==='function')wlRender();if(typeof diaryRenderHome==='function')diaryRenderHome();}
-  },300);
-  var ht=document.getElementById('hero-title'), hs=document.getElementById('hero-sub');
-  var _today=new Date(); var _yr=_today.getFullYear(); var _mo=_today.getMonth()+1; var _dy=_today.getDate();
-  var _dateStr=_yr+'년 '+_mo+'월 '+_dy+'일';
-  var _uname=pr.data.name||'';
-  var _isAdmin=(window._currentRole==='admin');
-  var _greet=_isAdmin?(_uname+' 지점장님, 환영합니다.'):(_uname+' 설계사님, 환영합니다.');
-  var _sub=_isAdmin?'오늘도 고객을 지키는 상담을 시작해볼까요?':'오늘도 기준대로, 확인하며 상담하는 하루를 시작합니다.';
-  if(ht) ht.innerHTML=_dateStr+'<br><span style="font-size:1em;">'+_greet+'</span>';
-  if(hs) hs.textContent=_sub;
-  var pn=document.getElementById('profile-name'); if(pn) pn.textContent=pr.data.name;
   document.getElementById('login-pw').value='';
-  var _saveChk=document.getElementById('login-save-id');
-  if(_saveChk && _saveChk.checked){ try{localStorage.setItem('wd_saved_login_id',uid);}catch(e){} }
-  else{ try{localStorage.removeItem('wd_saved_login_id');}catch(e){} }
-  applyRoleUI();
+  var ht=document.getElementById('hero-title');
+  var hs=document.getElementById('hero-sub');
+  var _today=new Date(); var _yr=_today.getFullYear(); var _mo=_today.getMonth()+1; var _dy=_today.getDate();
+  if(ht) ht.textContent=_yr+'년 '+_mo+'월 '+_dy+'일 · WD WAVE 설계사 워크키트';
+  if(hs) hs.textContent='고객관리와 계약관리는 본진·메가넷에서 진행합니다. 이 키트에는 고객정보를 저장하지 않습니다.';
   showTab('home');
   if(typeof rcRenderHome==='function') rcRenderHome();
 }
 var _PROFILES=[];
-function applyRoleUI(){
-  var isAdmin=(window._currentRole==='admin');
-  var frm=document.getElementById('ps_form_wrap'); if(frm) frm.style.display='';
-  var note=document.getElementById('ps_admin_note'); if(note) note.style.display=isAdmin?'':'none';
-  ['ps_owner_wrap','ps_filter','qc_owner_wrap','hq_owner_wrap'].forEach(function(id){ var e=document.getElementById(id); if(e) e.style.display=isAdmin?'':'none'; });
-  loadProfiles();
-}
-async function loadProfiles(){
-  if(!sb) return;
-  var res=await sb.from('kit_profiles').select('uid,name');
-  if(res.error){ console.error('담당자 목록 로드 실패', res.error); return; }
-  _PROFILES=res.data||[];
-  var optSel='<option value="">담당자 선택</option>'+_PROFILES.map(function(p){return '<option value="'+p.uid+'">'+psEsc(p.name)+'</option>';}).join('');
-  ['ps_owner','qc_owner','hq_owner'].forEach(function(id){ var s=document.getElementById(id); if(s) s.innerHTML=optSel; });
-  var f=document.getElementById('ps_filter');
-  if(f){ f.innerHTML='<option value="">전체 고객</option>'+_PROFILES.map(function(p){return '<option value="'+p.uid+'">'+psEsc(p.name)+' 고객</option>';}).join(''); }
-}
-function profName(uid){ for(var i=0;i<_PROFILES.length;i++){ if(_PROFILES[i].uid===uid) return _PROFILES[i].name; } return ''; }
+function applyRoleUI(){ /* 역할 UI 무력화 — v18 단순 문지기 */ }
+function loadProfiles(){ /* Supabase 제거 — v18 */ }
+var _PROFILES=[];
+function profName(uid){ return ''; }
 function toggleProfileMenu(){
   var m=document.getElementById('profileMenu');
   m.classList.toggle('open');
@@ -2330,87 +2221,19 @@ document.addEventListener('click', function(e){
   if(w && !w.contains(e.target)) closeProfileMenu();
 });
 
-function buildProfileMenu(){
-  var name=window._currentUser||'';
-  var role=window._currentRole||'';
-  var isAdmin=(role==='admin');
-  var nm=document.getElementById('pm-name-label');
-  var rl=document.getElementById('pm-role-label');
-  var rl2=document.getElementById('profile-role-label');
-  if(nm) nm.textContent=name;
-  if(rl) rl.textContent=isAdmin?'지점장':'설계사';
-  if(rl2) rl2.textContent=isAdmin?' 지점장':' 설계사';
-  // 헤더 버튼 이름 업데이트
-  var pn2=document.getElementById('profile-name'); if(pn2) pn2.textContent=name;
-  var list=document.getElementById('pm-agent-list');
-  if(!list) return;
-  if(isAdmin){
-    var agents=[
-      {key:'hyungmin',name:'형민'},
-      {key:'jiyoung',name:'지영'},
-      {key:'sara',name:'윤경(내 현황)'}
-    ];
-    list.innerHTML='<div class="pm-agent-label">설계사 데이터 보기</div>'
-      +agents.map(function(a){
-        return '<button class="pm-item" data-akey="'+a.key+'" data-aname="'+a.name+'">👤 '+a.name+' 설계사</button>';
-      }).join('');
-    list.querySelectorAll('[data-akey]').forEach(function(btn){
-      btn.addEventListener('click', function(){ viewAgentData(this.getAttribute('data-akey')); closeProfileMenu(); });
-    });
-  } else {
-    list.innerHTML='';
-  }
-}
+function buildProfileMenu(){ /* v18 정적 — 프로필 메뉴는 HTML에 고정 */ }
 
-async function viewAgentData(agentKey){
-  var c=WD_AGENTS[agentKey]; if(!c){ showToast('설계사 정보를 찾을 수 없습니다'); return; }
-  showToast(c.name+' 설계사 데이터 불러오는 중…');
-  window._viewingAgentKey=agentKey;
-  window._viewingAgentName=c.name;
-  var tmp=window.supabase.createClient(c.url,c.key);
-  var res=await tmp.from('kit_customers').select('*').order('created_at',{ascending:false});
-  if(res.error){ showToast('불러오기 실패: '+res.error.message); return; }
-  _CUSTOMERS=(res.data||[]).map(function(r){ return Object.assign({},r,{_agentName:c.name}); });
-  showTab('prospect');
-  showToast(c.name+' 설계사 고객 '+_CUSTOMERS.length+'명 조회됨');
-}
+function viewAgentData(){ /* Supabase 제거됨 — v18 */ }
 
-function openChangePw(){
-  closePwModal();
-  var el=document.createElement('div');
-  el.id='pw-modal';
-  el.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;display:flex;align-items:center;justify-content:center;';
-  el.innerHTML='<div style="background:#fff;border-radius:16px;padding:28px 24px;width:320px;max-width:90vw;">'
-    +'<div style="font-weight:700;font-size:16px;margin-bottom:16px;color:#4A3F7A;">비밀번호 변경</div>'
-    +'<input id="pw-old" type="password" placeholder="현재 비밀번호" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;margin-bottom:10px;box-sizing:border-box;">'
-    +'<input id="pw-new1" type="password" placeholder="새 비밀번호 (4자 이상)" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;margin-bottom:10px;box-sizing:border-box;">'
-    +'<input id="pw-new2" type="password" placeholder="새 비밀번호 확인" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;margin-bottom:16px;box-sizing:border-box;">'
-    +'<div style="display:flex;gap:8px;">'
-    +'<button id="pw-cancel-btn" style="flex:1;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;background:#f8fafc;">취소</button>'
-    +'<button id="pw-confirm-btn" style="flex:1;padding:10px;border:none;border-radius:8px;cursor:pointer;background:#4A3F7A;color:#fff;font-weight:700;">변경</button>'
-    +'</div></div>';
-  document.body.appendChild(el);
-  document.getElementById('pw-cancel-btn').addEventListener('click', closePwModal);
-  document.getElementById('pw-confirm-btn').addEventListener('click', doChangePw);
-}
-function closePwModal(){ var m=document.getElementById('pw-modal'); if(m) m.remove(); }
-async function doChangePw(){
-  var o=(document.getElementById('pw-old').value||'').trim();
-  var n1=(document.getElementById('pw-new1').value||'').trim();
-  var n2=(document.getElementById('pw-new2').value||'').trim();
-  if(!o||!n1||!n2){ showToast('모두 입력해 주세요'); return; }
-  if(n1!==n2){ showToast('새 비밀번호가 일치하지 않습니다'); return; }
-  if(n1.length<4){ showToast('비밀번호는 4자 이상이어야 합니다'); return; }
-  var res=await wdChangePw(window._currentUid,o,n1);
-  if(res.error){ showToast(res.error); return; }
-  closePwModal();
-  showToast('비밀번호가 변경되었습니다');
-}
-async function appLogout(){
-  window._currentUid=''; window._currentRole=''; window._currentUser=''; window._currentAgentKey=''; _currentUser=''; sb=null;
+/* 비밀번호 변경 기능 제거됨 — v18 단순 문지기 구조 */
+function openChangePw(){ showToast('비밀번호는 파일 내 WD_KIT_PW 값을 직접 수정합니다.'); }
+function closePwModal(){}
+function doChangePw(){}
+function appLogout(){
   document.getElementById('app-screen').style.display='none';
   document.getElementById('login-screen').style.display='block';
-  showToast('로그아웃되었습니다');
+  document.getElementById('login-pw').value='';
+  showToast('나갔습니다. 비밀번호를 다시 입력하세요.');
 }
 
 /* ── 고객관리 (Supabase 저장형 · kit_customers · RLS로 본인/관리자 분리) ── */
@@ -2881,7 +2704,7 @@ function toggleMobileMenu(){
   if(bar) bar.classList.toggle('mobile-open');
 }
 function showTab(t){
-  ['home','start','prospect','consult','design','claim','lib','guide','worklog','policy','hub','salesbook','sicheck'].forEach(function(k){
+  ['home','start','consult','design','claim','lib','guide','worklog','hub','salesbook','sicheck','wdbook','promptbook','wdcriteria'].forEach(function(k){
     var v=document.getElementById('view-'+k); if(v) v.classList.toggle('on',k===t);
   });
   document.querySelectorAll('.tab').forEach(function(b){b.classList.toggle('on',b.dataset.t===t);});
@@ -2890,6 +2713,7 @@ function showTab(t){
   if(t==='prospect') psRender();
   if(t==='guide') gdInit();
   if(t==='consult') csInitGroups();
+  if(t==='wdbook') wdBookInit();
   if(t==='home' && typeof rcRenderHome==='function') rcRenderHome();
   if(t==='policy') pmRender();
   if(t==='worklog'){ if(typeof rcRenderCenter==='function') rcRenderCenter(); else wlRender(); }
@@ -2908,7 +2732,10 @@ function pickPill(el,storeId){
 
 /* ── 단계 이동 ── */
 var _stepNow={c:1,d:1,r:1};
-var _stepMax={c:7,d:6,r:6};
+var _stepMax={c:6,d:6,r:6};
+function goWdBook(){
+  showTab('wdbook');
+}
 function goStep(panel,n){
   _stepNow[panel]=n;
   var max=_stepMax[panel]||6;
@@ -2919,7 +2746,7 @@ function goStep(panel,n){
   var bar=document.getElementById('steps-'+panel);
   if(bar){var btns=bar.querySelectorAll('.step-btn');btns.forEach(function(b,idx){b.classList.toggle('on',idx===n-1);});}
   /* 3번 상담가이드 진입 시 피해야 할 상담말 팝업 */
-  if(panel==='c' && n===3){ openConsultWarnModal(); }
+  if(panel==='c' && n===2){ openConsultWarnModal(); }
 }
 function stepMove(panel,dir){
   var max=_stepMax[panel]||6;
@@ -3269,28 +3096,41 @@ function qmCopyAll(){
   copyText(txt,'전체 메모 복사 완료 (구글킵에 붙여넣기)');
 }
 
-/* ── v3 보상사례 탭 전환 ── */
-function gcSwitch(tab, btn){
-  ['cases','guide','links','manual'].forEach(function(t){
-    var el=document.getElementById('gc-'+t); if(el) el.style.display=(t===tab?'':'none');
+/* gcSwitch 제거 — gcCase로 대체됨 */
+/* ── WD 상담북 초기화 (WD 그룹만 렌더링) ── */
+function wdBookInit(){
+  var box=document.getElementById('wdbook_groups'); if(!box||box.children.length) return;
+  INSUR_GROUPS.forEach(function(grp){
+    if(grp.g.indexOf('WD 상담북')===-1) return; // WD 상담북 그룹만
+    var cards=grp.items.map(function(it){return '<button class="basic-card" onclick="csBasic(\''+it.k+'\',this)">'+csEsc(it.t)+'</button>';}).join('');
+    var wrap=document.createElement('div'); wrap.className='bg-group';
+    wrap.innerHTML='<button class="bg-head open" onclick="csGroupToggle_wd(this)"><span>'+csEsc(grp.g)+' <span style="font-weight:600;color:var(--muted);font-size:11px;">('+grp.items.length+')</span></span><span class="bg-arrow">▾</span></button>'
+      +'<div class="bg-body open"><div class="basic-grid">'+cards+'</div></div>';
+    box.appendChild(wrap);
   });
-  document.querySelectorAll('.cat-btn').forEach(function(b){ b.classList.remove('on'); });
-  if(btn) btn.classList.add('on');
-  if(tab==='guide') gdInit();
 }
+function csGroupToggle_wd(head){
+  var body=head.nextElementSibling; if(!body) return;
+  head.classList.toggle('open'); body.classList.toggle('open');
+}
+
+/* ── WD 보상사례집 카테고리 필터 ── */
+function gcCase(cat, btn){
+  document.querySelectorAll('#view-guide .cat-btn').forEach(function(b){ b.classList.remove('on'); });
+  if(btn) btn.classList.add('on');
+  var items=document.querySelectorAll('#gc-case-list [data-cat]');
+  items.forEach(function(el){
+    el.style.display=(cat==='all'||el.dataset.cat===cat)?'':'none';
+  });
+}
+
 
 /* ── 날짜 초기값 설정 ── */
 window.addEventListener('DOMContentLoaded', function(){
   var d = document.getElementById('qm_date');
   if(d) d.value = new Date().toISOString().slice(0,10);
   try{
-    var _sid=localStorage.getItem('wd_saved_login_id');
-    if(_sid){
-      var _idEl=document.getElementById('login-id');
-      var _chkEl=document.getElementById('login-save-id');
-      if(_idEl) _idEl.value=_sid;
-      if(_chkEl) _chkEl.checked=true;
-    }
+    /* 아이디 저장 기능 제거됨 — v18 */
   }catch(e){}
 });
 </script>
