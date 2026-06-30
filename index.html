@@ -2451,7 +2451,7 @@ WD WAVE 은퇴 준비 점검 서비스 소개 포함
 <script>
 /* ══ 앱 버전 체크 (배포 후 캐시 대응) ══
    ※ 다음 버전 작업 시 Claude는 이 APP_VERSION 값을 출력 파일 버전에 맞춰 함께 변경할 것 */
-var APP_VERSION='WD_PARTNERS_260630_V65';
+var APP_VERSION='WD_PARTNERS_260630_V67';
 (function checkAppVersionRefresh(){
   try{
     var key='WD_PARTNERS_APP_VERSION';
@@ -2562,13 +2562,21 @@ var LS_U='wlp_users',LS_S='wlp_session';
 var _UID=null,_ROLE='planner';
 
 // ══ Supabase 연결 (계정별 프로젝트 분리 — A안) ══
-// V65 범위: WD23000(최윤경) 1개 계정만 연결. 형민/지영은 추후 별도 작업.
-// ⚠ 보안 주의: 이 anon key는 WD23000 text UID와 함께 RLS 정책으로 제한되어 있으나,
+// V66 범위: WD23000(최윤경) / WD26001(김지영) / WD26002(형민) 3개 계정 모두 연결.
+// ⚠ 보안 주의: 각 anon key는 해당 계정 text UID와 함께 RLS 정책으로 제한되어 있으나,
 //   이는 Supabase Auth 기반 인증이 아니라 "개인 Supabase 프로젝트 안에서의 운영 편의 구조"임.
 var SUPABASE_CONFIG_BY_UID={
   WD23000:{
     url:'https://tiwgzmmizmkbvbyfgmyw.supabase.co',
     anonKey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpd2d6bW1pem1rYnZieWZnbXl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4MjE5ODIsImV4cCI6MjA5NzM5Nzk4Mn0.4c5iuLkZ37a46dB6vA6jN8vTwOV_kS1-4IHPcrB2aTM'
+  },
+  WD26001:{
+    url:'https://kqnsrkebmalstepbghjf.supabase.co',
+    anonKey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtxbnNya2VibWFsc3RlcGJnaGpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4MDYxMjksImV4cCI6MjA5NzM4MjEyOX0.Pm05SkjvQiOM6nlKF3pyHtbwqSwo1roWqAQfXCEf5Kc'
+  },
+  WD26002:{
+    url:'https://zkgvcxyrrtdnsxukihdv.supabase.co',
+    anonKey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprZ3ZjeHlycnRkbnN4dWtpaGR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4MDYwNjksImV4cCI6MjA5NzM4MjA2OX0.k7PiwHPX0gy62WnhfA5Q6JsD06duYdSQOsODWxLA02w'
   }
 };
 var _sbClient=null,_sbClientUid=null;
@@ -2646,7 +2654,7 @@ function initApp(){
   // 원수사관리: branch_manager만 표시
   var isAdmin=(_ROLE==='branch_manager');
   ['hn-admin','dr-admin'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display=isAdmin?'':'none';});
-  // 업무전산: WD23000(지점장)만 표시
+  // 업무전산: SUPABASE_CONFIG_BY_UID에 등록된 UID(WD23000/WD26001/WD26002)만 표시
   var sysBtn=document.getElementById('hub-system-btn');if(sysBtn)sysBtn.style.display=hubSystemAllowed()?'':'none';
 }
 
@@ -3853,7 +3861,7 @@ function swManualTab(btn,id){
 function goWkitAI(){goPage('wkit');setTimeout(function(){var b=document.getElementById('wk-ai-btn');if(b)b.click();},50);}
 function swHubTab(btn,id){var tabs=['hub-tools','hub-official','hub-channel','hub-drive','hub-system'];tabs.forEach(function(t){var el=document.getElementById(t);if(el)el.style.display=t===id?'':'none';});btn.closest('.itabs').querySelectorAll('.itab').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');if(id==='hub-system')renderHubSystem();}
 
-// ══ 업무전산 (지점장 WD23000 전용 참고 메뉴 · ID/PW 저장 없음, 회사명+접속주소만) ══
+// ══ 업무전산 (계정별 Supabase 분리 — 각자 본인 UID 기준 자기 데이터만 조회/저장) ══
 var HUB_SYSTEM_DATA={
   nonlife:[
     {name:'DB손해보험',url:'https://www.mdbins.com/'},
@@ -3886,7 +3894,7 @@ var HUB_SYSTEM_DATA={
     {name:'흥국생명',url:'https://sales.heungkuklife.co.kr/'}
   ]
 };
-function hubSystemAllowed(){return _UID==='WD23000';}
+function hubSystemAllowed(){return !!SUPABASE_CONFIG_BY_UID[_UID];}
 function hubSystemLinkBtn(c){
   if(c.url){
     return '<a class="hs-link-btn" href="'+esc(c.url)+'" target="_blank" rel="noopener noreferrer">접속주소 열기 ↗</a>';
@@ -3894,7 +3902,7 @@ function hubSystemLinkBtn(c){
   return '<span class="hs-dash">링크 확인 필요</span>';
 }
 // ══ 업무전산 코드/ID/PW — Supabase 저장 연결 (V65) ══
-// 저장 대상: wd_partners_hub_system_accounts (최윤경 WD23000 개인 Supabase 전용)
+// 저장 대상: wd_partners_hub_system_accounts (로그인 UID별 개인 Supabase, uid=_UID 기준 분리)
 // 주의: localStorage에는 절대 저장하지 않음(메모리 캐시 HUB_SYSTEM_SAVED만 사용, 새로고침 시 재조회)
 var HUB_SYSTEM_SAVED={};
 function hubSystemSavedKey(companyType,companyName){return companyType+'|'+companyName;}
@@ -3917,13 +3925,39 @@ function hubSystemCardView(c,type,idx){
   var saved=HUB_SYSTEM_SAVED[hubSystemSavedKey(hubSystemCompanyType(type),c.name)];
   var codeRow=saved&&saved.carrier_code?esc(saved.carrier_code):'<span class="hs-dash">미등록</span>';
   var idRow=saved&&saved.login_id?esc(saved.login_id):'<span class="hs-dash">미등록</span>';
-  var pwRow=saved&&saved.login_pw?'********':'<span class="hs-dash">-</span>';
+  var pwRow;
+  if(saved&&saved.login_pw){
+    // PW 보기/숨김: 화면 상태만 유지(메모리 HUB_SYSTEM_SAVED에서 매번 읽어옴, 별도 저장 없음). 새로고침 시 기본값(숨김)으로 복귀.
+    pwRow='<span id="hs-pwval-'+type+'-'+idx+'" data-shown="0">********</span>'
+      +'<button type="button" class="hs-edit-btn" id="hs-pwtoggle-'+type+'-'+idx+'" style="margin-left:8px;padding:2px 10px;font-size:11px;" onclick="hubSystemTogglePw(\''+type+'\','+idx+')">보기</button>';
+  }else{
+    pwRow='<span class="hs-dash">-</span>';
+  }
   return '<div class="hs-card-top"><div class="hs-name">'+esc(c.name)+'</div>'
     +'<button class="hs-edit-btn" onclick="hubSystemEditCard(\''+type+'\','+idx+')">수정</button></div>'
     +'<div class="hs-row"><span class="hs-label">🌐 접속전산</span>'+hubSystemLinkBtn(c)+'</div>'
     +'<div class="hs-row"><span class="hs-label">🔑 코드</span><span>'+codeRow+'</span></div>'
     +'<div class="hs-row"><span class="hs-label">👤 ID</span><span>'+idRow+'</span></div>'
-    +'<div class="hs-row"><span class="hs-label">🔒 PW</span><span>'+pwRow+'</span></div>';
+    +'<div class="hs-row"><span class="hs-label">🔒 PW</span><span style="display:flex;align-items:center;">'+pwRow+'</span></div>';
+}
+// PW 보기/숨김 토글 — 카드별 독립 동작. PW 원문은 console에 출력하지 않고, localStorage/sessionStorage에도 저장하지 않음(메모리 HUB_SYSTEM_SAVED에서만 즉시 읽어옴).
+function hubSystemTogglePw(type,idx){
+  var c=HUB_SYSTEM_DATA[type][idx];if(!c)return;
+  var saved=HUB_SYSTEM_SAVED[hubSystemSavedKey(hubSystemCompanyType(type),c.name)];
+  if(!saved||!saved.login_pw)return;
+  var valEl=document.getElementById('hs-pwval-'+type+'-'+idx);
+  var btnEl=document.getElementById('hs-pwtoggle-'+type+'-'+idx);
+  if(!valEl||!btnEl)return;
+  var shown=valEl.getAttribute('data-shown')==='1';
+  if(shown){
+    valEl.textContent='********';
+    valEl.setAttribute('data-shown','0');
+    btnEl.textContent='보기';
+  }else{
+    valEl.textContent=saved.login_pw;
+    valEl.setAttribute('data-shown','1');
+    btnEl.textContent='숨김';
+  }
 }
 function hubSystemCardEdit(c,type,idx){
   var saved=HUB_SYSTEM_SAVED[hubSystemSavedKey(hubSystemCompanyType(type),c.name)];
@@ -3947,7 +3981,7 @@ function hubSystemCancelEdit(type,idx){
   var c=HUB_SYSTEM_DATA[type][idx];if(!c)return;
   box.innerHTML=hubSystemCardView(c,type,idx);
 }
-// 저장: WD23000 Supabase upsert. 실패 시 저장된 것처럼 보이지 않게 명확히 알림.
+// 저장: 현재 로그인 UID(_UID) 기준 Supabase upsert. 실패 시 저장된 것처럼 보이지 않게 명확히 알림.
 async function saveHubSystemAccount(payload){
   var sb=getSbClient();
   if(!sb){
