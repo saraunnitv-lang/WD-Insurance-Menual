@@ -2451,7 +2451,7 @@ WD WAVE 은퇴 준비 점검 서비스 소개 포함
 <script>
 /* ══ 앱 버전 체크 (배포 후 캐시 대응) ══
    ※ 다음 버전 작업 시 Claude는 이 APP_VERSION 값을 출력 파일 버전에 맞춰 함께 변경할 것 */
-var APP_VERSION='WD_PARTNERS_260630_V67';
+var APP_VERSION='WD_PARTNERS_260630_V68';
 (function checkAppVersionRefresh(){
   try{
     var key='WD_PARTNERS_APP_VERSION';
@@ -2646,7 +2646,9 @@ function changePw(){
 
 // ══ 앱 초기화 ══
 function initApp(){
-  setHomeGreet();renderTodos();renderHomeCusts();renderCustList();
+  setHomeGreet();renderTodos();
+  renderCustList(); // 로딩 중 상태로 즉시 1회 표시
+  loadCustomersFromSupa().then(function(){renderHomeCusts();renderCustList();});
   try{var el=document.getElementById('claim-doc');if(el&&CLAIM)el.textContent=CLAIM['외래'];}catch(e){console.warn('initApp claim-doc:',e);}
   // 설계매니저 메뉴: 모든 계정 표시
   var mgrMenus=['hn-manager'];
@@ -2669,7 +2671,7 @@ function goPage(id){
     var bt=document.getElementById('bt-'+p);if(bt)bt.classList.toggle('on',p===id);
     var dr=document.querySelector('.dr-item[onclick*="\''+p+'\'"]');if(dr){dr.classList.toggle('on',p===id);}
   });
-  if(id==='cust'){showCustList();renderCustList();}
+  if(id==='cust'){showCustList();renderCustList();loadCustomersFromSupa().then(function(){renderCustList();});}
   if(id==='manager'){renderManagerPage();}
   if(id==='admin'){renderAdminPage();}
   if(id==='design'){openDesignCustPick();}
@@ -2785,8 +2787,93 @@ function renderTodos(){
 
 // ══ 고객 ══
 function lsC(){return 'wlp_cust_'+_UID;}
-function getCusts(){try{return JSON.parse(localStorage.getItem(lsC())||'[]');}catch(e){return[];}}
-function saveCusts(d){localStorage.setItem(lsC(),JSON.stringify(d));}
+// ══ 고객 데이터 — Supabase 연결 (V68) ══
+// 기존 동기 getCusts()/saveCusts() 호출부를 그대로 두기 위해, 메모리 캐시(CURRENT_CUSTOMERS) 패턴 사용.
+// getCusts()는 캐시만 반환(동기) / 실제 조회는 loadCustomersFromSupa()(비동기) / 저장은 saveCusts()가 Supabase 성공 후에만 캐시 갱신.
+// localStorage는 더 이상 고객 데이터 저장에 쓰지 않음(기존 wlp_cust_{UID} 키 자체는 삭제하지 않음, 단 새로 쓰지 않음).
+var CURRENT_CUSTOMERS=[];
+var _custUidLoaded=null;
+var _custLoadError=false;
+function getCusts(){return CURRENT_CUSTOMERS;}
+async function loadCustomersFromSupa(){
+  var sb=getSbClient();
+  if(!sb){
+    _custLoadError=true;
+    console.error('[customers load] Supabase client 없음');
+    return {ok:false,reason:'NO_SUPABASE_CLIENT'};
+  }
+  try{
+    var res=await sb.from('wd_partners_customers').select('data').eq('uid',_UID).order('created_at',{ascending:true});
+    if(res.error){
+      _custLoadError=true;
+      console.error('[customers load]',res.error.message);
+      return {ok:false,reason:'LOAD_ERROR'};
+    }
+    CURRENT_CUSTOMERS=(res.data||[]).map(function(row){return row.data;});
+    _custUidLoaded=_UID;
+    _custLoadError=false;
+    return {ok:true};
+  }catch(e){
+    _custLoadError=true;
+    console.error('[customers load]',e&&e.message);
+    return {ok:false,reason:'LOAD_EXCEPTION'};
+  }
+}
+// 저장: d(전체 고객 배열)를 Supabase에 upsert(uid+id 기준). 실패 시 캐시 갱신 안 함(저장 성공처럼 보이지 않게).
+async function saveCusts(d){
+  var sb=getSbClient();
+  if(!sb){
+    alert('고객 저장 실패: Supabase 연결을 확인해주세요.');
+    return {ok:false,reason:'NO_SUPABASE_CLIENT'};
+  }
+  var rows=d.map(function(c){
+    return {
+      uid:_UID,
+      id:c.id,
+      name:c.name||'',
+      phone:c.phone||'',
+      ctype:c.ctype||'',
+      data:c,
+      created_at:c.created||new Date().toISOString(),
+      updated_at:c.updated||new Date().toISOString()
+    };
+  });
+  try{
+    var res=await sb.from('wd_partners_customers').upsert(rows,{onConflict:'uid,id'});
+    if(res.error){
+      console.error('[customers save]',res.error.message);
+      alert('고객 저장 실패: '+res.error.message);
+      return {ok:false,reason:'SAVE_ERROR'};
+    }
+    CURRENT_CUSTOMERS=d;
+    return {ok:true};
+  }catch(e){
+    console.error('[customers save]',e&&e.message);
+    alert('고객 저장 실패: '+(e&&e.message?e.message:'네트워크 오류'));
+    return {ok:false,reason:'SAVE_EXCEPTION'};
+  }
+}
+// 삭제: Supabase에서 uid+id 기준 행 삭제 성공 후에만 캐시/화면 갱신
+async function deleteCustomerFromSupa(id){
+  var sb=getSbClient();
+  if(!sb){
+    alert('고객 삭제 실패: Supabase 연결을 확인해주세요.');
+    return {ok:false,reason:'NO_SUPABASE_CLIENT'};
+  }
+  try{
+    var res=await sb.from('wd_partners_customers').delete().eq('uid',_UID).eq('id',id);
+    if(res.error){
+      console.error('[customer delete]',res.error.message);
+      alert('고객 삭제 실패: '+res.error.message);
+      return {ok:false,reason:'DELETE_ERROR'};
+    }
+    return {ok:true};
+  }catch(e){
+    console.error('[customer delete]',e&&e.message);
+    alert('고객 삭제 실패: '+(e&&e.message?e.message:'네트워크 오류'));
+    return {ok:false,reason:'DELETE_EXCEPTION'};
+  }
+}
 var BD={'신규':'b-new','진행중':'b-ing','완료':'b-done','보류':'b-hold','중단':'b-stop'};
 function badge(s){return'<span class="badge '+(BD[s]||'b-stop')+'">'+esc(s)+'</span>';}
 function cstFormatPhone(v){
@@ -2926,7 +3013,7 @@ sv('ci-job',c.job);sv('ci-route',c.route);sv('ci-regdate',c.regdate);sv('ci-spec
 document.getElementById('ci-rrn1').value='';document.getElementById('ci-rrn2').value='';
 setCustActionBtns(true);
 openModal('modal-cust');}
-function _custBuildRecord(){
+async function _custBuildRecord(){
   var n=document.getElementById('ci-name').value.trim();if(!n){alert('고객이름을 입력하세요.');return null;}
   var eid=document.getElementById('ec-id').value,cs=getCusts();
   var prev=eid?(cs.find(function(x){return x.id==eid;})||{}):{};
@@ -2945,13 +3032,14 @@ function _custBuildRecord(){
     design:prev.design||'미의뢰',claim:prev.claim||'없음',
     next:prev.next||'',memo:prev.memo||'',mat:prev.mat||'',matLogs:Array.isArray(prev.matLogs)?prev.matLogs:[],
     created:eid?(prev.created||new Date().toISOString()):new Date().toISOString(),updated:new Date().toISOString()};
-  if(eid){cs=cs.map(function(c){return c.id==eid?d:c;});}else{cs.push(d);}
-  saveCusts(cs);
+  if(eid){cs=cs.map(function(c){return c.id==eid?d:c;});}else{cs=cs.concat([d]);}
+  var result=await saveCusts(cs);
+  if(!result.ok)return null; // 저장 실패 시 유효성 실패와 동일하게 처리(화면 진행 안 함)
   return d;
 }
-function saveCust(){var d=_custBuildRecord();if(!d)return;document.getElementById('ec-id').value=d.id;renderCustList();renderHomeCusts();setCustActionBtns(true);}
-function saveCustGo(dest){
-  var d=_custBuildRecord();if(!d)return;
+async function saveCust(){var d=await _custBuildRecord();if(!d)return;document.getElementById('ec-id').value=d.id;renderCustList();renderHomeCusts();setCustActionBtns(true);}
+async function saveCustGo(dest){
+  var d=await _custBuildRecord();if(!d)return;
   closeModal('modal-cust');renderCustList();renderHomeCusts();
   showDetail(d.id);
   // 기존 탭 이동 구조 안에서만 처리
@@ -2980,7 +3068,16 @@ function setCustActionBtns(enabled){
   var hint=document.getElementById('cust-act-hint');
   if(hint)hint.style.display=enabled?'':'none';
 }
-function deleteCust(){if(!_vid)return;var c=getCusts().find(function(x){return x.id==_vid;});if(!c||!confirm('"'+c.name+'" 고객을 삭제할까요?'))return;saveCusts(getCusts().filter(function(x){return x.id!=_vid;}));_vid=null;showCustList();renderCustList();}
+async function deleteCust(){
+  if(!_vid)return;
+  var c=getCusts().find(function(x){return x.id==_vid;});
+  if(!c||!confirm('"'+c.name+'" 고객을 삭제할까요?'))return;
+  var id=_vid;
+  var result=await deleteCustomerFromSupa(id);
+  if(!result.ok)return; // 삭제 실패 시 화면 갱신하지 않음(삭제된 것처럼 보이지 않게)
+  CURRENT_CUSTOMERS=CURRENT_CUSTOMERS.filter(function(x){return x.id!=id;});
+  _vid=null;showCustList();renderCustList();
+}
 
 /* ══ 만나이 계산 ══ */
 /* ══ 고객구분 4기준 통일 ══ */
@@ -3049,10 +3146,10 @@ function enterCustEditMode(id){
 
 function cancelCustEditMode(id){showDetail(id);}
 
-function saveCustInline(id){
+async function saveCustInline(id){
   var n=(document.getElementById('ie-name').value||'').trim();
   if(!n){alert('고객이름을 입력하세요.');return;}
-  var cs=getCusts();var idx=cs.findIndex(function(x){return x.id==id;});
+  var cs=getCusts().slice();var idx=cs.findIndex(function(x){return x.id==id;});
   if(idx<0)return;
   var prev=cs[idx];
   function gv(k){var el=document.getElementById(k);return el?el.value.trim():'';}
@@ -3084,7 +3181,8 @@ function saveCustInline(id){
     created:prev.created||new Date().toISOString(),
     updated:new Date().toISOString()
   };
-  saveCusts(cs);
+  var result=await saveCusts(cs);
+  if(!result.ok)return; // 저장 실패 시 화면 갱신하지 않음(성공처럼 보이지 않게)
   renderCustList();renderHomeCusts();
   showDetail(id);
 }
@@ -3185,8 +3283,8 @@ function saveComm(){
   saveComms(list);
   // 다음연락예정일 → 고객 c.next 업데이트 (홈 연결)
   if(nd&&_vid){
-    var cs=getCusts();var idx=cs.findIndex(function(x){return x.id==_vid;});
-    if(idx>=0){cs[idx].next=nd;cs[idx].updated=new Date().toISOString();saveCusts(cs);}
+    var cs=getCusts().slice();var idx=cs.findIndex(function(x){return x.id==_vid;});
+    if(idx>=0){cs[idx]=Object.assign({},cs[idx],{next:nd,updated:new Date().toISOString()});saveCusts(cs);}
   }
   renderHomeCusts();
   closeModal('modal-comm');
@@ -3301,11 +3399,13 @@ function openCtypeEdit(custId, badgeEl){
     var d=document.createElement('div');
     d.className='ctype-select-opt'+(curType===v?' sel':'');
     d.textContent=v;
-    d.onclick=function(){
-      var cs=getCusts();var idx=cs.findIndex(function(x){return x.id==custId;});
+    d.onclick=async function(){
+      var cs=getCusts().slice();var idx=cs.findIndex(function(x){return x.id==custId;});
       if(idx<0){wrap.remove();return;}
-      cs[idx].ctype=v;cs[idx].updated=new Date().toISOString();
-      saveCusts(cs);wrap.remove();
+      cs[idx]=Object.assign({},cs[idx],{ctype:v,updated:new Date().toISOString()});
+      var result=await saveCusts(cs);
+      wrap.remove();
+      if(!result.ok)return; // 저장 실패 시 화면 갱신하지 않음
       showDetail(custId);renderCustList();
     };
     wrap.appendChild(d);
@@ -3329,10 +3429,12 @@ function confirmDeleteCust(id){
   document.getElementById('del-cust-name').textContent=c.name;
   openModal('modal-del-cust');
 }
-function deleteCustById(){
+async function deleteCustById(){
   if(!_delCustId)return;
   var id=_delCustId;
-  saveCusts(getCusts().filter(function(x){return x.id!=id;}));
+  var result=await deleteCustomerFromSupa(id);
+  if(!result.ok)return; // 삭제 실패 시 모달 닫지 않고 화면도 갱신하지 않음
+  CURRENT_CUSTOMERS=CURRENT_CUSTOMERS.filter(function(x){return x.id!=id;});
   if(_vid==id){_vid=null;}
   _delCustId=null;
   closeModal('modal-del-cust');
@@ -3344,10 +3446,13 @@ function filtC(){var q=(document.getElementById('cust-q')||{}).value||'',f=(docu
 function renderCustList(){
   var cs=filtC().slice().sort(function(a,b){return(a.name||'').localeCompare(b.name||'','ko-KR');});
   var tb=document.getElementById('cust-tbody');
-  if(tb){if(!cs.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--s400);">등록된 고객이 없습니다</td></tr>';}
+  var errMsg='고객 목록을 불러오지 못했습니다. 네트워크 상태를 확인 후 다시 시도해주세요.';
+  if(tb){if(_custLoadError){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--rd700);">'+errMsg+'</td></tr>';}
+  else if(!cs.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--s400);">등록된 고객이 없습니다</td></tr>';}
   else{tb.innerHTML=cs.map(function(c){var ctVal=normalizeCustomerType(c.ctype);return'<tr onclick="showDetail('+c.id+')" style="cursor:pointer;">'+'<td class="cn">'+esc(c.name)+'</td>'+'<td>'+esc(c.birth||'-')+'</td>'+'<td>'+esc(c.phone||'-')+'</td>'+'<td>'+esc(c.gender||'-')+'</td>'+'<td>'+esc(c.job||'-')+'</td>'+'<td><span style="display:inline-block;padding:3px 10px;border-radius:12px;background:var(--lav);color:var(--purple);font-size:13px;font-weight:700;">'+esc(ctVal)+'</span></td>'+'<td style="text-align:center;white-space:nowrap;" onclick="event.stopPropagation()">'+'<button class="btn-sm" style="background:var(--s100);color:var(--s700);margin-right:3px;font-size:13px;" onclick="event.stopPropagation();showDetail('+c.id+')">보기</button>'+'<button class="btn-sm p" style="margin-right:3px;font-size:13px;" onclick="event.stopPropagation();openCustEdit('+c.id+')">수정</button>'+'<button class="btn-sm d" style="font-size:13px;" onclick="event.stopPropagation();confirmDeleteCust('+c.id+')">🗑</button>'+'</td>'+'</tr>';}).join('');}}
   var m=document.getElementById('cust-tbl-m');
-  if(m){if(!cs.length){m.innerHTML='<div class="empty"><div class="e-ico">👥</div><div class="e-txt">등록된 고객이 없어요</div></div>';}
+  if(m){if(_custLoadError){m.innerHTML='<div class="empty"><div class="e-ico">⚠️</div><div class="e-txt">'+errMsg+'</div></div>';}
+  else if(!cs.length){m.innerHTML='<div class="empty"><div class="e-ico">👥</div><div class="e-txt">등록된 고객이 없어요</div></div>';}
   else{m.innerHTML=cs.map(function(c){var ctVal=normalizeCustomerType(c.ctype);return'<div class="cust-card-m" onclick="showDetail('+c.id+')">'+'<div class="cc-top"><div class="cc-name">'+esc(c.name)+'</div>'+'<span style="padding:3px 9px;border-radius:12px;background:var(--lav);color:var(--purple);font-size:11px;font-weight:700;">'+esc(ctVal)+'</span>'+'</div>'+'<div class="cc-meta">'+esc(c.phone||'-')+(c.birth?'<span>'+esc(c.birth)+'</span>':'')+(c.gender?'<span>'+esc(c.gender)+'</span>':'')+(c.job?'<span>'+esc(c.job)+'</span>':'')+'</div>'+'<div class="cc-btns" onclick="event.stopPropagation()">'+'<button class="btn-sm" style="background:var(--s100);color:var(--s700);font-size:13px;" onclick="event.stopPropagation();showDetail('+c.id+')">보기</button>'+'<button class="btn-sm p" style="font-size:13px;" onclick="event.stopPropagation();openCustEdit('+c.id+')">수정</button>'+'<button class="btn-sm d" style="font-size:13px;" onclick="event.stopPropagation();confirmDeleteCust('+c.id+')">🗑</button>'+'</div>'+'</div>';}).join('');}}
   renderCustStats();
 }
@@ -3641,10 +3746,15 @@ function claimDetailDelete(){
 function _matGetCust(){return getCusts().find(function(x){return x.id==_vid;});}
 function _matSaveLogs(c,logs){
   var cs=getCusts();
-  c.matLogs=logs;
-  c.mat=logs.map(function(x){return '['+(x.date||'-')+'] '+(x.content||'');}).join('\n');
-  c.updated=new Date().toISOString();
-  saveCusts(cs.map(function(x){return x.id==_vid?c:x;}));
+  var idx=cs.findIndex(function(x){return x.id===c.id;});
+  if(idx<0)return;
+  var updated=Object.assign({},c,{
+    matLogs:logs,
+    mat:logs.map(function(x){return '['+(x.date||'-')+'] '+(x.content||'');}).join('\n'),
+    updated:new Date().toISOString()
+  });
+  var newCs=cs.slice();newCs[idx]=updated;
+  saveCusts(newCs);
 }
 function openMatAdd(){
   document.getElementById('modal-mat-rec-t').textContent='자료전달 기록 추가';
