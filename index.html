@@ -2451,7 +2451,7 @@ WD WAVE 은퇴 준비 점검 서비스 소개 포함
 <script>
 /* ══ 앱 버전 체크 (배포 후 캐시 대응) ══
    ※ 다음 버전 작업 시 Claude는 이 APP_VERSION 값을 출력 파일 버전에 맞춰 함께 변경할 것 */
-var APP_VERSION='WD_PARTNERS_260630_V77';
+var APP_VERSION='WD_PARTNERS_260630_V78';
 (function checkAppVersionRefresh(){
   try{
     var key='WD_PARTNERS_APP_VERSION';
@@ -2774,13 +2774,13 @@ async function loadTodosFromSupa(){
     return {ok:false,reason:'NO_SUPABASE_CLIENT'};
   }
   try{
-    var res=await sb.from('wd_partners_todos').select('data').eq('uid',_UID).order('created_at',{ascending:true});
+    var res=await sb.from('wd_partners_todos').select('id,txt,date,done').eq('uid',_UID).order('created_at',{ascending:true});
     if(res.error){
       _todoLoadError=true;
       console.error('[todos load]',res.error.message);
       return {ok:false,reason:'LOAD_ERROR'};
     }
-    TODO_CACHE=(res.data||[]).map(function(row){return row.data;});
+    TODO_CACHE=(res.data||[]).map(function(row){return {id:row.id,txt:row.txt,date:row.date,done:row.done};});
     _todoLoadError=false;
     return {ok:true};
   }catch(e){
@@ -2803,7 +2803,6 @@ async function saveTodos(d){
       txt:r.txt||'',
       date:r.date||'',
       done:!!r.done,
-      data:r,
       created_at:r.created||new Date().toISOString(),
       updated_at:new Date().toISOString()
     };
