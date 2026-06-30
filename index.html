@@ -2451,7 +2451,7 @@ WD WAVE 은퇴 준비 점검 서비스 소개 포함
 <script>
 /* ══ 앱 버전 체크 (배포 후 캐시 대응) ══
    ※ 다음 버전 작업 시 Claude는 이 APP_VERSION 값을 출력 파일 버전에 맞춰 함께 변경할 것 */
-var APP_VERSION='WD_PARTNERS_260630_V71';
+var APP_VERSION='WD_PARTNERS_260630_V72';
 (function checkAppVersionRefresh(){
   try{
     var key='WD_PARTNERS_APP_VERSION';
@@ -2589,6 +2589,17 @@ function getSbClient(){
   _sbClientUid=_UID;
   return _sbClient;
 }
+// 설계매니저 전용 client (V72) — 로그인 계정과 무관하게 항상 최윤경 WD23000 Supabase 프로젝트를 사용.
+// 설계매니저는 공용 데이터라 WD26001/WD26002 계정에서도 이 client로 조회함(쓰기는 mgrIsAdmin()으로 앱단에서 막고, RLS에서도 한 번 더 막힘).
+var _mgrSbClient=null;
+function getManagerSbClient(){
+  if(_mgrSbClient)return _mgrSbClient;
+  if(!window.supabase||!window.supabase.createClient)return null;
+  var cfg=SUPABASE_CONFIG_BY_UID.WD23000;
+  if(!cfg)return null;
+  _mgrSbClient=window.supabase.createClient(cfg.url,cfg.anonKey);
+  return _mgrSbClient;
+}
 
 function getUsers(){try{return JSON.parse(localStorage.getItem(LS_U)||'null');}catch(e){return null;}}
 function initU(){var u=getUsers();if(!u){localStorage.setItem(LS_U,JSON.stringify(USERS));return USERS;}Object.keys(USERS).forEach(function(k){if(!u[k])u[k]=USERS[k];});localStorage.setItem(LS_U,JSON.stringify(u));return u;}
@@ -2672,7 +2683,7 @@ function goPage(id){
     var dr=document.querySelector('.dr-item[onclick*="\''+p+'\'"]');if(dr){dr.classList.toggle('on',p===id);}
   });
   if(id==='cust'){showCustList();renderCustList();loadCustomersFromSupa().then(function(){renderCustList();});}
-  if(id==='manager'){renderManagerPage();}
+  if(id==='manager'){renderManagerPage();loadManagersFromSupa().then(function(){renderManagerPage();});}
   if(id==='admin'){renderAdminPage();}
   if(id==='design'){openDesignCustPick();}
   if(id==='wkit'){renderCnsl();var wc=document.getElementById('wk-counsel');if(wc&&wc.style.display==='none'){var b=document.getElementById('wk-counsel-btn');if(b)b.click();}}
@@ -4983,14 +4994,103 @@ function renderCnsl(){renderCnslCats();renderCnslFlow();}
 // ══════════════════════════════════════════════════════
 // v09 신규 — 설계매니저 연락표
 // ══════════════════════════════════════════════════════
-var LS_MGR='wlp_managers'; // 전체 공유 (사번 무관)
+var LS_MGR='wlp_managers'; // 전체 공유 (사번 무관) — V72부터 localStorage 신규 저장 없음, 기존 키는 삭제하지 않음
+// ══ 설계매니저 연락표 — Supabase 연결 (V72) ══
+// 공용 데이터: WD23000/WD26001/WD26002 모두 같은 최윤경 Supabase(wd_partners_managers)를 조회.
+// 쓰기(추가/수정/삭제)는 WD23000만 — 앱단(mgrIsAdmin) + RLS 양쪽에서 막음.
+var MANAGER_CACHE=[];
+var _mgrLoadError=false;
+function getMgrs(){return MANAGER_CACHE;}
+async function loadManagersFromSupa(){
+  var sb=getManagerSbClient();
+  if(!sb){
+    _mgrLoadError=true;
+    console.error('[managers load] Supabase client 없음');
+    return {ok:false,reason:'NO_SUPABASE_CLIENT'};
+  }
+  try{
+    var res=await sb.from('wd_partners_managers').select('data').order('type',{ascending:true}).order('insurer',{ascending:true});
+    if(res.error){
+      _mgrLoadError=true;
+      console.error('[managers load]',res.error.message);
+      return {ok:false,reason:'LOAD_ERROR'};
+    }
+    MANAGER_CACHE=(res.data||[]).map(function(row){return row.data;});
+    _mgrLoadError=false;
+    return {ok:true};
+  }catch(e){
+    _mgrLoadError=true;
+    console.error('[managers load]',e&&e.message);
+    return {ok:false,reason:'LOAD_EXCEPTION'};
+  }
+}
+// 저장: WD23000일 때만 실행. 배열 전체를 id 기준 upsert. 실패 시 캐시 갱신 안 함.
+async function saveMgrs(d){
+  if(!mgrIsAdmin()){
+    alert('설계매니저 정보는 관리자만 수정할 수 있습니다.');
+    return {ok:false,reason:'NOT_ADMIN'};
+  }
+  var sb=getManagerSbClient();
+  if(!sb){
+    alert('설계매니저 저장 실패: Supabase 연결을 확인해주세요.');
+    return {ok:false,reason:'NO_SUPABASE_CLIENT'};
+  }
+  var rows=d.map(function(r){
+    return {
+      id:r.id,
+      uid:'WD23000',
+      type:r.type||'',
+      insurer:r.insurer||'',
+      branch_name:r.branchName||'',
+      it_helpdesk:r.itHelpdesk||r.helpdesk||'',
+      data:r,
+      created_at:r.created||new Date().toISOString(),
+      updated_at:r.updated||new Date().toISOString()
+    };
+  });
+  try{
+    var res=await sb.from('wd_partners_managers').upsert(rows,{onConflict:'id'});
+    if(res.error){
+      console.error('[managers save]',res.error.message);
+      alert('설계매니저 저장 실패: '+res.error.message);
+      return {ok:false,reason:'SAVE_ERROR'};
+    }
+    MANAGER_CACHE=d;
+    return {ok:true};
+  }catch(e){
+    console.error('[managers save]',e&&e.message);
+    alert('설계매니저 저장 실패: '+(e&&e.message?e.message:'네트워크 오류'));
+    return {ok:false,reason:'SAVE_EXCEPTION'};
+  }
+}
+// 삭제: WD23000일 때만 실행. id 기준 삭제, 성공 시에만 캐시 갱신.
+async function _managerDeleteFromSupa(id){
+  if(!mgrIsAdmin()){
+    alert('설계매니저 정보는 관리자만 수정할 수 있습니다.');
+    return false;
+  }
+  var sb=getManagerSbClient();
+  if(!sb){alert('설계매니저 삭제 실패: Supabase 연결을 확인해주세요.');return false;}
+  try{
+    var res=await sb.from('wd_partners_managers').delete().eq('id',id);
+    if(res.error){
+      console.error('[managers delete]',res.error.message);
+      alert('설계매니저 삭제 실패: '+res.error.message);
+      return false;
+    }
+  }catch(e){
+    console.error('[managers delete]',e&&e.message);
+    alert('설계매니저 삭제 실패: '+(e&&e.message?e.message:'네트워크 오류'));
+    return false;
+  }
+  MANAGER_CACHE=MANAGER_CACHE.filter(function(x){return x.id!==id;});
+  return true;
+}
 var _mgrTab='손보';
 var _mgrOpen={};
 var INSURERS_NONLIFE=['메리츠화재','DB손해보험','현대해상','KB손해보험','삼성화재','한화손해보험','흥국화재','롯데손해보험','NH농협손해보험','MG손해보험','하나손해보험','라이나손해보험','AIG손해보험','기타'];
 var INSURERS_LIFE=['삼성생명','한화생명','교보생명','신한라이프','미래에셋생명','동양생명','ABL생명','DB생명','KB라이프생명','NH농협생명','흥국생명','라이나생명','메트라이프생명','푸본현대생명','KDB생명','기타'];
 
-function getMgrs(){try{return JSON.parse(localStorage.getItem(LS_MGR)||'[]');}catch(e){return[];}}
-function saveMgrs(d){localStorage.setItem(LS_MGR,JSON.stringify(d));}
 function getAffil(type){return type==='손보'?'우리동네 보험지킴이':'메가종합금융';}
 
 function swMgrTab(btn,type){
@@ -5015,8 +5115,12 @@ function renderManagerPage(){
   var addBtn=document.getElementById('mgr-add-btn-wrap');
   if(addBtn)addBtn.style.display=mgrIsAdmin()?'':'none';
 
-  var mgrs=getMgrs().filter(function(m){return m.type===_mgrTab;});
   var el=document.getElementById('mgr-list');if(!el)return;
+  if(_mgrLoadError){
+    el.innerHTML='<div class="card" style="text-align:center;padding:32px 20px;color:var(--rd700);">설계매니저 연락표를 불러오지 못했습니다. 네트워크 상태를 확인 후 다시 시도해주세요.</div>';
+    return;
+  }
+  var mgrs=getMgrs().filter(function(m){return m.type===_mgrTab;});
 
   if(!mgrs.length){
     if(mgrIsAdmin()){
@@ -5124,7 +5228,7 @@ function openMgrEdit(origIdx){
   mgrRenderPeopleList();
   openModal('modal-mgr');
 }
-function saveMgr(){
+async function saveMgr(){
   if(!mgrIsAdmin()){alert('설계매니저 정보는 관리자만 수정할 수 있습니다.');return;}
   var insurer=document.getElementById('mgr-insurer').value;
   var type=document.getElementById('mgr-type').value;
@@ -5133,18 +5237,40 @@ function saveMgr(){
   var people=_mgrPeople.filter(function(p){return p.name&&p.name.trim();}).map(function(p){return{name:p.name.trim(),role:(p.role||'').trim(),phone:(p.phone||'').trim()};});
   if(!people.length){alert('관련인원을 최소 1명 입력해주세요.');return;}
   var eidx=document.getElementById('mgr-edit-idx').value;
-  var mgrs=getMgrs();
+  var mgrs=getMgrs().slice();
   var record={type:type,insurer:insurer,branchName:branchName,people:people,itHelpdesk:itHelpdesk,name:people[0].name,phone:people[0].phone};
-  if(eidx!==''){mgrs[parseInt(eidx)]={...mgrs[parseInt(eidx)],...record};}
-  else{record.created=new Date().toISOString();mgrs.push(record);}
-  saveMgrs(mgrs);closeModal('modal-mgr');_mgrOpen={};_mgrTab=type;
+  if(eidx!==''){
+    var prev=mgrs[parseInt(eidx)]||{};
+    record={...prev,...record};
+    record.id=(prev.id!=null)?prev.id:Date.now(); // id 없는 기존 레코드는 이 시점에 id 발급
+    record.created=prev.created||new Date().toISOString();
+    record.updated=new Date().toISOString();
+    mgrs[parseInt(eidx)]=record;
+  }else{
+    record.id=Date.now();
+    record.created=new Date().toISOString();
+    record.updated=new Date().toISOString();
+    mgrs=mgrs.concat([record]);
+  }
+  var result=await saveMgrs(mgrs);
+  if(!result.ok)return; // 저장 실패 시 모달 유지, 화면 갱신 안 함
+  closeModal('modal-mgr');_mgrOpen={};_mgrTab=type;
   document.getElementById('mgr-tabs').querySelectorAll('.itab').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-mgrtype')===type);});
   renderManagerPage();
 }
-function deleteMgr(idx){
+async function deleteMgr(idx){
   if(!mgrIsAdmin()){alert('설계매니저 정보는 관리자만 수정할 수 있습니다.');return;}
   if(!confirm('이 설계매니저 정보를 삭제할까요?'))return;
-  var mgrs=getMgrs();mgrs.splice(idx,1);saveMgrs(mgrs);_mgrOpen={};renderManagerPage();
+  var mgrs=getMgrs();
+  var target=mgrs[idx];
+  if(!target)return;
+  if(target.id==null){
+    alert('이 레코드는 고유 ID가 없어 삭제할 수 없습니다. 한 번 수정 후 다시 삭제해주세요.');
+    return;
+  }
+  var ok=await _managerDeleteFromSupa(target.id);
+  if(!ok)return; // 실패 시 화면 갱신하지 않음(삭제된 것처럼 보이지 않게)
+  _mgrOpen={};renderManagerPage();
 }
 // ══════════════════════════════════════════════════════
 var FLOW_STEPS=['첫 상담','기존보험 확인','담보 체크','알릴의무 확인','가입유형 선택','고객등록/설계동의','설계매니저 의뢰','설계안 취합','고객 제안 준비','계약 진행','계약 후 관리'];
