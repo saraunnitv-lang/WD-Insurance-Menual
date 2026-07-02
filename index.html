@@ -739,6 +739,44 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 #quick-memo-panel{display:none;position:fixed;bottom:82px;right:24px;z-index:8000;width:320px;background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:18px;border:1px solid var(--s100);}
 #quick-memo-panel.qm-open{display:block;}
 @media(max-width:480px){#quick-memo-panel{right:8px;left:8px;width:auto;bottom:78px;}}
+/* ══ 자동차보험(고객상세 auto-card-side 카드 / pg-auto 관리화면) 전용 — 전역 card/itabs/btn-sm에는 영향 없음 (v91수정) ══ */
+#auto-card-side .auto-card,#pg-auto .auto-card{border:1.5px solid var(--s200);border-radius:12px;padding:16px 18px;margin-bottom:12px;background:#fff;}
+#auto-card-side .auto-card-hd,#pg-auto .auto-card-hd{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
+#auto-card-side .auto-card-title,#pg-auto .auto-card-title{font-size:15px;font-weight:800;color:var(--navy);}
+#auto-card-side .auto-dday,#pg-auto .auto-dday{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:800;}
+.auto-dday.warn{background:rgba(239,68,68,.12);color:var(--rd700);}
+.auto-dday.soon{background:rgba(245,158,11,.14);color:#92400e;}
+.auto-dday.normal{background:var(--s100);color:var(--s600);}
+.auto-dday.done{background:rgba(16,185,129,.12);color:var(--em700);}
+#auto-card-side .auto-row,#pg-auto .auto-row{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--s600);margin-bottom:4px;}
+#auto-card-side .auto-row b,#pg-auto .auto-row b{color:var(--s400);font-weight:700;margin-right:4px;}
+#auto-card-side .auto-photo-status,#pg-auto .auto-photo-status{font-size:12px;color:var(--s500);}
+#auto-card-side .auto-photo-status a,#pg-auto .auto-photo-status a{color:var(--primary);font-weight:700;cursor:pointer;text-decoration:underline;}
+/* v91수정 — 고객상세 자동차보험 표 컬럼폭/상태 잘림방지/행강조. 전역 .rec-tbl/table/tr/td는 건드리지 않고 #auto-card-side로만 스코프 제한 */
+/* v99실행 — 고객상세 자동차보험 표(.auto-mini-table) 컬럼 간격 균일화 + 처리상태 뱃지 강조. #auto-card-side 스코프만, 전역 table/th/td 미변경 */
+#auto-card-side .auto-mini-table{width:100%;table-layout:auto;}
+#auto-card-side .auto-mini-table th,#auto-card-side .auto-mini-table td{padding:9px 10px;}
+#auto-card-side .auto-mini-table th:last-child,#auto-card-side .auto-mini-table td:last-child{padding-right:14px;}
+#auto-card-side .auto-mini-table col.auto-col-year{width:58px;}
+#auto-card-side .auto-mini-table col.auto-col-company{width:78px;}
+#auto-card-side .auto-mini-table col.auto-col-expiry{width:96px;}
+#auto-card-side .auto-mini-table col.auto-col-carnum{width:92px;}
+#auto-card-side .auto-mini-table col.auto-col-dday{width:62px;}
+#auto-card-side .auto-mini-table col.auto-col-status{width:82px;}
+#auto-card-side .auto-mini-table td.auto-col-year,#auto-card-side .auto-mini-table td.auto-col-company,#auto-card-side .auto-mini-table td.auto-col-expiry,#auto-card-side .auto-mini-table td.auto-col-carnum,#auto-card-side .auto-mini-table td.auto-col-dday{white-space:nowrap;}
+#auto-card-side .auto-mini-table td.auto-col-status,#auto-card-side .auto-mini-table th:last-child{white-space:nowrap;overflow:visible;text-overflow:clip;max-width:none;}
+#auto-card-side .auto-mini-table tr.auto-row-hq{background:rgba(104,84,178,.06);}
+#auto-card-side .auto-mini-table tr.auto-row-hq:hover{background:rgba(104,84,178,.12);}
+#auto-card-side .auto-status-main{color:#4A3F8A;font-weight:900;background:rgba(104,84,178,.10);border-radius:10px;padding:2px 8px;white-space:nowrap;}
+#auto-card-side .auto-status-other{color:var(--s500);font-weight:600;white-space:nowrap;}
+/* v98실행 — 자동차보험 만기관리 페이지 중앙정렬(#pg-auto 전용 스코프, 전역 .itabs/.card/.grid 미변경) */
+#pg-auto .auto-page-wrap{max-width:980px;margin:0 auto;width:100%;}
+#pg-auto .auto-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;}
+#pg-auto .auto-tabs .itab{flex:none;width:100%;text-align:center;padding:13px 10px;}
+#pg-auto .auto-list-card{max-width:100%;width:100%;margin:0 auto;}
+#pg-auto .auto-list-row{display:grid;grid-template-columns:60px 1fr 108px 96px 76px 96px 180px;gap:6px;align-items:center;padding:10px 6px;border-bottom:1px solid var(--s100);font-size:14px;}
+#pg-auto .auto-list-head{font-weight:700;color:var(--s400);font-size:13px;border-bottom:2px solid var(--s200);}
+@media(max-width:900px){#pg-auto .auto-page-wrap{max-width:100%;padding:0 16px;box-sizing:border-box;}#pg-auto .auto-tabs .itab{font-size:12px;padding:12px 4px;}#pg-auto .auto-list-row,#pg-auto .auto-list-head{display:block;padding:12px 8px;}#pg-auto .auto-list-head{display:none;}#pg-auto .auto-list-row{border:1.5px solid var(--s200);border-radius:12px;margin-bottom:10px;}#pg-auto .auto-list-row>div{padding:3px 0;}}
 </style>
 
 </head>
@@ -812,6 +850,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
       <button class="hn-btn on" onclick="goPage('home')" id="hn-home">홈</button>
       <button class="hn-btn" onclick="goPage('cust')" id="hn-cust">고객관리</button>
       <button class="hn-btn" onclick="goPage('design')" id="hn-design">설계업무</button>
+      <button class="hn-btn" onclick="goPage('auto')" id="hn-auto">자동차보험</button>
       <button class="hn-btn" onclick="goPage('claim')" id="hn-claim">청구업무</button>
       <button class="hn-btn" onclick="goPage('wkit')" id="hn-wkit">워크키트</button>
       <button class="hn-btn" onclick="goPage('manual')" id="hn-manual">메뉴얼북</button>
@@ -849,6 +888,9 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
     </div>
     <div class="dr-item" onclick="goPage('design');closeDrawer()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>설계업무
+    </div>
+    <div class="dr-item" id="dr-auto" onclick="goPage('auto');closeDrawer()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="10" width="22" height="8" rx="2"/><path d="M5 10l1.5-5h11L19 10"/><line x1="6" y1="17" x2="6" y2="17.01"/><line x1="18" y1="17" x2="18" y2="17.01"/></svg>자동차보험
     </div>
     <div class="dr-item" onclick="goPage('claim');closeDrawer()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>청구업무
@@ -1258,6 +1300,21 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
           <div class="card"><div class="card-title" style="margin-bottom:14px;">건강체 / 간편 기준</div><div class="info-box">건강체 심사: 최근 5년 내 입원·수술·검사·투약 이력이 없는 경우. 간편심사: 3가지 또는 5가지 고지 질문 기준으로 가입 가능 여부 판단. 고지 의무 위반 주의.</div></div>
         </div>
         <div class="notice-box">설계 PDF 전달 시 반드시 담당 보험사 약관과 고지 의무를 안내해 주세요. AI 설계 초안은 매니저 검토 후 전달하세요.</div>
+      </div>
+    </div>
+
+    <!-- ── 자동차보험 관리 ── -->
+    <div class="pg" id="pg-auto">
+      <div class="auto-page-wrap">
+      <div class="sec-hd"><div class="sec-title">자동차보험 만기관리</div><div class="sec-sub">올해 갱신 연락 상태만 관리합니다. 사진 등 상세 자료는 고객 상세에서 확인하세요.</div></div>
+      <div class="itabs auto-tabs" id="auto-filter-tabs">
+        <button class="itab on" data-t="pending" onclick="swAutoTab(this,'pending')">만기일확인</button>
+        <button class="itab" data-t="done" onclick="swAutoTab(this,'done')">갱신완료</button>
+        <button class="itab" data-t="moved" onclick="swAutoTab(this,'moved')">타사이동</button>
+      </div>
+      <div class="card auto-list-card">
+        <div id="auto-mgmt-list"></div>
+      </div>
       </div>
     </div>
 
@@ -2473,6 +2530,109 @@ WD WAVE 은퇴 준비 점검 서비스 소개 포함
   </div>
 </div>
 
+<!-- ── 자동차보험 입력/수정 모달 ── -->
+<div class="modal-ov" id="modal-auto-rec" onclick="closeModal('modal-auto-rec')">
+  <div class="modal-bx" style="max-width:520px;" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modal-auto-rec-t">자동차보험 기록 추가</div>
+    <input type="hidden" id="auto-edit-id">
+    <input type="hidden" id="auto-edit-custid">
+    <div class="fld" style="margin-bottom:14px;">
+      <label>보험년도</label>
+      <input type="text" id="auto-year" placeholder="예: 2026">
+    </div>
+    <div class="fld" style="margin-bottom:14px;">
+      <label>보험사</label>
+      <select id="auto-company" onchange="autoToggleCompanyCustom()"></select>
+    </div>
+    <div class="fld" id="auto-company-custom-wrap" style="display:none;margin-bottom:14px;">
+      <label>보험사 직접입력</label>
+      <input type="text" id="auto-company-custom" placeholder="보험사명을 입력하세요">
+    </div>
+    <div class="fld" style="margin-bottom:14px;">
+      <label>자동차 만기일</label>
+      <input type="date" id="auto-expiry">
+    </div>
+    <div class="fld" style="margin-bottom:14px;">
+      <label>차량번호</label>
+      <input type="text" id="auto-carnum" placeholder="예: 12가3456">
+    </div>
+    <div class="fld" style="margin-bottom:14px;">
+      <label>블랙박스 사진</label>
+      <input type="file" id="auto-file-blackbox" accept="image/*,.pdf" style="padding:8px 0;font-size:13px;">
+      <div id="auto-file-blackbox-cur" style="font-size:12px;color:var(--s500);margin-top:4px;"></div>
+    </div>
+    <div class="fld" style="margin-bottom:14px;">
+      <label>차량계기판 사진</label>
+      <input type="file" id="auto-file-dashboard" accept="image/*,.pdf" style="padding:8px 0;font-size:13px;">
+      <div id="auto-file-dashboard-cur" style="font-size:12px;color:var(--s500);margin-top:4px;"></div>
+    </div>
+    <div class="fld" style="margin-bottom:14px;">
+      <label>차량번호판 사진</label>
+      <input type="file" id="auto-file-plate" accept="image/*,.pdf" style="padding:8px 0;font-size:13px;">
+      <div id="auto-file-plate-cur" style="font-size:12px;color:var(--s500);margin-top:4px;"></div>
+    </div>
+    <div class="fld" style="margin-bottom:14px;">
+      <label>처리상태</label>
+      <select id="auto-result-status">
+        <option>본사계약</option>
+        <option>타사계약</option>
+      </select>
+    </div>
+    <div class="fld" style="margin-bottom:14px;">
+      <label>메모</label>
+      <textarea id="auto-memo" style="width:100%;min-height:70px;padding:10px 12px;border:1.5px solid var(--s200);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;resize:vertical;box-sizing:border-box;"></textarea>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-s" onclick="closeModal('modal-auto-rec')">취소</button>
+      <button class="btn-p" onclick="saveAutoRecord()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 자동차보험 상세 모달(사진3종/메모는 여기서만 표시) ── -->
+<div class="modal-ov" id="modal-auto-detail" onclick="closeModal('modal-auto-detail')">
+  <div class="modal-bx" style="max-width:520px;" onclick="event.stopPropagation()">
+    <div class="modal-title">자동차보험 상세</div>
+    <div class="cd-row"><div class="cd-label">보험년도</div><div class="cd-val" id="atd-year">-</div></div>
+    <div class="cd-row"><div class="cd-label">보험사</div><div class="cd-val" id="atd-company">-</div></div>
+    <div class="cd-row"><div class="cd-label">자동차 만기일</div><div class="cd-val" id="atd-expiry">-</div></div>
+    <div class="cd-row"><div class="cd-label">D-day</div><div class="cd-val" id="atd-dday">-</div></div>
+    <div class="cd-row"><div class="cd-label">차량번호</div><div class="cd-val" id="atd-carnum">-</div></div>
+    <div class="cd-row"><div class="cd-label">블랙박스 사진</div><div class="cd-val" id="atd-blackbox">첨부 없음</div></div>
+    <div class="cd-row"><div class="cd-label">차량계기판 사진</div><div class="cd-val" id="atd-dashboard">첨부 없음</div></div>
+    <div class="cd-row"><div class="cd-label">차량번호판 사진</div><div class="cd-val" id="atd-plate">첨부 없음</div></div>
+    <div class="cd-row"><div class="cd-label">처리상태</div><div class="cd-val" id="atd-result">-</div></div>
+    <div class="cd-row"><div class="cd-label">메모</div><div class="cd-box" id="atd-memo">-</div></div>
+    <div class="cd-row" style="margin-bottom:6px;"><div class="cd-label">등록일 / 수정일</div><div class="cd-val" id="atd-dates" style="font-size:12px;color:var(--s500);font-weight:600;">-</div></div>
+    <div class="modal-ft">
+      <button class="btn-s" onclick="closeModal('modal-auto-detail')">닫기</button>
+      <button class="btn-s" style="background:var(--lav);color:var(--purple);border-color:#DDD6FE;" onclick="autoDetailEdit()">수정</button>
+      <button class="btn-p" style="background:linear-gradient(135deg,var(--rd700),#e53e3e);" onclick="autoDetailDelete()">삭제</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 자동차보험 만기관리 요약 보기(상단 자동차보험 메뉴 전용, 사진 노출 안 함) ── -->
+<div class="modal-ov" id="modal-auto-mgmt-detail" onclick="closeModal('modal-auto-mgmt-detail')">
+  <div class="modal-bx" style="max-width:460px;" onclick="event.stopPropagation()">
+    <div class="modal-title">자동차보험 만기관리 요약</div>
+    <div class="cd-row"><div class="cd-label">고객명</div><div class="cd-val" id="atmd-name">-</div></div>
+    <div class="cd-row"><div class="cd-label">연락처</div><div class="cd-val" id="atmd-phone">-</div></div>
+    <div class="cd-row"><div class="cd-label">만기일</div><div class="cd-val" id="atmd-expiry">-</div></div>
+    <div class="cd-row"><div class="cd-label">D-day</div><div class="cd-val" id="atmd-dday">-</div></div>
+    <div class="cd-row"><div class="cd-label">최근가입년도</div><div class="cd-val" id="atmd-year">-</div></div>
+    <div class="cd-row"><div class="cd-label">올해연락상태</div><div class="cd-val" id="atmd-status">-</div></div>
+    <div class="cd-row"><div class="cd-label">차량번호</div><div class="cd-val" id="atmd-carnum">-</div></div>
+    <div class="cd-row"><div class="cd-label">보험사</div><div class="cd-val" id="atmd-company">-</div></div>
+    <div class="cd-row" style="margin-bottom:6px;"><div class="cd-label">메모</div><div class="cd-box" id="atmd-memo">-</div></div>
+    <div class="info-box" style="margin-bottom:10px;">사진 등 상세 자료는 고객 상세의 자동차보험 카드에서 확인하세요.</div>
+    <div class="modal-ft">
+      <button class="btn-s" onclick="closeModal('modal-auto-mgmt-detail')">닫기</button>
+      <button class="btn-p" onclick="autoMgmtDetailGoToCust()">고객 상세로 이동</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── 오늘할일 수정 모달 ── -->
 <div class="modal-ov" id="modal-todo-edit" onclick="closeModal('modal-todo-edit')">
   <div class="modal-bx" style="max-width:420px;" onclick="event.stopPropagation()">
@@ -2829,7 +2989,7 @@ function initApp(){
 }
 
 // ══ 페이지 전환 ══
-var PAGES=['home','cust','design','claim','wkit','manual','links','manager','admin','mypage'];
+var PAGES=['home','cust','design','auto','claim','wkit','manual','links','manager','admin','mypage'];
 function goPage(id){
   // 원수사 접속관리(admin) 화면 연결 차단 — v39, 전체 사용자 대상 (역할/사번 무관)
   if(id==='admin'){return;}
@@ -2843,6 +3003,7 @@ function goPage(id){
   if(id==='manager'){renderManagerPage();loadManagersFromSupa().then(function(){renderManagerPage();});}
   if(id==='admin'){renderAdminPage();}
   if(id==='design'){openDesignCustPick();}
+  if(id==='auto'){renderAutoManagePage();}
   if(id==='wkit'){renderCnsl();var wc=document.getElementById('wk-counsel');if(wc&&wc.style.display==='none'){var b=document.getElementById('wk-counsel-btn');if(b)b.click();}}
   if(id==='manual'){var mm=document.getElementById('ml-main');if(mm&&mm.style.display==='none'){var mb=document.getElementById('ml-main-btn');if(mb)mb.click();}}
   if(id==='mypage'){renderMypageTodos();renderMypageMemo();}
@@ -3995,6 +4156,10 @@ document.getElementById('det-info-content').innerHTML=
   +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><div class="rec-card-title">📦 자료전달</div><button class="btn-sm p rec-card-add-btn" onclick="openMatAdd()">+ 추가</button></div>'
   +'<div id="mat-list-side"></div>'
   +'</div>'
+  +'<div class="card" id="auto-card-side" style="padding:16px 18px;">'
+  +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><div class="rec-card-title">🚗 자동차보험</div><button class="btn-sm p rec-card-add-btn" onclick="openAutoAdd()">+ 추가</button></div>'
+  +'<div id="auto-list-side"></div>'
+  +'</div>'
   +'</div>'
   +'</div>';
 // 소통이력 초기 렌더(캐시) → Supabase 조회 후 재렌더
@@ -4005,6 +4170,8 @@ renderClaimList();
 loadClaimDsFromSupa(id).then(function(){if(_vid===id)renderClaimList();});
 // 자료전달 초기 렌더
 renderMatList();
+// 자동차보험 카드 초기 렌더 (고객 객체 캐시 기반, 별도 Supabase 조회 없음 — customers 로드에 포함되어 있음)
+renderAutoSideCard();
 // 탭 전부 기본정보로 리셋
 swDetTab(document.getElementById('det-tabs').querySelectorAll('.itab')[0],'det-info');
 renderStagebar();
@@ -4589,6 +4756,362 @@ function renderMatList(){
         +'</td></tr>';
     }).join('')
     +'</tbody></table>';
+}
+/* ══ 자동차보험 (고객 객체 c.autoInsurance 배열 기반, matLogs와 동일 패턴 재사용 — v91수정 3차) ══ */
+// v91수정 3차: 상단 자동차보험 메뉴 = "만기관리표"로 단순화(D-day/고객명/연락처/만기일/최근가입년도/올해연락상태/관리만).
+// 올해연락상태는 기존 resultStatus 필드를 재사용해 연락전/갱신완료/타사이동 3값 직접 저장(새 컬럼 없음).
+// 레거시 값(연락 전/연락 완료/본사계약중/타사계약중/진행중/갱신완료/타사이동)은 autoYearStatus()가 표시 시점에 3값으로 정규화.
+var AUTO_INSURERS=['삼성화재','현대해상','DB손해보험','KB손해보험','메리츠화재','한화손해보험','롯데손해보험','흥국화재','MG손해보험','AXA손해보험','캐롯손해보험'];
+var AUTO_YEAR_STATES=['연락전','갱신완료','타사이동'];
+function cstAutoList(c){return Array.isArray(c&&c.autoInsurance)?c.autoInsurance.slice():[];}
+function _autoGetCust(){return getCusts().find(function(x){return x.id==_vid;});}
+async function _autoSaveList(c,list){
+  var cs=getCusts();
+  var idx=cs.findIndex(function(x){return x.id===c.id;});
+  if(idx<0)return {ok:false,reason:'CUSTOMER_NOT_FOUND'};
+  var updated=Object.assign({},c,{autoInsurance:list,updated:new Date().toISOString()});
+  var newCs=cs.slice();newCs[idx]=updated;
+  return await saveCusts(newCs);
+}
+// 올해연락상태 표시 정규화(상단 자동차보험 메뉴 전용): 갱신완료/타사이동(구 타사계약중)만 별도 인식, 나머지는 전부 '연락전'
+function autoYearStatus(v){
+  if(v==='갱신완료')return '갱신완료';
+  if(v==='타사이동'||v==='타사계약중')return '타사이동';
+  return '연락전'; // 연락 전/연락 완료/본사계약중/진행중/미지정 전부 '연락전'로 단순화
+}
+// v97실행: 고객관리(고객상세) 처리상태 전용 — 상단메뉴 올해연락상태(resultStatus)와 필드 자체를 분리한 contractStatus 사용.
+// contractStatus가 아직 없는 레거시 기록은 기존 resultStatus 값으로 1회성 폴백 매핑만 하고, resultStatus 자체는 건드리지 않는다(상단메뉴 영향 없음).
+function autoContractStatus(item){
+  if(item&&(item.contractStatus==='본사계약'||item.contractStatus==='타사계약'))return item.contractStatus;
+  var v=item&&item.resultStatus;
+  if(v==='타사계약중'||v==='타사이동')return '타사계약';
+  return '본사계약'; // 본사계약중/갱신완료/연락전/미지정 전부 기본값(본사계약)
+}
+// D-day 계산: expiryDate(YYYY-MM-DD) 기준. 만기 지난 건은 '만기초과'로 표시. 최근가입년도(year)와 무관하게 만기일 기준.
+function autoDdayInfo(expiryDate){
+  if(!expiryDate)return {days:null,label:'-',cls:'normal'};
+  var t=new Date();t.setHours(0,0,0,0);
+  var exp=new Date(expiryDate+'T00:00:00');
+  if(isNaN(exp.getTime()))return {days:null,label:'-',cls:'normal'};
+  var days=Math.round((exp.getTime()-t.getTime())/86400000);
+  var label,cls;
+  if(days<0){label='만기초과';cls='warn';}
+  else if(days===0){label='D-DAY';cls='warn';}
+  else if(days<=7){label='D-'+days;cls='warn';}
+  else if(days<=30){label='D-'+days;cls='soon';}
+  else{label='D-'+days;cls='normal';}
+  return {days:days,label:label,cls:cls};
+}
+function autoPhotoCell(f){
+  if(f&&f.path){return '<a onclick="event.stopPropagation();openStorageAttachment(\''+f.path+'\')">첨부됨</a>';}
+  return '첨부 없음';
+}
+// 보험사 select 옵션 구성(기타 선택 시 직접입력 노출)
+function autoUpdateCompanyOptions(keepVal){
+  var sel=document.getElementById('auto-company');
+  if(!sel)return;
+  var cur=keepVal!==undefined?keepVal:sel.value;
+  sel.innerHTML=AUTO_INSURERS.map(function(s){return'<option'+(s===cur?' selected':'')+'>'+s+'</option>';}).join('')+'<option value="기타"'+(cur==='기타'?' selected':'')+'>기타</option>';
+  autoToggleCompanyCustom();
+}
+function autoToggleCompanyCustom(){
+  var sel=document.getElementById('auto-company');
+  var wrap=document.getElementById('auto-company-custom-wrap');
+  if(!sel||!wrap)return;
+  wrap.style.display=sel.value==='기타'?'':'none';
+}
+// 첨부파일 — 기존 wd-partners-attachments 버킷 재사용(레코드당 3장: blackbox/dashboard/plate)
+async function uploadAutoAttachment(custId,recordId,kind,file){
+  var sb=getSbClient();
+  if(!sb){console.error('[auto attachment upload] Supabase client 없음');return {ok:false,reason:'NO_SUPABASE_CLIENT'};}
+  var ext=_attachExt(file);
+  var path=_UID+'/'+custId+'/auto/'+recordId+'/'+kind+'.'+ext;
+  try{
+    var res=await sb.storage.from('wd-partners-attachments').upload(path,file,{upsert:true});
+    if(res.error){console.error('[auto attachment upload]',res.error.message);return {ok:false,reason:'UPLOAD_ERROR'};}
+    return {ok:true,path:path};
+  }catch(e){console.error('[auto attachment upload]',e&&e.message);return {ok:false,reason:'UPLOAD_EXCEPTION'};}
+}
+function openAutoAdd(){
+  document.getElementById('modal-auto-rec-t').textContent='자동차보험 기록 추가';
+  document.getElementById('auto-edit-id').value='';
+  document.getElementById('auto-edit-custid').value=_vid;
+  document.getElementById('auto-year').value=String(new Date().getFullYear());
+  autoUpdateCompanyOptions(AUTO_INSURERS[0]);
+  document.getElementById('auto-company-custom').value='';
+  document.getElementById('auto-expiry').value='';
+  document.getElementById('auto-carnum').value='';
+  ['blackbox','dashboard','plate'].forEach(function(k){
+    var fi=document.getElementById('auto-file-'+k);if(fi)fi.value='';
+    var cur=document.getElementById('auto-file-'+k+'-cur');if(cur)cur.innerHTML='';
+  });
+  document.getElementById('auto-result-status').value='본사계약';
+  document.getElementById('auto-memo').value='';
+  openModal('modal-auto-rec');
+}
+// custId 생략 시 현재 고객상세(_vid) 기준 — 상단 관리화면의 "수정"에서는 대상 custId를 명시적으로 넘긴다.
+function openAutoEdit(id,custId){
+  var targetId=custId!=null?custId:_vid;
+  var c=getCusts().find(function(x){return x.id==targetId;});
+  if(!c)return;
+  var item=cstAutoList(c).find(function(x){return x.id==id;});
+  if(!item)return;
+  closeModal('modal-auto-detail');
+  document.getElementById('modal-auto-rec-t').textContent='자동차보험 기록 수정';
+  document.getElementById('auto-edit-id').value=id;
+  document.getElementById('auto-edit-custid').value=targetId;
+  document.getElementById('auto-year').value=item.year||'';
+  var knownCompany=item.company&&AUTO_INSURERS.indexOf(item.company)>=0;
+  autoUpdateCompanyOptions(knownCompany?item.company:(item.company?'기타':AUTO_INSURERS[0]));
+  document.getElementById('auto-company-custom').value=knownCompany?'':(item.company||'');
+  document.getElementById('auto-expiry').value=item.expiryDate||'';
+  document.getElementById('auto-carnum').value=item.carNumber||'';
+  var fmap={blackbox:item.blackboxFile,dashboard:item.dashboardFile,plate:item.plateFile};
+  Object.keys(fmap).forEach(function(k){
+    var f=fmap[k]||{};
+    var fi=document.getElementById('auto-file-'+k);if(fi)fi.value='';
+    var cur=document.getElementById('auto-file-'+k+'-cur');
+    if(cur)cur.innerHTML=f.path?('현재: <a onclick="openStorageAttachment(\''+f.path+'\')" style="color:var(--primary);font-weight:700;cursor:pointer;text-decoration:underline;">'+esc(f.name||'첨부 보기')+'</a>'):'';
+  });
+  document.getElementById('auto-result-status').value=autoContractStatus(item);
+  document.getElementById('auto-memo').value=item.memo||'';
+  openModal('modal-auto-rec');
+}
+async function saveAutoRecord(){
+  var custIdField=document.getElementById('auto-edit-custid').value;
+  var targetId=custIdField!==''?(isNaN(custIdField)?custIdField:Number(custIdField)):_vid;
+  var c=getCusts().find(function(x){return x.id==targetId;});
+  if(!c)return;
+  var year=document.getElementById('auto-year').value.trim()||String(new Date().getFullYear());
+  var companySel=document.getElementById('auto-company').value;
+  var company=companySel==='기타'?document.getElementById('auto-company-custom').value.trim():companySel;
+  var expiry=document.getElementById('auto-expiry').value;
+  var carNum=document.getElementById('auto-carnum').value.trim();
+  if(!company){alert('보험사를 입력하세요.');return;}
+  if(!expiry){alert('자동차 만기일을 입력하세요.');return;}
+  if(!carNum){alert('차량번호를 입력하세요.');return;}
+  var eid=document.getElementById('auto-edit-id').value;
+  var list=cstAutoList(c).slice();
+  var prev=eid?(list.find(function(x){return x.id==eid;})||{}):{};
+  var recId=eid||('auto_'+Date.now()+'_'+Math.random().toString(36).slice(2,7));
+  var rec={
+    id:recId,
+    year:year,
+    company:company,
+    expiryDate:expiry,
+    carNumber:carNum,
+    blackboxFile:prev.blackboxFile||{name:'',path:'',url:''},
+    dashboardFile:prev.dashboardFile||{name:'',path:'',url:''},
+    plateFile:prev.plateFile||{name:'',path:'',url:''},
+    contactStatus:prev.contactStatus||'연락 전', // v91수정 3차: UI에서는 분리, 데이터 필드는 하위호환 위해 유지
+    contractStatus:document.getElementById('auto-result-status').value||'본사계약', // v97실행: 고객관리 처리상태 전용 필드(상단메뉴 resultStatus와 분리)
+    resultStatus:prev.resultStatus, // v97실행: 상단 자동차보험 메뉴(올해연락상태) 전용 필드 — 고객관리 화면에서는 절대 덮어쓰지 않음
+    memo:document.getElementById('auto-memo').value,
+    createdAt:prev.createdAt||new Date().toISOString(),
+    updatedAt:new Date().toISOString()
+  };
+  var kindMap={blackbox:'blackboxFile',dashboard:'dashboardFile',plate:'plateFile'};
+  var kindLabel={blackbox:'블랙박스',dashboard:'계기판',plate:'번호판'};
+  for(var k in kindMap){
+    var fi=document.getElementById('auto-file-'+k);
+    var f=(fi&&fi.files&&fi.files[0])?fi.files[0]:null;
+    if(f){
+      var check=validateAttachFile(f);
+      if(!check.ok){alert(check.message);continue;}
+      var up=await uploadAutoAttachment(c.id,recId,k,f);
+      if(up.ok){rec[kindMap[k]]={name:f.name,path:up.path,url:''};} // base64 미저장, storage path만 보존
+      else{alert(kindLabel[k]+' 사진 업로드에 실패했습니다. 나머지 항목은 정상 저장됩니다.');}
+    }
+  }
+  if(eid){list=list.map(function(x){return x.id==eid?rec:x;});}
+  else{list=list.concat([rec]);}
+  var result=await _autoSaveList(c,list);
+  if(!result||!result.ok)return; // 저장 실패 시 모달 유지(성공처럼 보이지 않게)
+  closeModal('modal-auto-rec');
+  if(_vid===c.id)renderAutoSideCard();
+  var mgmtPg=document.getElementById('pg-auto');
+  if(mgmtPg&&mgmtPg.classList.contains('on'))renderAutoManagePage();
+}
+async function deleteAutoRecord(id,custId){
+  var targetId=custId!=null?custId:_vid;
+  var c=getCusts().find(function(x){return x.id==targetId;});
+  if(!c)return;
+  if(!confirm('이 자동차보험 기록을 삭제하시겠습니까?'))return;
+  var list=cstAutoList(c).filter(function(x){return x.id!=id;});
+  var result=await _autoSaveList(c,list);
+  if(!result||!result.ok)return;
+  closeModal('modal-auto-detail');
+  if(_vid===c.id)renderAutoSideCard();
+  var mgmtPg=document.getElementById('pg-auto');
+  if(mgmtPg&&mgmtPg.classList.contains('on'))renderAutoManagePage();
+}
+// 고객상세 기본정보 화면 우측 카드 — 고객소통이력과 동일한 표(rec-tbl) 구조. 사진 3종/메모는 목록에 노출하지 않음(클릭 시 상세모달).
+// 상태 라벨은 상단 관리화면과 동일 기준(연락전/갱신완료/타사이동)으로 표시.
+function renderAutoSideCard(){
+  var c=_autoGetCust();if(!c)return;
+  var el=document.getElementById('auto-list-side');
+  if(!el)return;
+  var list=cstAutoList(c).slice().sort(function(a,b){return(b.year||'').localeCompare(a.year||'');});
+  if(!list.length){el.innerHTML='<div style="font-size:13px;color:var(--s400);padding:8px 0;">기록 없음</div>';return;}
+  var rows=list.map(function(x){
+    var dd=autoDdayInfo(x.expiryDate);
+    var st=autoContractStatus(x); // v97실행: 고객관리 카드는 처리상태(본사계약/타사계약) 기준, 상단메뉴 올해연락상태와 분리
+    // 본사계약이면 계속 함께하는 상태로 보고 행 강조, 타사계약은 강조하지 않음
+    var rowCls=st==='본사계약'?' class="auto-row-hq"':'';
+    var stCls=st==='본사계약'?'auto-status-main':'auto-status-other';
+    return '<tr'+rowCls+' onclick="openAutoDetail('+c.id+',\''+x.id+'\')">'
+      +'<td class="auto-col-year">'+esc(x.year||'-')+'</td>'
+      +'<td class="auto-col-company">'+esc(x.company||'-')+'</td>'
+      +'<td class="auto-col-expiry">'+esc(x.expiryDate||'-')+'</td>'
+      +'<td class="auto-col-carnum">'+esc(x.carNumber||'-')+'</td>'
+      +'<td class="auto-col-dday"><span class="auto-dday '+dd.cls+'">'+esc(dd.label)+'</span></td>'
+      +'<td class="auto-col-status"><span class="'+stCls+'">'+esc(st)+'</span></td>'
+      +'</tr>';
+  }).join('');
+  el.innerHTML='<div class="rec-scroll-3"><table class="rec-tbl auto-mini-table">'
+    +'<colgroup><col class="auto-col-year"><col class="auto-col-company"><col class="auto-col-expiry"><col class="auto-col-carnum"><col class="auto-col-dday"><col class="auto-col-status"></colgroup>'
+    +'<thead><tr>'
+    +'<th>보험년도</th><th>보험사</th><th>만기일</th><th>차량번호</th><th>D-day</th><th>처리상태</th>'
+    +'</tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+// 자동차보험 상세 모달(사진 3종/메모/등록·수정일은 여기서만 노출) — custId를 명시적으로 받아 상단 관리화면의 "보기"에서도 동작
+var _autoDetailId=null,_autoDetailCustId=null;
+function openAutoDetail(custId,id){
+  var c=getCusts().find(function(x){return x.id==custId;});
+  if(!c)return;
+  var item=cstAutoList(c).find(function(x){return x.id==id;});
+  if(!item)return;
+  _autoDetailCustId=custId;
+  _autoDetailId=id;
+  var dd=autoDdayInfo(item.expiryDate);
+  document.getElementById('atd-year').textContent=item.year||'-';
+  document.getElementById('atd-company').textContent=item.company||'-';
+  document.getElementById('atd-expiry').textContent=item.expiryDate||'-';
+  document.getElementById('atd-dday').textContent=dd.label;
+  document.getElementById('atd-carnum').textContent=item.carNumber||'-';
+  document.getElementById('atd-blackbox').innerHTML=autoPhotoCell(item.blackboxFile);
+  document.getElementById('atd-dashboard').innerHTML=autoPhotoCell(item.dashboardFile);
+  document.getElementById('atd-plate').innerHTML=autoPhotoCell(item.plateFile);
+  document.getElementById('atd-result').textContent=autoContractStatus(item);
+  document.getElementById('atd-memo').textContent=item.memo||'-';
+  document.getElementById('atd-dates').textContent='등록 '+(item.createdAt||'').slice(0,10)+' / 수정 '+(item.updatedAt||'').slice(0,10);
+  openModal('modal-auto-detail');
+}
+function autoDetailEdit(){if(_autoDetailCustId!=null&&_autoDetailId)openAutoEdit(_autoDetailId,_autoDetailCustId);}
+function autoDetailDelete(){if(_autoDetailCustId!=null&&_autoDetailId)deleteAutoRecord(_autoDetailId,_autoDetailCustId);}
+// ── 상단 자동차보험 메뉴(pg-auto) — "만기관리표"로 단순화: D-day/고객명/연락처/만기일/최근가입년도/올해연락상태/관리만 표시 ──
+// v94수정: 상단 자동차보험 메뉴 = 3탭(만기일확인/갱신완료/타사이동) 갱신관리판.
+// 필터 대신 탭으로 상태 매핑: pending→연락전, done→갱신완료, moved→타사이동.
+var _autoTab='pending';
+var AUTO_TAB_STATUS_MAP={pending:'연락전',done:'갱신완료',moved:'타사이동'};
+function swAutoTab(btn,t){
+  _autoTab=t;
+  var tabs=document.getElementById('auto-filter-tabs');
+  if(tabs)tabs.querySelectorAll('.itab').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  renderAutoManagePage();
+}
+function _autoAllRecords(){
+  var out=[];
+  getCusts().forEach(function(c){
+    cstAutoList(c).forEach(function(x){out.push({rec:x,cust:c});});
+  });
+  return out;
+}
+async function autoSetStatus(custId,recId,field,value){
+  var cs=getCusts();
+  var idx=cs.findIndex(function(x){return x.id==custId;});
+  if(idx<0)return;
+  var c=cs[idx];
+  var list=cstAutoList(c);
+  var ri=list.findIndex(function(x){return x.id==recId;});
+  if(ri<0)return;
+  var newList=list.slice();
+  newList[ri]=Object.assign({},newList[ri]);
+  newList[ri][field]=value;
+  newList[ri].updatedAt=new Date().toISOString();
+  var result=await _autoSaveList(c,newList);
+  if(!result||!result.ok)return; // 저장 실패를 완료처럼 보이지 않게
+  renderAutoManagePage();
+  if(_vid===custId)renderAutoSideCard();
+}
+// 올해연락상태 드롭다운 변경 즉시 저장 + 재렌더. 갱신완료 선택 시 고객 상세로 이동해 새 연도 기록을 추가할지 안내.
+async function autoStatusChange(custId,recId,newVal){
+  await autoSetStatus(custId,recId,'resultStatus',newVal);
+  if(newVal==='갱신완료'){
+    if(confirm('갱신완료 처리되었습니다. 고객 상세에서 새 자동차보험 기록을 추가하시겠습니까?')){
+      autoGoToCustDetail(custId,true);
+    }
+  }
+}
+// 고객 상세 기본정보 화면으로 이동 후 자동차보험 카드로 스크롤. openAddModal=true면 추가 모달까지 바로 연다.
+function autoGoToCustDetail(custId,openAddModal){
+  closeModal('modal-auto-mgmt-detail');
+  goPage('cust');
+  showDetail(custId);
+  setTimeout(function(){
+    var card=document.getElementById('auto-card-side');
+    if(card&&card.scrollIntoView)card.scrollIntoView({behavior:'smooth',block:'center'});
+    if(openAddModal)openAutoAdd();
+  },80);
+}
+// 상단 관리화면 전용 "보기" — 사진/첨부 노출 없이 만기관리 요약만 표시(연도별 사진은 고객상세 카드에서만)
+var _atmdCustId=null;
+function openAutoMgmtDetail(custId,recId){
+  var c=getCusts().find(function(x){return x.id==custId;});
+  if(!c)return;
+  var item=cstAutoList(c).find(function(x){return x.id==recId;});
+  if(!item)return;
+  _atmdCustId=custId;
+  var dd=autoDdayInfo(item.expiryDate);
+  document.getElementById('atmd-name').textContent=c.name||'-';
+  document.getElementById('atmd-phone').textContent=c.phone||'-';
+  document.getElementById('atmd-expiry').textContent=item.expiryDate||'-';
+  document.getElementById('atmd-dday').textContent=dd.label;
+  document.getElementById('atmd-year').textContent=item.year||'-';
+  document.getElementById('atmd-status').textContent=autoYearStatus(item.resultStatus);
+  document.getElementById('atmd-carnum').textContent=item.carNumber||'-';
+  document.getElementById('atmd-company').textContent=item.company||'-';
+  document.getElementById('atmd-memo').textContent=item.memo||'-';
+  openModal('modal-auto-mgmt-detail');
+}
+function autoMgmtDetailGoToCust(){
+  if(_atmdCustId!=null)autoGoToCustDetail(_atmdCustId,false);
+}
+function renderAutoManagePage(){
+  var el=document.getElementById('auto-mgmt-list');
+  if(!el)return;
+  var targetStatus=AUTO_TAB_STATUS_MAP[_autoTab]||'연락전';
+  var all=_autoAllRecords();
+  var filtered=all.filter(function(item){
+    return autoYearStatus(item.rec.resultStatus)===targetStatus;
+  });
+  filtered.sort(function(a,b){
+    var da=autoDdayInfo(a.rec.expiryDate).days;var db=autoDdayInfo(b.rec.expiryDate).days;
+    if(da===null)da=999999;if(db===null)db=999999;
+    return da-db;
+  });
+  if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:28px;font-size:14px;color:var(--s400);">해당 조건의 자동차보험 기록이 없습니다</div>';return;}
+  var head='<div class="auto-list-row auto-list-head"><div>D-day</div><div>고객명</div><div>연락처</div><div>만기일</div><div>최근가입년도</div><div>올해연락상태</div><div>관리</div></div>';
+  var rows=filtered.map(function(item){
+    var x=item.rec,c=item.cust;
+    var dd=autoDdayInfo(x.expiryDate);
+    var st=autoYearStatus(x.resultStatus);
+    var options=AUTO_YEAR_STATES.map(function(s){return '<option'+(s===st?' selected':'')+'>'+s+'</option>';}).join('');
+    return '<div class="auto-list-row">'
+      +'<div><span class="auto-dday '+dd.cls+'">'+esc(dd.label)+'</span></div>'
+      +'<div style="font-weight:700;">'+esc(c.name)+'</div>'
+      +'<div>'+esc(c.phone||'-')+'</div>'
+      +'<div>'+esc(x.expiryDate||'-')+'</div>'
+      +'<div>'+esc(x.year||'-')+'</div>'
+      +'<div><select onchange="autoStatusChange('+c.id+',\''+x.id+'\',this.value)" style="font-size:13px;padding:4px 6px;border-radius:7px;border:1.5px solid var(--s200);font-family:\'Noto Sans KR\',sans-serif;">'+options+'</select></div>'
+      +'<div style="display:flex;flex-wrap:wrap;gap:4px;">'
+      +'<button class="btn-sm" style="font-size:12px;padding:4px 9px;background:var(--s100);color:var(--s700);" onclick="openAutoMgmtDetail('+c.id+',\''+x.id+'\')">보기</button>'
+      +'<button class="btn-sm p" style="font-size:12px;padding:4px 9px;" onclick="openAutoEdit(\''+x.id+'\','+c.id+')">수정</button>'
+      +'<button class="btn-sm d" style="font-size:12px;padding:4px 9px;" onclick="deleteAutoRecord(\''+x.id+'\','+c.id+')">삭제</button>'
+      +'</div></div>';
+  }).join('');
+  el.innerHTML=head+rows;
 }
 function renderHomeCusts(){
   var cs=getCusts();
