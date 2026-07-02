@@ -2593,9 +2593,9 @@ async function deleteQmemo(){
 
 // ══ 사용자 시스템 ══
 var USERS={
-  'WD23000':{name:'최윤경',pw:btoa('000000'),role:'branch_manager'},
-  'WD26001':{name:'김지영',pw:btoa('000000'),role:'planner'},
-  'WD26002':{name:'형민',pw:btoa('000000'),role:'planner'}
+  'WD23000':{name:'최윤경',role:'branch_manager'},
+  'WD26001':{name:'김지영',role:'planner'},
+  'WD26002':{name:'형민',role:'planner'}
 };
 var LS_U='wlp_users',LS_S='wlp_session';
 var _UID=null,_ROLE='planner';
@@ -2628,6 +2628,19 @@ function getSbClient(){
   _sbClientUid=_UID;
   return _sbClient;
 }
+// 로그인 전(_UID 미확정) 단계에서 입력된 uid 기준으로 임시 client 생성 (v79 — 비밀번호 Supabase 검증용)
+function getSbClientForUid(uid){
+  if(!uid||!SUPABASE_CONFIG_BY_UID[uid])return null;
+  if(!window.supabase||!window.supabase.createClient)return null;
+  var cfg=SUPABASE_CONFIG_BY_UID[uid];
+  return window.supabase.createClient(cfg.url,cfg.anonKey);
+}
+// SHA-256 해시 (uid:비밀번호 조합, hex 문자열 반환) — v79 비밀번호 Supabase화 전용
+async function sha256Hex(str){
+  var enc=new TextEncoder().encode(str);
+  var buf=await crypto.subtle.digest('SHA-256',enc);
+  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+}
 // 설계매니저 전용 client (V72) — 로그인 계정과 무관하게 항상 최윤경 WD23000 Supabase 프로젝트를 사용.
 // 설계매니저는 공용 데이터라 WD26001/WD26002 계정에서도 이 client로 조회함(쓰기는 mgrIsAdmin()으로 앱단에서 막고, RLS에서도 한 번 더 막힘).
 var _mgrSbClient=null;
@@ -2641,18 +2654,40 @@ function getManagerSbClient(){
 }
 
 function getUsers(){try{return JSON.parse(localStorage.getItem(LS_U)||'null');}catch(e){return null;}}
-function initU(){var u=getUsers();if(!u){localStorage.setItem(LS_U,JSON.stringify(USERS));return USERS;}Object.keys(USERS).forEach(function(k){if(!u[k])u[k]=USERS[k];});localStorage.setItem(LS_U,JSON.stringify(u));return u;}
-function doLogin(){
+function initU(){
+  var u=getUsers();
+  if(!u){u=JSON.parse(JSON.stringify(USERS));}
+  Object.keys(USERS).forEach(function(k){if(!u[k])u[k]=USERS[k];});
+  // v79 — 비밀번호는 Supabase 기준으로 전환. localStorage에 남아있던 레거시 pw(btoa) 필드는 정리한다.
+  Object.keys(u).forEach(function(k){if(u[k]&&u[k].pw)delete u[k].pw;});
+  localStorage.setItem(LS_U,JSON.stringify(u));
+  return u;
+}
+async function doLogin(){
   var uid=document.getElementById('lk-uid').value.trim().toUpperCase();
   var pw=document.getElementById('lk-pw').value;
-  var u=initU();
-  if(!u[uid]){setLkErr('사번을 확인해주세요.');return;}
-  if(u[uid].pw!==btoa(pw)){setLkErr('비밀번호가 맞지 않습니다.');return;}
-  _UID=uid;_ROLE=u[uid].role||(USERS[uid]?USERS[uid].role:'planner')||'planner';localStorage.setItem(LS_S,uid);
-  saveRememberIdPref(uid);
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('app').style.display='block';
-  setUserUI(u[uid],uid);initApp();
+  if(!SUPABASE_CONFIG_BY_UID[uid]){setLkErr('사번을 확인해주세요.');return;}
+  var btn=document.querySelector('.lk-btn');
+  if(btn){btn.disabled=true;btn.textContent='확인 중...';}
+  try{
+    var sb=getSbClientForUid(uid);
+    if(!sb){setLkErr('네트워크 오류 또는 비밀번호 확인 실패. 다시 시도해주세요.');return;}
+    var hash=await sha256Hex(uid+':'+pw);
+    var res=await sb.from('wd_partners_account_auth').select('password_hash').eq('uid',uid).maybeSingle();
+    if(res.error||!res.data||res.data.password_hash!==hash){setLkErr('네트워크 오류 또는 비밀번호 확인 실패. 다시 시도해주세요.');return;}
+    var u=initU();
+    if(!u[uid]){setLkErr('사번을 확인해주세요.');return;}
+    _UID=uid;_ROLE=u[uid].role||(USERS[uid]?USERS[uid].role:'planner')||'planner';localStorage.setItem(LS_S,uid);
+    saveRememberIdPref(uid);
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    setUserUI(u[uid],uid);initApp();
+  }catch(e){
+    console.error('[doLogin]',e);
+    setLkErr('네트워크 오류 또는 비밀번호 확인 실패. 다시 시도해주세요.');
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='로그인';}
+  }
 }
 // ══ 아이디 기억하기 (값 저장 없음, 비밀번호 기억하기 기능은 V58에서 제거) ══
 var LS_REMEMBER_ID='WD_PARTNERS_REMEMBER_ID';
@@ -2681,17 +2716,27 @@ function setUserUI(u,uid){
   document.getElementById('my-name').textContent=n+' '+roleLabel+'님';
   document.getElementById('my-id').textContent=uid;
 }
-function changePw(){
+async function changePw(){
   var cur=document.getElementById('pw-cur').value,nw=document.getElementById('pw-new').value,cf=document.getElementById('pw-cf').value;
   var el=document.getElementById('pw-err');
-  var u=initU();
-  if(u[_UID].pw!==btoa(cur)){el.style.color='var(--rd700)';el.textContent='현재 비밀번호가 맞지 않습니다.';return;}
-  if(nw.length<4){el.style.color='var(--rd700)';el.textContent='새 비밀번호는 4자 이상이어야 합니다.';return;}
-  if(nw!==cf){el.style.color='var(--rd700)';el.textContent='새 비밀번호가 일치하지 않습니다.';return;}
-  u[_UID].pw=btoa(nw);localStorage.setItem(LS_U,JSON.stringify(u));
-  el.style.color='var(--em700)';el.textContent='✅ 비밀번호가 변경됐습니다.';
-  ['pw-cur','pw-new','pw-cf'].forEach(function(id){document.getElementById(id).value='';});
-  setTimeout(function(){el.textContent='';},2500);
+  var sb=getSbClient();
+  if(!sb){el.style.color='var(--rd700)';el.textContent='네트워크 오류 또는 비밀번호 확인 실패. 다시 시도해주세요.';return;}
+  try{
+    var curHash=await sha256Hex(_UID+':'+cur);
+    var res=await sb.from('wd_partners_account_auth').select('password_hash').eq('uid',_UID).maybeSingle();
+    if(res.error||!res.data||res.data.password_hash!==curHash){el.style.color='var(--rd700)';el.textContent='현재 비밀번호가 맞지 않습니다.';return;}
+    if(nw.length<4){el.style.color='var(--rd700)';el.textContent='새 비밀번호는 4자 이상이어야 합니다.';return;}
+    if(nw!==cf){el.style.color='var(--rd700)';el.textContent='새 비밀번호가 일치하지 않습니다.';return;}
+    var newHash=await sha256Hex(_UID+':'+nw);
+    var up=await sb.from('wd_partners_account_auth').upsert({uid:_UID,password_hash:newHash,updated_at:new Date().toISOString()},{onConflict:'uid'});
+    if(up.error){el.style.color='var(--rd700)';el.textContent='저장 실패. 다시 시도해주세요.';return;}
+    el.style.color='var(--em700)';el.textContent='✅ 비밀번호가 변경됐습니다.';
+    ['pw-cur','pw-new','pw-cf'].forEach(function(id){document.getElementById(id).value='';});
+    setTimeout(function(){el.textContent='';},2500);
+  }catch(e){
+    console.error('[changePw]',e);
+    el.style.color='var(--rd700)';el.textContent='네트워크 오류가 발생했습니다.';
+  }
 }
 
 // ══ 앱 초기화 ══
