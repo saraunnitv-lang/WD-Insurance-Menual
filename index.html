@@ -2166,7 +2166,7 @@ WD WAVE 은퇴 준비 점검 서비스 소개 포함
   <div class="modal-bx" style="max-width:360px;text-align:center;" onclick="event.stopPropagation()">
     <div style="font-size:32px;margin-bottom:14px;">🗑</div>
     <div class="modal-title" style="margin-bottom:8px;">고객 삭제</div>
-    <div style="font-size:14px;color:var(--s600);margin-bottom:6px;">이 고객을 삭제하시겠습니까?</div>
+    <div style="font-size:13px;color:var(--s600);margin-bottom:6px;line-height:1.5;">이 고객을 삭제하면 상담이력, 다음연락예정, 청구문의, 가입보험, 설계의뢰 등 연결된 모든 기록이 함께 삭제됩니다.<br>삭제 후 복구할 수 없습니다. 정말 삭제하시겠습니까?</div>
     <div id="del-cust-name" style="font-size:16px;font-weight:800;color:var(--rd700);margin-bottom:24px;"></div>
     <div style="display:flex;justify-content:center;gap:12px;">
       <button class="btn-s" onclick="closeModal('modal-del-cust')">아니오</button>
@@ -3055,14 +3055,23 @@ async function saveCusts(d){
     return {ok:false,reason:'SAVE_EXCEPTION'};
   }
 }
-// 삭제: Supabase에서 uid+id 기준 행 삭제 성공 후에만 캐시/화면 갱신
+// 삭제: 하위 기록(소통이력/청구문의/가입보험/설계의뢰) 먼저 삭제 후 고객 본체 삭제. uid+customer_id(또는 id) 이중 조건으로 다른 계정/다른 고객 데이터 보호. (v80)
 async function deleteCustomerFromSupa(id){
   var sb=getSbClient();
   if(!sb){
     alert('고객 삭제 실패: Supabase 연결을 확인해주세요.');
     return {ok:false,reason:'NO_SUPABASE_CLIENT'};
   }
+  var childTables=['wd_partners_communications','wd_partners_claim_records','wd_partners_contracts','wd_partners_design_requests'];
   try{
+    for(var i=0;i<childTables.length;i++){
+      var cres=await sb.from(childTables[i]).delete().eq('uid',_UID).eq('customer_id',id);
+      if(cres.error){
+        console.error('[customer cascade delete] '+childTables[i],cres.error.message);
+        alert('고객 삭제 실패(연결된 '+childTables[i]+' 기록 삭제 중 오류): '+cres.error.message);
+        return {ok:false,reason:'CHILD_DELETE_ERROR',table:childTables[i]};
+      }
+    }
     var res=await sb.from('wd_partners_customers').delete().eq('uid',_UID).eq('id',id);
     if(res.error){
       console.error('[customer delete]',res.error.message);
@@ -3273,12 +3282,14 @@ function setCustActionBtns(enabled){
 async function deleteCust(){
   if(!_vid)return;
   var c=getCusts().find(function(x){return x.id==_vid;});
-  if(!c||!confirm('"'+c.name+'" 고객을 삭제할까요?'))return;
+  if(!c)return;
+  var warnMsg='"'+c.name+'" 고객을 삭제하시겠습니까?\n\n이 고객을 삭제하면 상담이력, 다음연락예정, 청구문의, 가입보험, 설계의뢰 등 연결된 모든 기록이 함께 삭제됩니다. 삭제 후 복구할 수 없습니다. 정말 삭제하시겠습니까?';
+  if(!confirm(warnMsg))return;
   var id=_vid;
   var result=await deleteCustomerFromSupa(id);
   if(!result.ok)return; // 삭제 실패 시 화면 갱신하지 않음(삭제된 것처럼 보이지 않게)
   CURRENT_CUSTOMERS=CURRENT_CUSTOMERS.filter(function(x){return x.id!=id;});
-  _vid=null;showCustList();renderCustList();
+  _vid=null;showCustList();renderCustList();renderHomeCusts();
 }
 
 /* ══ 만나이 계산 ══ */
@@ -4546,7 +4557,10 @@ async function loadHomeNextContacts(){
       return {ok:false,reason:'LOAD_ERROR'};
     }
     var custs=getCusts();
-    var nx=(res.data||[]).map(function(row){
+    // 고객 본체가 삭제되어 남은 orphan 소통이력은 홈에 표시하지 않는다 (v80 — 데이터는 삭제하지 않고 화면 표시만 제외)
+    var nx=(res.data||[])
+      .filter(function(row){return custs.some(function(x){return x.id==row.customer_id;});})
+      .map(function(row){
       var c=custs.find(function(x){return x.id==row.customer_id;});
       return {
         custId:row.customer_id,
