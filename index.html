@@ -99,6 +99,9 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 .hdr-logo-txt{font-size:15px;font-weight:900;color:#fff;letter-spacing:-.3px;line-height:1.15;}
 .hdr-logo-txt em{color:var(--gold);font-style:normal;}
 .hdr-logo-sub{font-size:9px;color:rgba(255,255,255,.38);letter-spacing:.07em;display:block;margin-top:-1px;}
+.hdr-admin-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:11px;font-weight:700;padding:5px 10px;border-radius:7px;cursor:pointer;white-space:nowrap;font-family:'Noto Sans KR',sans-serif;transition:background .12s;flex-shrink:0;}
+.hdr-admin-btn:hover{background:rgba(255,255,255,.2);}
+@media(max-width:768px){.hdr-admin-btn{display:none!important;}}
 
 /* 상단 네비 - 크고 선명하게 */
 .hdr-nav{display:flex;align-items:center;gap:2px;justify-content:center;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
@@ -803,6 +806,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
         <div class="hdr-logo-txt">WD WAVE <em>Partners</em></div>
         <span class="hdr-logo-sub">설계사 공식 업무 허브</span>
       </div>
+      <button id="hdr-admin-main-btn" class="hdr-admin-btn" onclick="event.stopPropagation();goAdminMain()" style="display:none;" title="전산메인홈">전산메인홈</button>
     </div>
     <div class="hdr-nav" id="hdr-nav">
       <button class="hn-btn on" onclick="goPage('home')" id="hn-home">홈</button>
@@ -864,6 +868,9 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/><line x1="20" y1="8" x2="20" y2="14"/></svg>보험사 연락처
     </div>
     <div class="dr-divider"></div>
+    <div class="dr-item" id="dr-admin-main-btn" onclick="goAdminMain();closeDrawer()" style="display:none;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>전산메인홈
+    </div>
     <div class="dr-item" onclick="goPage('mypage');closeDrawer()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20v-1a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v1"/></svg>마이페이지
     </div>
@@ -2763,7 +2770,7 @@ function initRememberedId(){
     if(saved&&idEl){idEl.value=saved;if(chkEl)chkEl.checked=true;}
   }catch(e){console.warn('[remember-id init] skip',e);}
 }
-function doLogout(){_UID=null;localStorage.removeItem(LS_S);document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex';document.getElementById('lk-uid').value='';document.getElementById('lk-pw').value='';document.getElementById('lk-err').textContent='';initRememberedId();}
+function doLogout(){_UID=null;localStorage.removeItem(LS_S);document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex';document.getElementById('lk-uid').value='';document.getElementById('lk-pw').value='';document.getElementById('lk-err').textContent='';var hb=document.getElementById('hdr-admin-main-btn');if(hb)hb.style.display='none';var db=document.getElementById('dr-admin-main-btn');if(db)db.style.display='none';initRememberedId();}
 function setLkErr(m){document.getElementById('lk-err').textContent=m;setTimeout(function(){document.getElementById('lk-err').textContent='';},2200);}
 function setUserUI(u,uid){
   var n=u.name,ini=n.charAt(0);
@@ -2774,7 +2781,11 @@ function setUserUI(u,uid){
   document.getElementById('my-av').textContent=ini;
   document.getElementById('my-name').textContent=n+' '+roleLabel+'님';
   document.getElementById('my-id').textContent=uid;
+  var isAdminMain=(uid==='WD23000');
+  var hb=document.getElementById('hdr-admin-main-btn');if(hb)hb.style.display=isAdminMain?'':'none';
+  var db=document.getElementById('dr-admin-main-btn');if(db)db.style.display=isAdminMain?'':'none';
 }
+function goAdminMain(){location.href='https://admin.wdwave.kr/';}
 async function changePw(){
   var cur=document.getElementById('pw-cur').value,nw=document.getElementById('pw-new').value,cf=document.getElementById('pw-cf').value;
   var el=document.getElementById('pw-err');
