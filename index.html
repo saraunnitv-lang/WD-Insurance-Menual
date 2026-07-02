@@ -226,28 +226,48 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 #det-tabs .itab.on{box-shadow:0 3px 12px rgba(74,63,138,.28);border:1.5px solid var(--purple);}
 @media(max-width:600px){#det-tabs .itab{padding:11px 18px;font-size:14px;}}
 
-/* 설계매니저 탭 (손해보험/생명보험) - 가독성 개선 */
-#mgr-tabs{flex-wrap:wrap;gap:8px;padding:6px;}
-#mgr-tabs .itab{flex:none;padding:13px 22px;font-size:16px;font-weight:800;}
-#mgr-tabs .itab.on{box-shadow:0 2px 8px rgba(74,63,138,.18);}
-@media(max-width:600px){#mgr-tabs .itab{padding:11px 16px;font-size:14px;}}
-#pg-manager .mgr-card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-#pg-manager .mgr-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 18px;box-shadow:var(--card-sh);}
-#pg-manager .mgr-card-company{font-size:16px;font-weight:900;color:var(--navy);margin-bottom:10px;}
-#pg-manager .mgr-card-row{font-size:13px;color:var(--s700);line-height:1.7;margin-bottom:4px;}
-#pg-manager .mgr-card-label{font-weight:800;color:var(--s500);margin-right:4px;}
-#pg-manager .mgr-card-btns{display:flex;gap:6px;margin-top:10px;}
-#pg-manager .mgr-person-row{display:flex;align-items:baseline;gap:6px;padding:5px 0;border-bottom:1px solid var(--s100);font-size:13px;}
-#pg-manager .mgr-person-row:last-of-type{border-bottom:none;}
-#pg-manager .mgr-person-no{color:var(--s400);flex-shrink:0;width:16px;}
-#pg-manager .mgr-person-name{font-weight:800;color:var(--text);flex-shrink:0;min-width:58px;}
-#pg-manager .mgr-person-role{color:var(--s400);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-#pg-manager .mgr-person-phone{color:var(--purple);font-weight:700;text-decoration:none;flex-shrink:0;white-space:nowrap;}
-#pg-manager .mgr-helpdesk-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--s200);font-size:13px;}
-#pg-manager .mgr-helpdesk-label{font-weight:800;color:var(--s500);flex-shrink:0;}
-#pg-manager .mgr-helpdesk-value{color:var(--navy);font-weight:800;}
-@media(max-width:1100px){#pg-manager .mgr-card-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:700px){#pg-manager .mgr-card-grid{grid-template-columns:1fr;}}
+/* 설계매니저 탭 (손해보험/생명보험) - 가독성 개선 (정식 페이지 + 전역 빠른보기 모달 공용 스코프) */
+#mgr-tabs,#mgr-quick-tabs{flex-wrap:wrap;gap:8px;padding:6px;}
+#mgr-tabs .itab,#mgr-quick-tabs .itab{flex:none;padding:13px 22px;font-size:16px;font-weight:800;}
+#mgr-tabs .itab.on,#mgr-quick-tabs .itab.on{box-shadow:0 2px 8px rgba(74,63,138,.18);}
+@media(max-width:600px){#mgr-tabs .itab,#mgr-quick-tabs .itab{padding:11px 16px;font-size:14px;}}
+#pg-manager .mgr-card-grid,#modal-mgr-quick .mgr-card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;min-width:0;}
+#pg-manager .mgr-card,#modal-mgr-quick .mgr-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 18px;box-shadow:var(--card-sh);min-width:0;overflow:hidden;}
+#pg-manager .mgr-card-company,#modal-mgr-quick .mgr-card-company{font-size:16px;font-weight:900;color:var(--navy);margin-bottom:10px;overflow-wrap:anywhere;word-break:break-word;}
+#pg-manager .mgr-card-row,#modal-mgr-quick .mgr-card-row{font-size:13px;color:var(--s700);line-height:1.7;margin-bottom:4px;min-width:0;overflow-wrap:anywhere;word-break:break-word;}
+#pg-manager .mgr-card-label,#modal-mgr-quick .mgr-card-label{font-weight:800;color:var(--s500);margin-right:4px;}
+#pg-manager .mgr-card-btns,#modal-mgr-quick .mgr-card-btns{display:flex;gap:6px;margin-top:10px;}
+#pg-manager .mgr-person-row,#modal-mgr-quick .mgr-person-row{display:flex;align-items:baseline;gap:6px;padding:5px 0;border-bottom:1px solid var(--s100);font-size:13px;min-width:0;flex-wrap:wrap;}
+#pg-manager .mgr-person-row:last-of-type,#modal-mgr-quick .mgr-person-row:last-of-type{border-bottom:none;}
+#pg-manager .mgr-person-no,#modal-mgr-quick .mgr-person-no{color:var(--s400);flex-shrink:0;width:16px;}
+#pg-manager .mgr-person-name,#modal-mgr-quick .mgr-person-name{font-weight:800;color:var(--text);flex-shrink:0;min-width:58px;}
+#pg-manager .mgr-person-role,#modal-mgr-quick .mgr-person-role{color:var(--s400);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#pg-manager .mgr-person-phone,#modal-mgr-quick .mgr-person-phone{color:var(--purple);font-weight:700;text-decoration:none;flex-shrink:0;white-space:nowrap;}
+#pg-manager .mgr-info-row,#modal-mgr-quick .mgr-info-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--s200);font-size:13px;min-width:0;}
+#pg-manager .mgr-info-label,#modal-mgr-quick .mgr-info-label{font-weight:800;color:var(--s500);flex-shrink:0;}
+#pg-manager .mgr-info-text,#modal-mgr-quick .mgr-info-text{color:var(--navy);font-weight:700;flex:1;min-width:0;margin:0 8px;overflow-wrap:anywhere;word-break:break-word;white-space:normal;}
+#pg-manager .mgr-info-action,#modal-mgr-quick .mgr-info-action{flex-shrink:0;color:var(--s400);}
+#pg-manager .mgr-link-btn,#pg-manager .mgr-copy-btn,#modal-mgr-quick .mgr-link-btn,#modal-mgr-quick .mgr-copy-btn{background:var(--lav);color:var(--purple);border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap;display:inline-block;font-family:'Noto Sans KR',sans-serif;}
+#pg-manager .mgr-link-btn:hover,#pg-manager .mgr-copy-btn:hover,#modal-mgr-quick .mgr-link-btn:hover,#modal-mgr-quick .mgr-copy-btn:hover{opacity:.85;}
+@media(max-width:1100px){#pg-manager .mgr-card-grid,#modal-mgr-quick .mgr-card-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:700px){#pg-manager .mgr-card-grid,#modal-mgr-quick .mgr-card-grid{grid-template-columns:1fr;}}
+/* 전역 보험사 연락처 빠른보기 버튼 + 전체화면 모달 (v79 추가작업) */
+#mgr-quick-btn{position:fixed;bottom:84px;right:24px;z-index:8000;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--purple));color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 16px rgba(74,63,138,.35);transition:all .15s;border:none;}
+#modal-mgr-quick .modal-bx{width:94%;max-width:1200px;height:90vh;max-height:90vh;display:flex;flex-direction:column;padding:0;overflow:hidden;}
+#modal-mgr-quick .mgr-quick-modal-header{flex-shrink:0;background:linear-gradient(135deg,var(--navy),var(--purple));padding:20px 22px 16px;border-radius:18px 18px 0 0;}
+#modal-mgr-quick .mgr-quick-modal-title{font-size:18px;font-weight:900;color:#fff;}
+#modal-mgr-quick .mgr-quick-modal-close{background:none;border:none;font-size:24px;cursor:pointer;color:rgba(255,255,255,.85);line-height:1;}
+#modal-mgr-quick .mgr-quick-modal-close:hover{color:#fff;}
+#modal-mgr-quick .mgr-quick-modal-tabs{margin:14px 0 0;background:rgba(255,255,255,.14);}
+#modal-mgr-quick .mgr-quick-modal-tabs .itab{color:rgba(255,255,255,.75);background:rgba(255,255,255,.08);font-weight:800;}
+#modal-mgr-quick .mgr-quick-modal-tabs .itab.on{background:#fff;color:#1E1B4B;box-shadow:0 4px 12px rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.8);}
+#modal-mgr-quick .mgr-quick-modal-tabs .itab:not(.on):hover{background:rgba(255,255,255,.16);color:#fff;}
+#modal-mgr-quick .mgr-quick-modal-search{margin-top:12px;}
+#modal-mgr-quick .mgr-quick-modal-search input{width:100%;padding:11px 14px;border:none;border-radius:9px;font-size:13px;font-family:'Noto Sans KR',sans-serif;box-sizing:border-box;background:#fff;}
+#modal-mgr-quick .mgr-quick-modal-body{flex:1;overflow-y:auto;padding:18px 22px 22px;background:var(--bg);}
+#modal-mgr-quick #mgr-quick-list{flex:1;overflow-y:auto;}
+@media(max-width:700px){#modal-mgr-quick .modal-bx{width:100%;height:100vh;max-height:100vh;border-radius:0;}#modal-mgr-quick .mgr-quick-modal-header{border-radius:0;padding:16px 16px 14px;}#modal-mgr-quick .mgr-quick-modal-body{padding:14px 16px 16px;}}
+
 
 /* 설계업무 탭 (설계업무/설계의뢰내역) - 가독성 개선 */
 #design-main-tabs{flex-wrap:wrap;gap:8px;padding:6px;}
@@ -404,7 +424,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 .rec-tbl tbody tr:hover{background:var(--s50);}
 .rec-tbl tbody tr:last-child td{border-bottom:none;}
 .rec-tbl .comm-row-tag,.rec-tbl .comm-done-badge{font-size:13px;}
-.rec-scroll-3{max-height:190px;overflow-y:auto;}
+.rec-scroll-3{max-height:190px;overflow-y:auto;overflow-x:auto;}
 
 /* 청구문의/자료전달 탭(고객상세) 전용 가독성 개선 - 전역 card-title/notice-box/btn-sm에는 영향 없음 */
 #det-claim .card-title,#det-mat .card-title{font-size:17px;}
@@ -592,6 +612,15 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 .btab-btn.on svg{stroke:var(--purple);}
 .btab-btn.on .btab-lbl{color:var(--purple);}
 
+/* 모바일 최적화 v79 추가작업 — 표 가로 넘침 방지 (카드형 전환 대신 최소 스크롤 보호) */
+#det-insure-list,#det-claim-list,#det-mat-list,#design-req-list{overflow-x:auto;}
+@media(max-width:768px){
+  .ie-grid-3,.ie-grid-2{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  #dw-co-nonlife,#dw-co-life{grid-template-columns:1fr!important;}
+}
+
 /* ══ 반응형 ══ */
 @media(min-width:769px){#btab{display:none!important;}}
 @media(max-width:768px){
@@ -642,7 +671,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 #pg-home #home-todos .todo-lbl{font-size:15px;font-weight:700;}
 #pg-home #home-todos .todo-row{border-bottom:1px solid #d4dae5;}
 #pg-home #home-todos .todo-btns{display:flex;gap:5px;flex-shrink:0;}
-#pg-home #home-next{font-size:15px;}
+#pg-home #home-next{font-size:15px;overflow-x:auto;}
 #pg-home .home-work-card{height:360px;display:flex;flex-direction:column;}
 #pg-home .home-work-card .card-hd{flex-shrink:0;}
 #pg-home #home-todos,#pg-home #home-next{flex:1;overflow-y:auto;padding-right:4px;}
@@ -1854,6 +1883,27 @@ WD WAVE 은퇴 준비 점검 서비스 소개 포함
     </button>
   </div>
 
+
+<!-- ── 보험사 연락처 빠른보기 (전역) ── -->
+<button id="mgr-quick-btn" type="button" onclick="event.stopPropagation();openMgrQuickModal()" title="보험사 연락처">☎️</button>
+<div class="modal-ov" id="modal-mgr-quick" onclick="closeMgrQuickModal()">
+  <div class="modal-bx mgr-quick-modal-bx" onclick="event.stopPropagation()">
+    <div class="mgr-quick-modal-header">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div class="mgr-quick-modal-title">보험사 연락처</div>
+        <button type="button" onclick="closeMgrQuickModal()" class="mgr-quick-modal-close">×</button>
+      </div>
+      <div class="itabs mgr-quick-modal-tabs" id="mgr-quick-tabs">
+        <button class="itab on" data-mgrtype="손보" onclick="swMgrQuickTab(this,'손보')">손해보험</button>
+        <button class="itab" data-mgrtype="생보" onclick="swMgrQuickTab(this,'생보')">생명보험</button>
+      </div>
+      <div class="mgr-quick-modal-search">
+        <input type="text" id="mgr-quick-search" placeholder="보험사명, 담당자명, 연락처, 고객센터 검색" oninput="mgrQuickOnSearchInput(this.value)">
+      </div>
+    </div>
+    <div class="mgr-quick-modal-body" id="mgr-quick-list"></div>
+  </div>
+</div>
 
 <!-- ── 빠른 메모 ── -->
 <button id="quick-memo-btn" type="button" onclick="event.stopPropagation();toggleQuickMemo()" title="빠른 메모">📝</button>
@@ -5544,6 +5594,12 @@ function swMgrTab(btn,type){
   renderManagerPage();
 }
 function mgrOnSearchInput(v){mgrSearchQuery=v;renderManagerPage();}
+function mgrCopyValue(origIdx,key){
+  var m=getMgrs()[origIdx];if(!m)return;
+  var v=(key==='itHelpdesk')?(m.itHelpdesk||m.helpdesk):m[key];
+  if(!v)return;
+  if(navigator.clipboard){navigator.clipboard.writeText(v).then(toast).catch(function(){fc(v);});}else{fc(v);}
+}
 function mgrNormalize(s){return (s||'').toString().toLowerCase().replace(/-/g,'');}
 function mgrMatchesSearch(m,q){
   var nq=mgrNormalize(q);
@@ -5568,40 +5624,50 @@ function mgrPeopleOf(m){
   return ppl;
 }
 function renderManagerPage(){
-  // 추가 버튼: WD23000 관리자만
+  // 추가 버튼: WD23000 관리자만 (정식 페이지 전용, 모달에는 없음)
   var addBtn=document.getElementById('mgr-add-btn-wrap');
   if(addBtn)addBtn.style.display=mgrIsAdmin()?'':'none';
+  renderManagerList({targetId:'mgr-list',tab:_mgrTab,query:mgrSearchQuery,readonly:false});
+}
+// 공통 렌더 함수 — 정식 보험사 연락처 페이지(mgr-list)와 전역 빠른보기 모달(mgr-quick-list)이 함께 사용 (v79 추가작업)
+// readonly:true면 수정/삭제 버튼을 숨기고, 데이터 없음 안내에서 "+ 추가" 문구를 노출하지 않는다.
+function renderManagerList(opts){
+  opts=opts||{};
+  var targetId=opts.targetId||'mgr-list';
+  var tab=opts.tab!==undefined?opts.tab:_mgrTab;
+  var query=opts.query!==undefined?opts.query:mgrSearchQuery;
+  var readonly=!!opts.readonly;
 
-  var el=document.getElementById('mgr-list');if(!el)return;
+  var el=document.getElementById(targetId);if(!el)return;
   if(_mgrLoadError){
     el.innerHTML='<div class="card" style="text-align:center;padding:32px 20px;color:var(--rd700);">설계매니저 연락표를 불러오지 못했습니다. 네트워크 상태를 확인 후 다시 시도해주세요.</div>';
     return;
   }
-  var mgrs=getMgrs().filter(function(m){return m.type===_mgrTab;});
+  var mgrs=getMgrs().filter(function(m){return m.type===tab;});
 
   if(!mgrs.length){
-    if(mgrIsAdmin()){
+    if(!readonly&&mgrIsAdmin()){
       el.innerHTML='<div class="card" style="text-align:center;padding:32px 20px;">'
-        +'<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;">등록된 '+_mgrTab+' 설계매니저가 없습니다</div>'
+        +'<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;">등록된 '+tab+' 설계매니저가 없습니다</div>'
         +'<div style="font-size:13px;color:var(--muted);line-height:1.8;">설계매니저를 등록하면 보험사별 관련인원 연락처를<br>바로 확인하고 복사할 수 있습니다.<br>위 <strong>+ 설계매니저 추가</strong> 버튼을 눌러주세요.</div>'
         +'</div>';
     } else {
       el.innerHTML='<div class="card" style="text-align:center;padding:32px 20px;">'
-        +'<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;">아직 등록된 '+_mgrTab+' 설계매니저가 없습니다</div>'
+        +'<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;">아직 등록된 '+tab+' 설계매니저가 없습니다</div>'
         +'<div style="font-size:13px;color:var(--muted);line-height:1.8;">설계매니저 정보는 관리자가 등록하면<br>설계사 계정에서도 바로 확인할 수 있습니다.</div>'
         +'</div>';
     }
     return;
   }
 
-  var searchedMgrs=mgrs.filter(function(m){return mgrMatchesSearch(m,mgrSearchQuery);});
+  var searchedMgrs=mgrs.filter(function(m){return mgrMatchesSearch(m,query);});
   if(!searchedMgrs.length){
     el.innerHTML='<div class="card" style="text-align:center;padding:32px 20px;color:var(--s500);">검색 결과가 없습니다.</div>';
     return;
   }
 
   var allMgrs=getMgrs();
-  var isAdmin=mgrIsAdmin();
+  var isAdmin=!readonly&&mgrIsAdmin();
   el.innerHTML='<div class="mgr-card-grid">'+searchedMgrs.map(function(m){
     var origIdx=allMgrs.indexOf(m);
     var people=mgrPeopleOf(m);
@@ -5623,12 +5689,12 @@ function renderManagerPage(){
       });
     }
     html+='<div style="border-top:1px solid var(--s200);margin:10px 0;"></div>';
-    html+='<div class="mgr-helpdesk-row"><span class="mgr-helpdesk-label">공식홈페이지</span><span class="mgr-helpdesk-value">'+(m.officialHomepageUrl?'<a href="'+esc(m.officialHomepageUrl)+'" target="_blank" rel="noopener noreferrer">'+esc(m.officialHomepageUrl)+'</a>':'-')+'</span></div>';
-    html+='<div class="mgr-helpdesk-row"><span class="mgr-helpdesk-label">약관확인</span><span class="mgr-helpdesk-value">'+(m.termsUrl?'<a href="'+esc(m.termsUrl)+'" target="_blank" rel="noopener noreferrer">'+esc(m.termsUrl)+'</a>':'-')+'</span></div>';
-    html+='<div class="mgr-helpdesk-row"><span class="mgr-helpdesk-label">고객센터</span><span class="mgr-helpdesk-value">'+(m.customerCenterPhone?'<a href="tel:'+esc(m.customerCenterPhone)+'">'+esc(m.customerCenterPhone)+'</a>':'-')+'</span></div>';
-    html+='<div class="mgr-helpdesk-row"><span class="mgr-helpdesk-label">청구팩스</span><span class="mgr-helpdesk-value">'+esc(m.claimFaxNumber||'-')+'</span></div>';
-    html+='<div class="mgr-helpdesk-row"><span class="mgr-helpdesk-label">완전판매인콜</span><span class="mgr-helpdesk-value">'+(m.completeSalesCallNumber?'<a href="tel:'+esc(m.completeSalesCallNumber)+'">'+esc(m.completeSalesCallNumber)+'</a>':'-')+'</span></div>';
-    html+='<div class="mgr-helpdesk-row"><span class="mgr-helpdesk-label">전산헬프데스크</span><span class="mgr-helpdesk-value">'+((m.itHelpdesk||m.helpdesk)?'<a href="tel:'+esc(m.itHelpdesk||m.helpdesk)+'">'+esc(m.itHelpdesk||m.helpdesk)+'</a>':'-')+'</span></div>';
+    html+='<div class="mgr-info-row"><span class="mgr-info-label">공식홈페이지</span>'+(m.officialHomepageUrl?('<span class="mgr-info-action"><a class="mgr-link-btn" href="'+esc(m.officialHomepageUrl)+'" target="_blank" rel="noopener noreferrer">바로가기</a></span>'):'<span class="mgr-info-text">미등록</span>')+'</div>';
+    html+='<div class="mgr-info-row"><span class="mgr-info-label">약관확인</span>'+(m.termsUrl?('<span class="mgr-info-action"><a class="mgr-link-btn" href="'+esc(m.termsUrl)+'" target="_blank" rel="noopener noreferrer">바로가기</a></span>'):'<span class="mgr-info-text">미등록</span>')+'</div>';
+    html+='<div class="mgr-info-row"><span class="mgr-info-label">고객센터</span>'+(m.customerCenterPhone?('<span class="mgr-info-text">'+esc(m.customerCenterPhone)+'</span><span class="mgr-info-action"><button type="button" class="mgr-copy-btn" onclick="event.stopPropagation();mgrCopyValue('+origIdx+',\'customerCenterPhone\')">복사</button></span>'):'<span class="mgr-info-text">없음</span><span class="mgr-info-action">-</span>')+'</div>';
+    html+='<div class="mgr-info-row"><span class="mgr-info-label">청구팩스</span>'+(m.claimFaxNumber?('<span class="mgr-info-text">'+esc(m.claimFaxNumber)+'</span><span class="mgr-info-action"><button type="button" class="mgr-copy-btn" onclick="event.stopPropagation();mgrCopyValue('+origIdx+',\'claimFaxNumber\')">복사</button></span>'):'<span class="mgr-info-text">없음</span><span class="mgr-info-action">-</span>')+'</div>';
+    html+='<div class="mgr-info-row"><span class="mgr-info-label">완전판매인콜</span>'+(m.completeSalesCallNumber?('<span class="mgr-info-text">'+esc(m.completeSalesCallNumber)+'</span><span class="mgr-info-action"><button type="button" class="mgr-copy-btn" onclick="event.stopPropagation();mgrCopyValue('+origIdx+',\'completeSalesCallNumber\')">복사</button></span>'):'<span class="mgr-info-text">없음</span><span class="mgr-info-action">-</span>')+'</div>';
+    html+='<div class="mgr-info-row"><span class="mgr-info-label">전산헬프데스크</span>'+((m.itHelpdesk||m.helpdesk)?('<span class="mgr-info-text">'+esc(m.itHelpdesk||m.helpdesk)+'</span><span class="mgr-info-action"><button type="button" class="mgr-copy-btn" onclick="event.stopPropagation();mgrCopyValue('+origIdx+',\'itHelpdesk\')">복사</button></span>'):'<span class="mgr-info-text">없음</span><span class="mgr-info-action">-</span>')+'</div>';
     if(isAdmin){
       html+='<div class="mgr-card-btns">';
       html+='<button onclick="openMgrEdit('+origIdx+')" class="btn-sm p">수정</button>';
@@ -5639,6 +5705,35 @@ function renderManagerPage(){
     return html;
   }).join('')+'</div>';
 }
+// ══ 보험사 연락처 전역 빠른보기 모달 (v79 추가작업) — 데이터/렌더는 위 renderManagerList 공용 재사용 ══
+var mgrModalTab='손보';
+var mgrModalSearchQuery='';
+function openMgrQuickModal(){
+  mgrModalTab='손보';mgrModalSearchQuery='';
+  var se=document.getElementById('mgr-quick-search');if(se)se.value='';
+  var tabsEl=document.getElementById('mgr-quick-tabs');
+  if(tabsEl)tabsEl.querySelectorAll('.itab').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-mgrtype')==='손보');});
+  openModal('modal-mgr-quick');
+  renderMgrQuickModal();
+  loadManagersFromSupa().then(function(){renderMgrQuickModal();});
+}
+function closeMgrQuickModal(){closeModal('modal-mgr-quick');}
+function swMgrQuickTab(btn,type){
+  mgrModalTab=type;
+  document.getElementById('mgr-quick-tabs').querySelectorAll('.itab').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  renderMgrQuickModal();
+}
+function mgrQuickOnSearchInput(v){mgrModalSearchQuery=v;renderMgrQuickModal();}
+function renderMgrQuickModal(){
+  renderManagerList({targetId:'mgr-quick-list',tab:mgrModalTab,query:mgrModalSearchQuery,readonly:true});
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    var m=document.getElementById('modal-mgr-quick');
+    if(m&&m.classList.contains('open'))closeMgrQuickModal();
+  }
+});
 
 function copyText(elId){
   var el=document.getElementById(elId);
@@ -6068,7 +6163,7 @@ function renderInsureTabV2(){
   html+='<div class="card"><div class="card-hd"><div class="card-title">가입 보험 목록</div><button class="btn-sm p" onclick="openInsureAdd()">+ 보험 추가</button></div>';
   if(!insures.length){html+='<div style="text-align:center;padding:20px 0;font-size:13px;color:var(--s400);">등록된 보험이 없습니다</div>';}
   else{
-    html+='<table style="width:100%;border-collapse:collapse;"><thead><tr>';
+    html+='<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr>';
     ['보험사','상품명','월 보험료','메모',''].forEach(function(h){html+='<th style="text-align:left;font-size:11px;color:var(--s400);padding:8px 6px;border-bottom:2px solid var(--s200);">'+h+'</th>';});
     html+='</tr></thead><tbody>';
     insures.forEach(function(x){
@@ -6080,7 +6175,7 @@ function renderInsureTabV2(){
       html+='<td style="padding:10px 6px;"><button onclick="deleteInsure('+x.id+')" style="background:none;border:none;font-size:11px;color:var(--s400);cursor:pointer;">삭제</button></td>';
       html+='</tr>';
     });
-    html+='</tbody></table>';
+    html+='</tbody></table></div>';
   }
   html+='</div>';
   document.getElementById('det-insure-content').innerHTML=html;
