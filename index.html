@@ -7,7 +7,7 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<title>WD WAVE Partners · 260716_184</title>
+<title>WD WAVE Partners · 260716_186</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -5957,6 +5957,77 @@ body > #design-progress-modal .design-progress-tools.cumulative .design-progress
   }
 }
 
+
+/* ══ V185: 필터 자동 초기화 + 날짜 전체보기 ══ */
+body > #design-progress-modal .design-progress-date-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:7px;
+  align-items:center;
+}
+body > #design-progress-modal .design-progress-date-clear{
+  min-height:38px;
+  padding:0 11px;
+  border:1px solid #d6d9e6;
+  border-radius:9px;
+  background:#fff;
+  color:#5f677c;
+  font-family:inherit;
+  font-size:11px;
+  font-weight:900;
+  cursor:pointer;
+  white-space:nowrap;
+}
+body > #design-progress-modal .design-progress-date-clear:hover{
+  border-color:#bfb4ed;
+  background:#f6f3ff;
+  color:#513f9f;
+}
+
+
+/* ══ V186: 고객등록 모달은 우측 상단 X로만 닫기 ══ */
+#modal-cust .modal-bx{
+  position:relative;
+}
+#modal-cust .cst-modal-head{
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin:-2px 0 16px;
+  padding:2px 0 10px;
+  background:#fff;
+  border-bottom:1px solid #edf0f5;
+}
+#modal-cust .cst-modal-head .modal-title{
+  margin:0!important;
+}
+#modal-cust .cst-modal-close-x{
+  flex:0 0 auto;
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border:1px solid #d9deea;
+  border-radius:11px;
+  background:#fff;
+  color:#566078;
+  font-family:inherit;
+  font-size:23px;
+  font-weight:800;
+  line-height:1;
+  cursor:pointer;
+  box-shadow:0 4px 12px rgba(24,36,72,.06);
+}
+#modal-cust .cst-modal-close-x:hover{
+  border-color:#bdb3ec;
+  background:#f7f4ff;
+  color:#4f3fa0;
+}
+
 </style>
 <style id="oi-rooms-css">
 
@@ -11737,9 +11808,12 @@ ul.co-dash li::before{content:'·';margin-right:8px;color:var(--gold);font-weigh
     </div>
 
     <div class="design-progress-tools cumulative">
-      <label class="design-progress-filter">
+      <label class="design-progress-filter design-progress-date-filter">
         <span>날짜</span>
-        <input id="design-progress-date-filter" type="date" onchange="renderDesignProgressTable()"/>
+        <div class="design-progress-date-row">
+          <input id="design-progress-date-filter" type="date" onchange="renderDesignProgressTable()"/>
+          <button type="button" class="design-progress-date-clear" onclick="clearDesignProgressDate()">전체보기</button>
+        </div>
       </label>
       <label class="design-progress-filter design-progress-customer-filter">
         <span>고객명</span>
@@ -14825,9 +14899,12 @@ ul.co-dash li::before{content:'·';margin-right:8px;color:var(--gold);font-weigh
 </div>
 <!-- end app -->
 <!-- 고객 등록/수정 모달 -->
-<div class="modal-ov" id="modal-cust" onclick="closeModal('modal-cust')">
+<div class="modal-ov" id="modal-cust">
 <div class="modal-bx modal-bx-wide" onclick="event.stopPropagation()">
-<div class="modal-title" id="modal-cust-t">고객 등록</div>
+<div class="cst-modal-head">
+  <div class="modal-title" id="modal-cust-t">고객 등록</div>
+  <button type="button" class="cst-modal-close-x" onclick="closeModal('modal-cust')" aria-label="고객 등록창 닫기">×</button>
+</div>
 <div class="info-box" style="margin-bottom:18px;">필수정보 입력 후 원하는 페이지로 바로 이동할 수 있습니다.</div>
 <input id="ec-id" type="hidden"/>
 <!-- 기본정보 섹션 -->
@@ -27572,7 +27649,21 @@ function cwf_printA4(){
     '<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">'+
     '<meta name="viewport" content="width=device-width,initial-scale=1">'+
     '<title>고객 보험상담 결과서</title>'+fontLink+printCss+
-    '</head><body><div id="pg-consulthub">'+sheet.outerHTML+'</div></body></html>'
+    '</head><body><div id="pg-consulthub">'+sheet.outerHTML+'</div>
+<script id="customer-modal-close-guard">
+(function(){
+  document.addEventListener('keydown', function(event){
+    if(event.key!=='Escape')return;
+    var modal=document.getElementById('modal-cust');
+    if(modal&&modal.classList.contains('open')){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  }, true);
+})();
+</script>
+
+</body></html>'
   );
   printWindow.document.close();
 
@@ -32069,6 +32160,12 @@ document.addEventListener('keydown',function(e){
     }).join('');
   }
 
+  function clearDesignProgressDate(){
+    var date=document.getElementById('design-progress-date-filter');
+    if(date)date.value='';
+    renderDesignProgressTable();
+  }
+
   function resetDesignProgressFilters(){
     var date=document.getElementById('design-progress-date-filter');
     var customer=document.getElementById('design-progress-customer-filter');
@@ -32122,6 +32219,7 @@ function openDesignProgressModal(){
       document.body.appendChild(modal);
     }
 
+    resetDesignProgressFilters();
     modal.classList.add('open');
     modal.setAttribute('aria-hidden','false');
     document.body.classList.add('design-progress-open');
@@ -32138,6 +32236,7 @@ function openDesignProgressModal(){
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden','true');
     document.body.classList.remove('design-progress-open');
+    resetDesignProgressFilters();
   }
 
   function designProgressLoad(id){
@@ -32182,6 +32281,7 @@ function openDesignProgressModal(){
 
   window.renderDesignProgressTable=renderDesignProgressTable;
   window.refreshDesignProgressModal=refreshDesignProgressModal;
+  window.clearDesignProgressDate=clearDesignProgressDate;
   window.resetDesignProgressFilters=resetDesignProgressFilters;
   window.openDesignProgressModal=openDesignProgressModal;
   window.closeDesignProgressModal=closeDesignProgressModal;
