@@ -7,7 +7,7 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<title>WD WAVE Partners · 260716_186</title>
+<title>WD WAVE Partners · 260716_188</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -27649,21 +27649,7 @@ function cwf_printA4(){
     '<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">'+
     '<meta name="viewport" content="width=device-width,initial-scale=1">'+
     '<title>고객 보험상담 결과서</title>'+fontLink+printCss+
-    '</head><body><div id="pg-consulthub">'+sheet.outerHTML+'</div>
-<script id="customer-modal-close-guard">
-(function(){
-  document.addEventListener('keydown', function(event){
-    if(event.key!=='Escape')return;
-    var modal=document.getElementById('modal-cust');
-    if(modal&&modal.classList.contains('open')){
-      event.preventDefault();
-      event.stopImmediatePropagation();
-    }
-  }, true);
-})();
-</script>
-
-</body></html>'
+    '</head><body><div id="pg-consulthub">'+sheet.outerHTML+'</div></body></html>'
   );
   printWindow.document.close();
 
@@ -32290,5 +32276,18 @@ function openDesignProgressModal(){
   window.designProgressDelete=designProgressDelete;
 })();
 </script>
+<script id="customer-modal-close-guard">
+(function(){
+  document.addEventListener('keydown', function(event){
+    if(event.key!=='Escape')return;
+    var modal=document.getElementById('modal-cust');
+    if(modal&&modal.classList.contains('open')){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  }, true);
+})();
+</script>
+
 </body>
 </html>
