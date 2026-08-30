@@ -44273,5 +44273,141 @@ window.CMG_IMPORT_STATE=IMP;
 })();
 </script>
 
+<!--
+  WD WAVE Partners · 원형 보존형 메뉴 다이어트 후보 v1.3
+  기준: 260811-1407 원본의 업무화면·상담흐름·고객작업실·저장/Auth 코드는 그대로 둔다.
+  이 보정은 메뉴 노출을 8개로 정리하고 기존 pg-manual을 업무가이드로 연결하는 UI 작업만 수행한다.
+  신규 저장키, 신규 DB, 데이터 변환 없음.
+-->
+<style id="wd-v13-selective-diet-style">
+/* 원본 화면 디자인은 건드리지 않고, 지정된 독립 메뉴의 노출만 제거한다. */
+#hn-treatment,
+#hn-pvr,
+#hn-proposal,
+#hn-contract,
+#hn-aftercontract,
+#hn-claim,
+#hn-materialstudio,
+#hn-wkit,
+#hn-myspace{display:none!important;}
+
+#drawer .dr-item[data-wdpage="treatment"],
+#drawer .dr-item[data-wdpage="pvr"],
+#drawer .dr-item[data-wdpage="proposal"],
+#drawer .dr-item[data-wdpage="contract"],
+#drawer .dr-item[data-wdpage="aftercontract"],
+#drawer .dr-item[data-wdpage="claim"],
+#drawer .dr-item[data-wdpage="materialstudio"],
+#drawer .dr-item[data-wdpage="wkit"],
+#drawer .dr-item[data-wdpage="myspace"]{display:none!important;}
+
+/* 기존 분류선은 감추고, 최종 2개 분류만 다시 표시한다. */
+#drawer > .dr-group:not(.wd-v13-group),
+#drawer > .dr-divider:not(.wd-v13-divider),
+#dr-admin-main-btn{display:none!important;}
+</style>
+<script id="wd-v13-selective-diet-script">
+(function(){
+  'use strict';
+
+  var CORE=['home','cust','consulthub','design','cmg','auto'];
+  var SUPPORT=['links','manual'];
+
+  function makeGroup(text){
+    var el=document.createElement('div');
+    el.className='dr-group wd-v13-group';
+    el.textContent=text;
+    return el;
+  }
+
+  function makeDivider(){
+    var el=document.createElement('div');
+    el.className='dr-divider wd-v13-divider';
+    return el;
+  }
+
+  function relabelGuide(){
+    var header=document.getElementById('hn-workmanual')||document.getElementById('hn-manual');
+    if(header){
+      header.id='hn-manual';
+      header.textContent='업무가이드';
+      header.setAttribute('onclick',"goPage('manual')");
+    }
+
+    var drawerItem=document.querySelector('#drawer .dr-item[data-wdpage="workmanual"]')||
+      document.querySelector('#drawer .dr-item[data-wdpage="manual"]');
+    if(drawerItem){
+      drawerItem.setAttribute('data-wdpage','manual');
+      drawerItem.setAttribute('onclick',"goPage('manual');closeDrawer()");
+      var label=drawerItem.querySelector('span');
+      if(label)label.textContent='업무가이드';
+    }
+
+    if(window.WDNAV_TITLES)window.WDNAV_TITLES.manual='업무가이드';
+    var page=document.getElementById('pg-manual');
+    if(page){
+      var title=page.querySelector('.sec-hd .sec-title');
+      var sub=page.querySelector('.sec-hd .sec-sub');
+      var innerTitle=page.querySelector('.wk-sec-title');
+      if(title)title.textContent='업무가이드';
+      if(sub)sub.textContent='업무 중 궁금할 때 찾아보는 읽기·참고 공간입니다.';
+      if(innerTitle)innerTitle.textContent='설계사허브 업무가이드';
+    }
+  }
+
+  function arrangeDrawer(){
+    var drawer=document.getElementById('drawer');
+    if(!drawer||drawer.getAttribute('data-wd-v13-arranged')==='1')return;
+    var byKey={};
+    drawer.querySelectorAll('.dr-item[data-wdpage]').forEach(function(item){
+      byKey[item.getAttribute('data-wdpage')]=item;
+    });
+
+    drawer.appendChild(makeGroup('핵심 업무'));
+    CORE.forEach(function(key){if(byKey[key])drawer.appendChild(byKey[key]);});
+    drawer.appendChild(makeDivider());
+    drawer.appendChild(makeGroup('업무 지원'));
+    SUPPORT.forEach(function(key){if(byKey[key])drawer.appendChild(byKey[key]);});
+    drawer.setAttribute('data-wd-v13-arranged','1');
+  }
+
+  function arrangeHeader(){
+    var nav=document.getElementById('hdr-nav');
+    if(!nav)return;
+    CORE.concat(SUPPORT).forEach(function(key){
+      var item=document.getElementById('hn-'+key);
+      if(item)nav.appendChild(item);
+    });
+  }
+
+  function arrangeBottomTabs(){
+    var consult=document.getElementById('bt-wkit')||document.getElementById('bt-consulthub');
+    if(consult){
+      consult.id='bt-consulthub';
+      consult.setAttribute('onclick',"goPage('consulthub')");
+      consult.innerHTML='<svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="20"><path d="M20.5 13.5a4 4 0 0 1-4 4H8l-4.5 3v-9.5a5.5 5.5 0 0 1 5.5-5.5h5.5a5.5 5.5 0 0 1 5.5 5.5Z"/><path d="M8.5 11h7M8.5 14h4"/></svg><span class="btab-lbl">상담</span>';
+    }
+
+    var design=document.getElementById('bt-mypage')||document.getElementById('bt-design');
+    if(design){
+      design.id='bt-design';
+      design.setAttribute('onclick',"goPage('design')");
+      design.innerHTML='<svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="20"><path d="M11.5 20.5H21"/><path d="M16.6 3.4a2.2 2.2 0 0 1 3 3L8.4 17.6l-4 1 1-4Z"/><path d="m14.5 5.5 3 3"/></svg><span class="btab-lbl">설계</span>';
+    }
+  }
+
+  function apply(){
+    relabelGuide();
+    arrangeDrawer();
+    arrangeHeader();
+    arrangeBottomTabs();
+  }
+
+  apply();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});
+})();
+</script>
+
 </body>
 </html>
+
